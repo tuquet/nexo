@@ -32,7 +32,14 @@ export default tseslint.config(
             lang: 'ts'
           }
         }
-      ]
+      ],
+      '@typescript-eslint/explicit-function-return-type': 'off'
+    }
+  },
+  {
+    files: ['env.d.ts'],
+    rules: {
+      'unicorn/no-empty-file': 'off'
     }
   },
   eslintConfigPrettier

@@ -139,7 +139,7 @@ const customConfig: Linter.Config[] = [
   },
   // 后端模拟代码，不需要太多规则
   {
-    files: ['apps/backend-mock/**/**', 'docs/**/**', 'electron/**/**'],
+    files: ['apps/backend-mock/**/**', 'docs/**/**'],
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
       'n/no-extraneous-import': 'off',
@@ -161,6 +161,17 @@ const customConfig: Linter.Config[] = [
     files: ['internal/**/**', 'scripts/**/**'],
     rules: {
       'no-console': 'off',
+    },
+  },
+  {
+    files: ['electron/**/**'],
+    rules: {
+      '@typescript-eslint/no-extraneous-class': 'off',
+      'n/no-extraneous-import': 'off',
+      'n/prefer-global/buffer': 'off',
+      'n/prefer-global/process': 'off',
+      'no-console': 'off',
+      'unicorn/prefer-module': 'off',
     },
   },
 ];
