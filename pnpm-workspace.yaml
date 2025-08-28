@@ -12,6 +12,7 @@ packages:
   - scripts/*
   - docs
   - playground
+  - electron
 
 catalog:
   '@ast-grep/napi': ^0.37.0

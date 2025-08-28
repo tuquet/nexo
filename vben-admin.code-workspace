@@ -21,6 +21,10 @@
       "path": "docs",
     },
     {
+      "name": "electron-app",
+      "path": "electron",
+    },
+    {
       "name": "@vben/commitlint-config",
       "path": "internal/lint-configs/commitlint-config",
     },
