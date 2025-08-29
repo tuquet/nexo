@@ -5,6 +5,7 @@ import log from 'electron-log'
 
 import icon from '../../../resources/icon.png?asset'
 import { createWindow, waitForServerUp } from '../helpers'
+import { APP_DEV_RENDERER_URL } from './constant'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -35,9 +36,10 @@ export async function setupMainWindow(): Promise<BrowserWindow> {
     return { action: 'deny' }
   })
 
-  if (is.dev && process.env.ELECTRON_RENDERER_URL) {
-    await waitForServerUp(process.env.ELECTRON_RENDERER_URL)
-    await mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
+  // process.env.ELECTRON_RENDERER_URL
+  if (is.dev && APP_DEV_RENDERER_URL) {
+    await waitForServerUp(APP_DEV_RENDERER_URL)
+    await mainWindow.loadURL(APP_DEV_RENDERER_URL)
   } else {
     mainWindow
       .loadFile(fileURLToPath(new URL('../renderer/index.html', import.meta.url)))

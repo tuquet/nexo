@@ -1,5 +1,5 @@
 {
-  "name": "@vben/electron",
+  "name": "@mmo/electron",
   "version": "1.0.0",
   "description": "An Electron application with Vue and TypeScript",
   "homepage": "https://electron-vite.org",

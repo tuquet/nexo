@@ -17,14 +17,6 @@
       "path": "apps/web-naive",
     },
     {
-      "name": "@vben/docs",
-      "path": "docs",
-    },
-    {
-      "name": "@vben/electron",
-      "path": "electron",
-    },
-    {
       "name": "@vben/commitlint-config",
       "path": "internal/lint-configs/commitlint-config",
     },
@@ -55,6 +47,14 @@
     {
       "name": "@vben/vite-config",
       "path": "internal/vite-config",
+    },
+    {
+      "name": "@mmo/electron",
+      "path": "mmo/electron",
+    },
+    {
+      "name": "@mmo/renderer",
+      "path": "mmo/renderer",
     },
     {
       "name": "@vben-core/design",
@@ -159,10 +159,6 @@
     {
       "name": "@vben/utils",
       "path": "packages/utils",
-    },
-    {
-      "name": "@vben/playground",
-      "path": "playground",
     },
     {
       "name": "@vben/turbo-run",

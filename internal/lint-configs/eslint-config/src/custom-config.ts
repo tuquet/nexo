@@ -164,7 +164,7 @@ const customConfig: Linter.Config[] = [
     },
   },
   {
-    files: ['electron/**/**'],
+    files: ['mmo/electron/**/**'],
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
       'n/no-extraneous-import': 'off',
