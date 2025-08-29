@@ -29,9 +29,6 @@ function openDistFolder() {
         process.exit(0)
       }
     })
-  } else {
-    console.log(`Directory "${distPath}" does not exist. Cannot open.`)
-    process.exit(1)
   }
 }
 
@@ -41,7 +38,7 @@ function openDistFolder() {
 function rendererScript() {
   const currentDir = process.cwd()
   const outRendererPath = join(currentDir, 'out', 'renderer')
-  const sourcePath = resolve(currentDir, '..', 'apps', 'web-antd', 'dist')
+  const sourcePath = resolve(currentDir, '..', 'renderer', 'dist')
   const destinationPath = join(currentDir, 'out', 'renderer')
 
   if (!existsSync(sourcePath)) {
@@ -72,10 +69,8 @@ function rendererScript() {
 try {
   if (rendererMode) {
     rendererScript()
-    openDistFolder()
-  } else {
-    openDistFolder()
   }
+  openDistFolder()
 } catch (error) {
   console.error('An error occurred during script execution:', error)
   process.exit(1)

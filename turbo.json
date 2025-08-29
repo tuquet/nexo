@@ -45,8 +45,8 @@
     "typecheck": {
       "outputs": []
     },
-    "@vben/electron#build": {
-      "dependsOn": ["^build", "@vben/web-antd#build"],
+    "@mmo/electron#build": {
+      "dependsOn": ["^build", "@mmo/renderer#build"],
       "outputs": ["out/**"]
     }
   }
