@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common'
 import { BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log'
 import pkg from 'electron-updater'
@@ -7,7 +6,6 @@ import icon from '../../../resources/icon.png?asset'
 import { getLatestRelease } from './api'
 const { autoUpdater } = pkg
 
-@Injectable()
 class AppUpdater {
   private updateDialog: Electron.BrowserWindow | null = null
 

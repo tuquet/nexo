@@ -4,13 +4,12 @@ import process from 'node:process'
 import log from 'electron-log'
 
 import { setupAppEvents } from './process/event'
-import { setupIpc } from './process/ipc'
 import { setupLogger } from './process/logger'
 import { APP_PATH } from './process/path'
 import { setupProtocol } from './process/protocol'
 import AppUpdater from './process/updater'
 import { setupMainWindow } from './process/window'
-
+import { setupIpcHandlers } from './ipc'
 const DATABASE_PATH = path.join(APP_PATH, process.env.VITE_DATABASE_NAME || '')
 
 // @ts-expect-error - Fixing the issue with the env variable
@@ -21,6 +20,10 @@ const updater = new AppUpdater()
 
 void (async () => {
   try {
+    if (!process.env.VITE_DATABASE_NAME) {
+      log.warn('VITE_DATABASE_NAME is not set.  Application may not work as expected.')
+    }
+
     await setupLogger()
 
     await setupAppEvents()
@@ -29,11 +32,12 @@ void (async () => {
 
     await setupMainWindow()
 
-    await setupIpc()
+    await setupIpcHandlers()
 
     await updater.checkForUpdates()
   } catch (error) {
     log.error('Failed to setup application:', error)
+    // Consider a more graceful exit in production
     process.exit(1)
   }
 })()
