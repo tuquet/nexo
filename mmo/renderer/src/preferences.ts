@@ -8,6 +8,17 @@ import { defineOverridesPreferences } from '@vben/preferences';
 export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
+    layout: 'header-nav',
+    locale: 'en-US',
+    preferencesButtonPosition: 'fixed',
     name: import.meta.env.VITE_APP_TITLE,
+  },
+  sidebar: {
+    collapsed: true,
+  },
+  logo: {
+    enable: true,
+    source:
+      'https://unpkg.com/@tfsoft/static-source@1.0.0/static/logo-square.png',
   },
 });
