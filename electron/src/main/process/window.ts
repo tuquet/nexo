@@ -1,11 +1,10 @@
-import * as http from 'node:http'
-import path from 'node:path'
-
+import { fileURLToPath } from 'url'
 import { is } from '@electron-toolkit/utils'
 import { BrowserWindow, shell } from 'electron'
 import log from 'electron-log'
 
 import icon from '../../../resources/icon.png?asset'
+import { createWindow, waitForServerUp } from '../helpers'
 
 let mainWindow: BrowserWindow | null = null
 
@@ -13,13 +12,13 @@ export function getMainWindow(): BrowserWindow | null {
   return mainWindow
 }
 
-export async function createMainWindow(): Promise<BrowserWindow> {
-  mainWindow = new BrowserWindow({
+export async function setupMainWindow(): Promise<BrowserWindow> {
+  mainWindow = createWindow('main', {
     show: false,
     autoHideMenuBar: true,
     icon,
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: fileURLToPath(new URL('../preload/index.mjs', import.meta.url)),
       sandbox: false
     }
   })
@@ -40,24 +39,12 @@ export async function createMainWindow(): Promise<BrowserWindow> {
     await waitForServerUp(process.env.ELECTRON_RENDERER_URL)
     await mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL)
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html')).catch((error) => {
-      log.error('Failed to load file:', error)
-    })
+    mainWindow
+      .loadFile(fileURLToPath(new URL('../renderer/index.html', import.meta.url)))
+      .catch((error) => {
+        log.error('Failed to load file:', error)
+      })
   }
 
   return mainWindow
-}
-
-const isHostUp = (url: string) =>
-  new Promise((resolve) => http.get(url, () => resolve(true)).on('error', () => resolve(false)))
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-export async function waitForServerUp(url: string) {
-  console.log(`Waiting for server navigo-frontend to be up at ${url}`)
-  while (true) {
-    const isUp = await isHostUp(url)
-    if (isUp) break
-    await wait(1000)
-  }
 }

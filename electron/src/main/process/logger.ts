@@ -3,8 +3,10 @@ import path from 'node:path'
 import { app } from 'electron'
 import log from 'electron-log'
 
+const LOG_FILE_NAME = 'main.log'
+
 export function setupLogger(): void {
-  log.transports.file.resolvePathFn = () => path.join(process.cwd(), 'logs', 'main.log')
+  log.transports.file.resolvePathFn = () => path.join(process.cwd(), 'logs', LOG_FILE_NAME)
   log.transports.file.getFile().clear()
 
   const loggerAndQuit = (message: unknown): void => {

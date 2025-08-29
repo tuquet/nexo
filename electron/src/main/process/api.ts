@@ -1,5 +1,3 @@
-// Trả về danh sách các bản phát hành
-
 export async function fetchReleases() {
   const response = await fetch('https://api.github.com/repos/tuquet/navigo/releases')
   if (!response.ok) {

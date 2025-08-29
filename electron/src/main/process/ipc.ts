@@ -2,7 +2,7 @@ import { ipcMain, shell } from 'electron'
 
 import { APP_PATH } from './path'
 
-export function registerIpcHandlers(): void {
+export function setupIpc(): void {
   ipcMain.on('open-oauth-app-deeplink', (_, { url }) => {
     void shell.openExternal(url)
   })

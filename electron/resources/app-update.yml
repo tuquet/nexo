@@ -1,0 +1,4 @@
+provider: github
+owner: tuquet
+repo: navigo
+updaterCacheDirName: navigo-updater

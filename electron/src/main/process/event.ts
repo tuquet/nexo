@@ -4,7 +4,7 @@ import { app, BrowserWindow } from 'electron'
 import log from 'electron-log'
 
 import { handleProtocolUrl } from './protocol'
-import { createMainWindow, getMainWindow } from './window'
+import { setupMainWindow, getMainWindow } from './window'
 
 export async function setupAppEvents(): Promise<void> {
   const gotTheLock = app.requestSingleInstanceLock()
@@ -31,7 +31,7 @@ export async function setupAppEvents(): Promise<void> {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      void createMainWindow()
+      void setupMainWindow()
     }
   })
 
