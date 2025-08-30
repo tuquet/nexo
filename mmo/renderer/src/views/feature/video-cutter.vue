@@ -4,6 +4,7 @@ import type { Rule } from 'ant-design-vue/es/form';
 
 import { h, reactive, ref } from 'vue';
 
+import { SendOutlined } from '@ant-design/icons-vue';
 import {
   Alert,
   Button,
@@ -126,6 +127,7 @@ const onFinish = async () => {
           class="mb-5"
           message="How to Cut Video"
           description="Select video > Select save location > Enter the duration for each segment in seconds. The cut videos will be saved directly in the selected location. Example: for a 10-second video, cutting every 2 seconds will result in 5 smaller videos."
+          closable
         />
         <Form
           ref="formRef"
@@ -141,7 +143,9 @@ const onFinish = async () => {
               readonly
             >
               <template #addonAfter>
-                <Button @click="handleSelectVideo">Browse...</Button>
+                <Button size="small" type="link" @click="handleSelectVideo">
+                  Browse...
+                </Button>
               </template>
             </Input>
           </Form.Item>
@@ -153,7 +157,9 @@ const onFinish = async () => {
               readonly
             >
               <template #addonAfter>
-                <Button @click="handleSelectOutput">Browse...</Button>
+                <Button size="small" type="link" @click="handleSelectOutput">
+                  Browse...
+                </Button>
               </template>
             </Input>
           </Form.Item>
@@ -169,7 +175,16 @@ const onFinish = async () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" html-type="submit" :loading="loading" block>
+            <Button
+              type="primary"
+              html-type="submit"
+              :loading="loading"
+              size="large"
+              block
+            >
+              <template #icon>
+                <SendOutlined />
+              </template>
               Start Cutting
             </Button>
           </Form.Item>

@@ -28,12 +28,24 @@ const features = [
       router.push('/youtube-downloader');
     },
   },
+  {
+    title: 'AI Script Writer: Generate Video Scripts',
+    description:
+      'Never run out of ideas. Describe your topic, and let AI generate a detailed video script for you, from intro to outro.',
+    icon: 'https://cdn-icons-png.flaticon.com/128/11510/11510353.png',
+    cover:
+      'https://images.unsplash.com/photo-1677756119517-756a188d2d94?q=80&w=800&h=450&auto=format&fit=crop',
+    actionText: 'Explore',
+    action: () => {
+      router.push('/script-writer');
+    },
+  },
 ];
 </script>
 
 <template>
   <div class="p-5">
-    <div class="grid grid-cols-3 gap-6">
+    <div class="grid gap-4 lg:grid-cols-2">
       <Card v-for="feature in features" :key="feature.title">
         <template #title>
           <div class="flex cursor-pointer items-center gap-2">
@@ -41,7 +53,7 @@ const features = [
             <div>{{ feature.title }}</div>
           </div>
         </template>
-        <TypographyParagraph :ellipsis="2" :content="feature.description" />
+        <TypographyParagraph :content="feature.description" />
         <template #actions>
           <Button @click="feature.action()" type="primary">
             {{ feature.actionText }}

@@ -3,6 +3,7 @@ import type { FormInstance, Rule } from 'ant-design-vue/es/form';
 
 import { h, onUnmounted, reactive, ref } from 'vue';
 
+import { SendOutlined } from '@ant-design/icons-vue';
 import {
   Alert,
   Button,
@@ -203,6 +204,7 @@ onUnmounted(() => {
           class="mb-5"
           message="How to Download"
           description="Paste the YouTube video URL into the field below and choose a save location to start downloading."
+          closable
         />
         <Form
           ref="formRef"
@@ -249,13 +251,24 @@ onUnmounted(() => {
               readonly
             >
               <template #addonAfter>
-                <Button @click="handleSelectOutput">Browse...</Button>
+                <Button size="small" type="link" @click="handleSelectOutput">
+                  Browse...
+                </Button>
               </template>
             </Input>
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" html-type="submit" :loading="loading" block>
+            <Button
+              type="primary"
+              html-type="submit"
+              :loading="loading"
+              block
+              size="large"
+            >
+              <template #icon>
+                <SendOutlined />
+              </template>
               Start Download
             </Button>
           </Form.Item>

@@ -13,6 +13,7 @@
     "workspace": "Workspace"
   },
   "feature": {
+    "script-writer": "Script Writer",
     "title": "Features",
     "video-cutter": "Video Cutter",
     "youtube-downloader": "YouTube Downloader"

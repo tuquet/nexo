@@ -19,6 +19,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'carbon:workspace',
           title: $t('page.feature.video-cutter'),
+          keepAlive: true,
         },
       },
       {
@@ -28,6 +29,17 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'ant-design:youtube-filled',
           title: $t('page.feature.youtube-downloader'),
+          keepAlive: true,
+        },
+      },
+      {
+        name: 'ScriptWriter',
+        path: '/script-writer',
+        component: () => import('#/views/feature/script-writer.vue'),
+        meta: {
+          icon: 'ant-design:google-outlined',
+          title: $t('page.feature.script-writer'),
+          keepAlive: true,
         },
       },
     ],
