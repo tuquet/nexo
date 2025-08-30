@@ -1,8 +1,13 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
 
+export interface ICustomAPI {
+  ping: () => void
+  onPong: (callback: (message: string) => void) => () => void
+}
+
 declare global {
   interface Window {
-    api: unknown
+    api: ICustomAPI
     electron: ElectronAPI
   }
 }

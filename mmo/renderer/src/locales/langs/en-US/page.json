@@ -1,14 +1,20 @@
 {
   "auth": {
-    "login": "Login",
-    "register": "Register",
     "codeLogin": "Code Login",
+    "forgetPassword": "Forget Password",
+    "login": "Login",
     "qrcodeLogin": "Qr Code Login",
-    "forgetPassword": "Forget Password"
+    "register": "Register"
   },
   "dashboard": {
-    "title": "Dashboard",
     "analytics": "Analytics",
+    "home": "Home",
+    "title": "Dashboard",
     "workspace": "Workspace"
+  },
+  "feature": {
+    "title": "Features",
+    "video-cutter": "Video Cutter",
+    "youtube-downloader": "YouTube Downloader"
   }
 }

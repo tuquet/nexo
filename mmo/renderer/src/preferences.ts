@@ -12,6 +12,9 @@ export const overridesPreferences = defineOverridesPreferences({
     locale: 'en-US',
     preferencesButtonPosition: 'fixed',
     name: import.meta.env.VITE_APP_TITLE,
+    authPageLayout: 'panel-center',
+    loginExpiredMode: 'modal',
+    defaultHomePath: '/home',
   },
   sidebar: {
     collapsed: true,

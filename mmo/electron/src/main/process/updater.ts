@@ -4,6 +4,7 @@ import pkg from 'electron-updater'
 
 import icon from '../../../resources/icon.png?asset'
 import { getLatestRelease } from './api'
+import { getMainWindow } from './window'
 const { autoUpdater } = pkg
 
 class AppUpdater {
@@ -29,7 +30,17 @@ class AppUpdater {
 
     autoUpdater.on('download-progress', (progressObj) => {
       const percentRounded = Math.round(progressObj.percent)
-      this.updateDownloadProgress(percentRounded)
+
+      // Gửi tiến trình đến cửa sổ dialog
+      if (this.updateDialog) {
+        this.updateDialog.webContents.send('download-progress', percentRounded)
+      }
+
+      // Gửi tiến trình đến cửa sổ chính
+      const mainWindow = getMainWindow()
+      if (mainWindow) {
+        mainWindow.webContents.send('update-download-progress', percentRounded)
+      }
     })
 
     autoUpdater.on('update-downloaded', () => {
@@ -118,12 +129,6 @@ class AppUpdater {
       </body>
       </html>
     `)
-  }
-
-  updateDownloadProgress(percent: number): void {
-    if (this.updateDialog) {
-      this.updateDialog.webContents.send('download-progress', percent)
-    }
   }
 }
 

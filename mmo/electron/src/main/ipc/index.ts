@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron'
-import * as appIpc from './app'
+import * as Ipcs from './modules'
 
 export function setupIpcHandlers(): void {
-  Object.values(appIpc).forEach((handler) => {
+  Object.values(Ipcs).forEach((handler) => {
     if (typeof handler === 'function') {
       handler(ipcMain)
     }
