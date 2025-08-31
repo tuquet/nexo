@@ -1,7 +1,7 @@
 import * as http from 'node:http'
 
 export async function waitForServerUp(url: string) {
-  console.log(`Waiting for server navigo-frontend to be up at ${url}`)
+  console.log(`Waiting for server catalyst-frontend to be up at ${url}`)
   while (true) {
     const isUp = await isHostUp(url)
     if (isUp) break

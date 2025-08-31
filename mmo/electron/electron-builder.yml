@@ -1,5 +1,5 @@
-appId: vn.tfsoftware.navigo
-productName: Navigo
+appId: vn.tfsoftware.catalyst
+productName: Catalyst
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: Navigo
+  executableName: Catalyst
 nsis:
   artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -42,7 +42,7 @@ publish:
     provider: github
     owner: tuquet
     token: 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
-    repo: navigo
+    repo: catalyst
     releaseType: prerelease
     vPrefixedTagName: true
 electronDownload:

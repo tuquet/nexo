@@ -1,5 +1,5 @@
 export async function fetchReleases() {
-  const response = await fetch('https://api.github.com/repos/tuquet/navigo/releases')
+  const response = await fetch('https://api.github.com/repos/tuquet/catalyst/releases')
   if (!response.ok) {
     throw new Error(`Failed to fetch releases: ${response.statusText}`)
   }

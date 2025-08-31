@@ -15,7 +15,7 @@ export async function setupAppEvents(): Promise<void> {
 
   await app.whenReady()
 
-  electronApp.setAppUserModelId('vn.tfsoftware.navigo')
+  electronApp.setAppUserModelId('vn.tfsoftware.catalyst')
 
   app.on('open-url', (event, url) => {
     event.preventDefault()
@@ -44,7 +44,7 @@ export async function setupAppEvents(): Promise<void> {
     if (window) {
       if (window.isMinimized()) window.restore()
       window.focus()
-      const url = argv.find((arg) => arg.startsWith('navigo://'))
+      const url = argv.find((arg) => arg.startsWith('catalyst://'))
       if (url) handleProtocolUrl(url)
     }
   })

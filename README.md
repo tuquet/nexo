@@ -1,53 +1,55 @@
 # Catalyst
 
-## Giới thiệu về Catalyst
+🌐 [English](README.md) | [Tiếng Việt](README.vi-VN.md)
 
-Chào mừng bạn đến với **Catalyst** – công cụ tất cả trong một dành cho những nhà sáng tạo nội dung.
+## Introduction to Catalyst
 
-Catalyst không chỉ là một ứng dụng, mà là người bạn đồng hành giúp bạn biến ý tưởng video thô thành những sản phẩm hoàn chỉnh và chuyên nghiệp. Với Catalyst, bạn có thể:
+Welcome to **Catalyst** – the all-in-one tool for content creators.
 
-- **Tạo kịch bản với AI**: Chỉ cần nhập ý tưởng, tính năng AI sẽ giúp bạn tạo ra các kịch bản video hấp dẫn một cách nhanh chóng.
-- **Cắt và chỉnh sửa video**: Cắt, ghép, và tách các đoạn video yêu thích một cách dễ dàng, giúp bạn có được những thước phim hoàn hảo nhất.
-- **Tải video từ YouTube**: Nhanh chóng tải xuống các video từ YouTube để sử dụng làm tư liệu hoặc xem ngoại tuyến.
-- **Biến văn bản thành giọng nói**: Sử dụng công nghệ Text-to-Speech để chuyển kịch bản của bạn thành giọng nói tự nhiên, sẵn sàng cho việc lồng tiếng video.
+Catalyst is more than just an application; it's your companion to help turn raw video ideas into polished, professional products. With Catalyst, you can:
 
-Catalyst được tạo ra để đơn giản hóa quy trình sáng tạo, giúp bạn tập trung vào điều quan trọng nhất: kể câu chuyện của mình.
+- **AI Script Generation**: Just enter your idea, and the AI feature will quickly help you create engaging video scripts.
+- **Video Cutting and Editing**: Easily cut, merge, and split your favorite video clips to achieve the perfect footage.
+- **YouTube Video Downloading**: Quickly download videos from YouTube for reference or offline viewing.
+- **Text-to-Speech Conversion**: Use Text-to-Speech technology to turn your scripts into natural-sounding voices, ready for video dubbing.
+
+Catalyst is designed to simplify the creative process, allowing you to focus on what matters most: telling your story.
 
 ---
 
-## Các tính năng nổi bật
+## Key Features
 
 ### Video Cutter & Splitter
 
-- Cắt các đoạn video không mong muốn một cách chính xác.
-- Tách một video dài thành nhiều phần nhỏ hơn.
-- Giao diện trực quan, dễ sử dụng.
+- Precisely cut unwanted video segments.
+- Split long videos into smaller parts.
+- Intuitive and user-friendly interface.
 
 ### YouTube Downloader
 
-- Tải video chất lượng cao từ YouTube.
-- Hỗ trợ nhiều định dạng và độ phân giải khác nhau.
+- Download high-quality videos from YouTube.
+- Supports multiple formats and resolutions.
 
 ### AI Script Writer
 
-- Tạo kịch bản độc đáo và hấp dẫn từ một vài gợi ý.
-- Giúp bạn vượt qua "khủng hoảng ý tưởng".
+- Create unique and engaging scripts from just a few prompts.
+- Helps you overcome "creative block."
 
 ### Text-to-Speech
 
-- Chuyển kịch bản thành giọng nói tự nhiên, đa dạng.
-- Tiết kiệm thời gian và chi phí lồng tiếng.
+- Convert scripts into natural, diverse voices.
+- Save time and costs on voice-over production.
 
 ---
 
-## Bắt đầu
+## Getting Started
 
-Để sử dụng Catalyst, bạn chỉ cần tải về và cài đặt theo hướng dẫn. Chúng tôi đã thiết kế Catalyst để bất cứ ai cũng có thể sử dụng được, dù bạn là người mới bắt đầu hay một nhà sáng tạo chuyên nghiệp.
+To use Catalyst, simply download and install it following the instructions. Catalyst is designed for everyone, whether you're a beginner or a professional creator.
 
 ---
 
-## Cộng đồng & Đóng góp
+## Community & Contribution
 
-Catalyst là một dự án mã nguồn mở. Chúng tôi luôn chào đón sự đóng góp từ cộng đồng. Nếu bạn có ý tưởng cải tiến hoặc muốn báo cáo lỗi, hãy mở một **Issue** hoặc **Pull Request** trên repository này.
+Catalyst is an open-source project. We always welcome contributions from the community. If you have improvement ideas or want to report bugs, please open an **Issue** or **Pull Request** on this repository.
 
-Hãy cùng nhau xây dựng Catalyst trở thành công cụ sáng tạo mạnh mẽ nhất\!
+Let's build Catalyst into the most powerful creative tool together!
