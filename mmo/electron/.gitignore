@@ -1,6 +1,15 @@
+# Environment variables
+.env
+.env.*
+
+# Logs
+logs
+*.log
+
+# Dependencies
 node_modules
+
+# Build output
 dist
 out
-.DS_Store
-.eslintcache
-*.log*
+release

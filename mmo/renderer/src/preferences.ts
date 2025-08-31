@@ -10,11 +10,11 @@ export const overridesPreferences = defineOverridesPreferences({
   app: {
     layout: 'header-nav',
     locale: 'en-US',
-    preferencesButtonPosition: 'fixed',
     name: import.meta.env.VITE_APP_TITLE,
     authPageLayout: 'panel-center',
     loginExpiredMode: 'modal',
     defaultHomePath: '/home',
+    enablePreferences: false
   },
   sidebar: {
     collapsed: true,
@@ -24,4 +24,18 @@ export const overridesPreferences = defineOverridesPreferences({
     source:
       'https://unpkg.com/@tfsoft/static-source@1.0.0/static/logo-square.png',
   },
+  copyright: {
+    companyName: 'tfsoftware',
+    companySiteLink: 'https://tfsoftware.vn',
+    date: '2025',
+    enable: true,
+    icp: '',
+    icpLink: '',
+    settingShow: true,
+  },
+  widget: {
+    fullscreen: false,
+    themeToggle: true,
+    lockScreen: false,
+  }
 });

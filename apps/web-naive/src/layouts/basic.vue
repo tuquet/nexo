@@ -130,7 +130,7 @@ watch(
         :avatar
         :menus
         :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
+        description="Free Account"
         tag-text="Pro"
         @logout="handleLogout"
       />

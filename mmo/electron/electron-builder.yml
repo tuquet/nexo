@@ -11,6 +11,9 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
+  - "**/node_modules/ffmpeg-static/**/*"
+  - "**/node_modules/ffprobe-static/**/*"
+  - "**/node_modules/yt-dlp/**/*"
 win:
   executableName: Catalyst
 nsis:
@@ -41,7 +44,6 @@ npmRebuild: false
 publish:
     provider: github
     owner: tuquet
-    token: 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
     repo: catalyst
     releaseType: prerelease
     vPrefixedTagName: true

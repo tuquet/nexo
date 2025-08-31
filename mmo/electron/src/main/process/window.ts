@@ -3,7 +3,7 @@ import { is } from '@electron-toolkit/utils'
 import { BrowserWindow, shell } from 'electron'
 import log from 'electron-log'
 
-import icon from '../../../resources/icon.png?asset'
+import icon from '@resources/icon.png?asset'
 import { createWindow, waitForServerUp } from '../helpers'
 import { APP_DEV_RENDERER_URL } from './constant'
 

@@ -2,7 +2,7 @@ import { BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log'
 import pkg from 'electron-updater'
 
-import icon from '../../../resources/icon.png?asset'
+import icon from '@resources/icon.png?asset'
 import { getLatestRelease } from './api'
 import { getMainWindow } from './window'
 const { autoUpdater } = pkg

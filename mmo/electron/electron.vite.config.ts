@@ -11,6 +11,11 @@ export default defineConfig({
           format: 'es'
         }
       }
+    },
+    resolve: {
+      alias: {
+        '@resources': resolve('resources/')
+      }
     }
   },
   preload: {
