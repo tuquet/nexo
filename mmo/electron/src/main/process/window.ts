@@ -26,9 +26,9 @@ export async function setupMainWindow(): Promise<BrowserWindow> {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow?.show()
-    if (process.env.VITE_NODE_ENV === 'development') {
-      mainWindow?.webContents.openDevTools()
-    }
+    // if (process.env.VITE_NODE_ENV === 'development') {
+    mainWindow?.webContents.openDevTools()
+    // }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

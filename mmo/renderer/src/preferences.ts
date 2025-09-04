@@ -14,7 +14,7 @@ export const overridesPreferences = defineOverridesPreferences({
     authPageLayout: 'panel-center',
     loginExpiredMode: 'modal',
     defaultHomePath: '/home',
-    enablePreferences: false
+    enablePreferences: true,
   },
   sidebar: {
     collapsed: true,
@@ -37,5 +37,5 @@ export const overridesPreferences = defineOverridesPreferences({
     fullscreen: false,
     themeToggle: true,
     lockScreen: false,
-  }
+  },
 });

@@ -4,10 +4,11 @@ import youtubedl from 'youtube-dl-exec'
 import log from 'electron-log'
 import ffmpegPath from 'ffmpeg-static'
 import { getMainWindow } from '../../process/window'
-
-// Sửa đường dẫn ffmpeg để tương thích với ASAR packaging của Electron.
-// Khi ứng dụng được đóng gói, các file thực thi cần nằm ngoài file asar.
-const ffmpeg = ffmpegPath?.replace('app.asar', 'app.asar.unpacked')
+// Đường dẫn tới file thực thi ffmpeg.
+// Lưu ý: Để hoạt động sau khi đóng gói, thư mục `ffmpeg-static` đã được
+// cấu hình để unpack trong `electron-builder.yml` (asarUnpack).
+// Việc thay thế đường dẫn thủ công không còn cần thiết.
+const ffmpeg = ffmpegPath
 export function youtube(ipc: IpcMain): void {
   /**
    * Lấy danh sách các định dạng video và audio có sẵn từ một URL YouTube.
@@ -49,8 +50,11 @@ export function youtube(ipc: IpcMain): void {
       log.info(`[YouTube] Found ${formats.length} suitable formats.`)
       return formats
     } catch (error: any) {
-      log.error(`[YouTube] Error fetching formats for ${videoUrl}:`, error.message)
-      throw new Error(`Failed to get video information: ${error.message}`)
+      // Log toàn bộ đối tượng lỗi để có thêm thông tin, vì 'error.message' có thể trống.
+      // Đặc biệt là các lỗi liên quan đến process spawn (ENOENT).
+      log.error(`[YouTube] Error fetching formats for ${videoUrl}:`, error)
+      const errorMessage = error.stderr || error.message || 'Unknown error'
+      throw new Error(`Failed to get video information: ${errorMessage}`)
     }
   })
 

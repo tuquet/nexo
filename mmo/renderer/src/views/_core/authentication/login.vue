@@ -88,8 +88,8 @@ const formSchema = computed((): VbenFormSchema[] => {
   ];
 });
 
-function fakeLogin() {
-  authStore.authLogin({
+async function fakeLogin() {
+  await authStore.authLogin({
     username: 'admin',
     password: '123456',
   });
@@ -108,7 +108,7 @@ function fakeLogin() {
     :show-remember-me="false"
     :show-third-party-login="false"
     title="Have a great day!"
-    subTitle="Are you ready for something new?"
+    sub-title="Are you ready for something new?"
     submit-button-text="Get Started"
   />
 </template>

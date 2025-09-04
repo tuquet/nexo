@@ -2,7 +2,7 @@
 import type { FallbackProps } from './fallback';
 
 import { computed, defineAsyncComponent } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { ArrowLeft, RotateCw } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<Props>(), {
   status: 'coming-soon',
   title: '',
 });
+const route = useRoute();
 
 const Icon403 = defineAsyncComponent(() => import('./icons/icon-403.vue'));
 const Icon404 = defineAsyncComponent(() => import('./icons/icon-404.vue'));
@@ -159,6 +160,12 @@ function refresh() {
         <RotateCw class="mr-2 size-4" />
         {{ $t('common.refresh') }}
       </VbenButton>
+    </div>
+    <!-- Một helper nhỏ để hiển thị route hiện tại trên màn hình khi đang development -->
+    <div
+      class="fixed bottom-2 left-2 z-[1000] rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow-lg"
+    >
+      Current Route: {{ route.fullPath }}
     </div>
   </div>
 </template>

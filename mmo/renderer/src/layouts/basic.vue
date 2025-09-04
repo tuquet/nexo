@@ -2,6 +2,7 @@
 import type { NotificationItem } from '@vben/layouts';
 
 import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { VBEN_DOC_URL, VBEN_GITHUB_URL } from '@vben/constants';
@@ -26,6 +27,7 @@ const notifications = ref<NotificationItem[]>([]);
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
+const route = useRoute();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
@@ -76,6 +78,7 @@ function handleNoticeClear() {
 function handleMakeAll() {
   notifications.value.forEach((item) => (item.isRead = true));
 }
+
 watch(
   () => preferences.app.watermark,
   async (enable) => {
@@ -100,7 +103,7 @@ watch(
         :avatar
         :menus
         :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
+        description="Free"
         tag-text="Pro"
         @logout="handleLogout"
       />
@@ -125,4 +128,10 @@ watch(
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
+  <!-- Một helper nhỏ để hiển thị route hiện tại trên màn hình khi đang development -->
+  <div
+    class="fixed bottom-2 left-2 z-[1000] rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow-lg"
+  >
+    Current Route: {{ route.fullPath }}
+  </div>
 </template>
