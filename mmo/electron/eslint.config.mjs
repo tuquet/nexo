@@ -21,7 +21,7 @@ export default tseslint.config(
     }
   },
   {
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    files: ['**/*.{ts,mts,tsx,vue,mjs}'],
     rules: {
       'vue/require-default-prop': 'off',
       'vue/multi-word-component-names': 'off',

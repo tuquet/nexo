@@ -5,11 +5,12 @@ import { spawn } from 'node:child_process'
 import log from 'electron-log'
 import ffmpegPath from 'ffmpeg-static'
 import { path as ffprobePath } from 'ffprobe-static'
+import { is } from '@electron-toolkit/utils'
 import { getMainWindow } from '../../process/window'
 
 // Correct paths for ASAR packaging
-const ffmpeg = ffmpegPath?.replace('app.asar', 'app.asar.unpacked')
-const ffprobe = ffprobePath?.replace('app.asar', 'app.asar.unpacked')
+const ffmpeg = is.dev ? ffmpegPath : ffmpegPath?.replace('app.asar', 'app.asar.unpacked')
+const ffprobe = is.dev ? ffprobePath : ffprobePath?.replace('app.asar', 'app.asar.unpacked')
 
 export function videoCutter(ipc: IpcMain): void {
   ipc.handle(

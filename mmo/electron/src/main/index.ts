@@ -2,7 +2,7 @@ import path from 'node:path'
 import process from 'node:process'
 
 import log from 'electron-log'
-
+import { app } from 'electron'
 import { setupAppEvents } from './process/event'
 import { setupLogger } from './process/logger'
 import { APP_PATH } from './process/path'
@@ -10,6 +10,8 @@ import { setupProtocol } from './process/protocol'
 import AppUpdater from './process/updater'
 import { setupMainWindow } from './process/window'
 import { setupIpcHandlers } from './ipc'
+import { startMockServer, stopMockServer } from './process/mock-server'
+
 const DATABASE_PATH = path.join(APP_PATH, process.env.VITE_DATABASE_NAME || '')
 
 // @ts-expect-error - Fixing the issue with the env variable
@@ -26,6 +28,8 @@ void (async () => {
 
     await setupLogger()
 
+    await startMockServer()
+
     await setupAppEvents()
 
     await setupProtocol()
@@ -41,3 +45,7 @@ void (async () => {
     process.exit(1)
   }
 })()
+
+app.on('will-quit', () => {
+  stopMockServer()
+})

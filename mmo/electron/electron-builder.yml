@@ -10,10 +10,15 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
-  - resources/**
-  - "**/node_modules/ffmpeg-static/**/*"
-  - "**/node_modules/ffprobe-static/**/*"
-  - "**/node_modules/yt-dlp-prebuilt/**/*"
+  # Unpack các module native (.node, .dll). Đây là một cấu hình tốt nên giữ lại.
+  - '**/*.{node,dll}' # Giữ lại cho các module native
+  # Chủ động unpack các thư viện chứa file thực thi để đảm bảo chúng hoạt động sau khi đóng gói.
+  - '**/node_modules/ffmpeg-static/**'
+  - '**/node_modules/ffprobe-static/**'
+  - '**/node_modules/youtube-dl-exec/**' # Unpack the wrapper which contains the binary
+extraResources:
+  - from: resources/
+    to: .
 win:
   executableName: Catalyst
 nsis:

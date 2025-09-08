@@ -3,12 +3,39 @@ import path from 'node:path'
 import youtubedl from 'youtube-dl-exec'
 import log from 'electron-log'
 import ffmpegPath from 'ffmpeg-static'
+import { is } from '@electron-toolkit/utils'
 import { getMainWindow } from '../../process/window'
-// Đường dẫn tới file thực thi ffmpeg.
-// Lưu ý: Để hoạt động sau khi đóng gói, thư mục `ffmpeg-static` đã được
-// cấu hình để unpack trong `electron-builder.yml` (asarUnpack).
-// Việc thay thế đường dẫn thủ công không còn cần thiết.
-const ffmpeg = ffmpegPath
+
+/**
+ * Handles executable paths for development and production (packaged) environments.
+ * In production, binaries from dependencies (like ffmpeg, yt-dlp) are unpacked
+ * from the asar archive to a separate `app.asar.unpacked` directory.
+ */
+const ffmpeg = is.dev ? ffmpegPath : ffmpegPath?.replace('app.asar', 'app.asar.unpacked')
+
+// Create a dedicated instance of youtubedl pointing to the correct binary path for production.
+let youtubedlInstance: any = youtubedl
+
+// In production, we need to point `youtube-dl-exec` to the unpacked `yt-dlp` binary.
+if (!is.dev) {
+  try {
+    const platformBinary = process.platform === 'win32' ? 'yt-dlp.exe' : 'yt-dlp'
+    // This path is determined by the `asarUnpack` configuration in `electron-builder.yml`.
+    const ytdlpPath = path.join(
+      process.resourcesPath,
+      'app.asar.unpacked',
+      'node_modules',
+      'youtube-dl-exec',
+      'bin',
+      platformBinary
+    )
+    youtubedlInstance = youtubedl.create(ytdlpPath)
+    log.info(`[YouTube] Production mode: yt-dlp instance created with path: ${ytdlpPath}`)
+  } catch (error) {
+    log.error('[YouTube] Failed to create yt-dlp instance for production:', error)
+  }
+}
+
 export function youtube(ipc: IpcMain): void {
   /**
    * Lấy danh sách các định dạng video và audio có sẵn từ một URL YouTube.
@@ -18,7 +45,7 @@ export function youtube(ipc: IpcMain): void {
     log.info(`[YouTube] Fetching formats for URL: ${videoUrl}`)
     try {
       // Sử dụng --dump-single-json để lấy metadata của video mà không cần tải xuống
-      const metadata = await youtubedl(videoUrl, {
+      const metadata = await youtubedlInstance(videoUrl, {
         dumpSingleJson: true,
         noWarnings: true,
         callHome: false,
@@ -110,7 +137,7 @@ export function youtube(ipc: IpcMain): void {
           args.format = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
         }
 
-        const subprocess = youtubedl.exec(videoUrl, args)
+        const subprocess = youtubedlInstance.exec(videoUrl, args)
         log.info('[YouTube] yt-dlp process started.')
 
         // Regex to parse progress from yt-dlp output
