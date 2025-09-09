@@ -33,7 +33,6 @@ $ pnpm build:mac
 $ pnpm build:linux
 ```
 
-
 ### Publish
 
 [Personal access tokens (classic)](https://github.com/settings/tokens)

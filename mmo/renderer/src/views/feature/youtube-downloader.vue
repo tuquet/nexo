@@ -5,7 +5,6 @@ import { Fragment, h, onUnmounted, reactive, ref } from 'vue';
 
 import { LoadingOutlined, SendOutlined } from '@ant-design/icons-vue';
 import {
-  Alert,
   Button,
   Card,
   Checkbox,
@@ -214,87 +213,77 @@ onUnmounted(() => {
 <template>
   <div class="m-4">
     <Card size="small" title="YouTube Downloader">
-      <div>
-        <Alert
-          type="info"
-          show-icon
-          class="mb-5"
-          message="How to Download"
-          description="Paste the YouTube video URL into the field below and choose a save location to start downloading."
-          closable
-        />
-        <Form
-          ref="formRef"
-          :model="formState"
-          :rules="rules"
-          layout="vertical"
-          @finish="onFinish"
-        >
-          <Form.Item label="YouTube Video URL" name="youtubeUrl">
-            <Input
-              v-model:value="formState.youtubeUrl"
-              placeholder="https://www.youtube.com/watch?v=..."
-              @blur="handleUrlBlur"
-            >
-              <template #suffix>
-                <LoadingOutlined v-if="fetchingFormats" spin />
-              </template>
-            </Input>
-          </Form.Item>
+      <Form
+        ref="formRef"
+        :model="formState"
+        :rules="rules"
+        layout="vertical"
+        @finish="onFinish"
+      >
+        <Form.Item label="YouTube Video URL" name="youtubeUrl">
+          <Input
+            v-model:value="formState.youtubeUrl"
+            placeholder="https://www.youtube.com/watch?v=..."
+            @blur="handleUrlBlur"
+          >
+            <template #suffix>
+              <LoadingOutlined v-if="fetchingFormats" spin />
+            </template>
+          </Input>
+        </Form.Item>
 
-          <Form.Item v-if="availableFormats.length > 0" label="Video Quality">
-            <Select
-              v-model:value="formState.selectedFormat"
-              placeholder="Select quality (default is best)"
-              :loading="fetchingFormats"
-              allow-clear
+        <Form.Item v-if="availableFormats.length > 0" label="Video Quality">
+          <Select
+            v-model:value="formState.selectedFormat"
+            placeholder="Select quality (default is best)"
+            :loading="fetchingFormats"
+            allow-clear
+          >
+            <Select.Option
+              v-for="format in availableFormats"
+              :key="format.format_id"
+              :value="format.format_id"
             >
-              <Select.Option
-                v-for="format in availableFormats"
-                :key="format.format_id"
-                :value="format.format_id"
-              >
-                {{ format.label }}
-              </Select.Option>
-            </Select>
-          </Form.Item>
+              {{ format.label }}
+            </Select.Option>
+          </Select>
+        </Form.Item>
 
-          <Form.Item>
-            <Checkbox v-model:checked="formState.isAudioOnly">
-              Audio only (MP3)
-            </Checkbox>
-          </Form.Item>
+        <Form.Item>
+          <Checkbox v-model:checked="formState.isAudioOnly">
+            Audio only (MP3)
+          </Checkbox>
+        </Form.Item>
 
-          <Form.Item label="Save Location" name="outputPath">
-            <Input
-              v-model:value="formState.outputPath"
-              placeholder="Select a folder to save the video"
-              readonly
-            >
-              <template #addonAfter>
-                <Button size="small" type="link" @click="handleSelectOutput">
-                  Browse...
-                </Button>
-              </template>
-            </Input>
-          </Form.Item>
+        <Form.Item label="Save Location" name="outputPath">
+          <Input
+            v-model:value="formState.outputPath"
+            placeholder="Select a folder to save the video"
+            readonly
+          >
+            <template #addonAfter>
+              <Button size="small" type="link" @click="handleSelectOutput">
+                Browse...
+              </Button>
+            </template>
+          </Input>
+        </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              html-type="submit"
-              :loading="loading"
-              block
-              size="large"
-            >
-              <template #icon>
-                <SendOutlined />
-              </template>
-              Start Download
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+        <Form.Item>
+          <Button
+            type="primary"
+            html-type="submit"
+            :loading="loading"
+            block
+            size="large"
+          >
+            <template #icon>
+              <SendOutlined />
+            </template>
+            Start Download
+          </Button>
+        </Form.Item>
+      </Form>
     </Card>
   </div>
 </template>

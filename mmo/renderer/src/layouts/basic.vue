@@ -20,6 +20,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { DownOutlined, UpOutlined } from '@ant-design/icons-vue';
 import { Drawer, FloatButton } from 'ant-design-vue';
 
+import AppUpdater from '#/components/AppUpdater.vue';
 import LogViewer from '#/components/LogViewer.vue';
 import { useAuthStore } from '#/store';
 import { useUiStore } from '#/store/ui';
@@ -158,6 +159,7 @@ onUnmounted(() => {
       >
         <LoginForm />
       </AuthenticationLoginExpiredModal>
+      <AppUpdater />
 
       <!-- Drawer để hiển thị LogViewer, có thể thò ra thụt vào -->
       <Drawer
