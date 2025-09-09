@@ -183,7 +183,7 @@ export function youtube(ipc: IpcMain): void {
 
         subprocess.stdout?.on('data', (data) => {
           const text = data.toString() // Convert buffer to string
-          log.debug(`[YouTube] stdout: ${text.trim()}`)
+          // log.debug(`[YouTube] stdout: ${text.trim()}`)
           stdoutBuffer.push(text)
           handleDataChunk(text)
         })

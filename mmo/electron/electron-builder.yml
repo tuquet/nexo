@@ -11,8 +11,8 @@ files:
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   # Unpack các module native (.node, .dll). Đây là một cấu hình tốt nên giữ lại.
-  - '**/*.{node,dll}' # Giữ lại cho các module native
   # Chủ động unpack các thư viện chứa file thực thi để đảm bảo chúng hoạt động sau khi đóng gói.
+  - '**/*.{node,dll}' # Giữ lại cho các module native
   - '**/node_modules/ffmpeg-static/**'
   - '**/node_modules/ffprobe-static/**'
   - '**/node_modules/youtube-dl-exec/**' # Unpack the wrapper which contains the binary

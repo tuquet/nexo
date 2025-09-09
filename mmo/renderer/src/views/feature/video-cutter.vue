@@ -118,8 +118,8 @@ const onFinish = async () => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl p-5">
-    <Card title="Video Cutter">
+  <div class="m-4">
+    <Card size="small" title="Video Cutter">
       <div>
         <Alert
           type="info"

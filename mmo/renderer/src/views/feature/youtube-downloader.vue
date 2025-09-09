@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { FormInstance, Rule } from 'ant-design-vue/es/form';
 
-import { h, onUnmounted, reactive, ref } from 'vue';
+import { Fragment, h, onUnmounted, reactive, ref } from 'vue';
 
-import { SendOutlined } from '@ant-design/icons-vue';
+import { LoadingOutlined, SendOutlined } from '@ant-design/icons-vue';
 import {
   Alert,
   Button,
@@ -16,6 +16,8 @@ import {
   Progress,
   Select,
 } from 'ant-design-vue';
+
+import { useUiStore } from '#/store/ui';
 
 interface FormatInfo {
   format_id: string;
@@ -43,6 +45,7 @@ const formRef = ref<FormInstance>();
 const loading = ref(false);
 const fetchingFormats = ref(false);
 const availableFormats = ref<FormatInfo[]>([]);
+const uiStore = useUiStore();
 
 // Use a ref to track the URL of the download in progress.
 // This is more reliable than `formState.youtubeUrl` which can be changed by the user or reset.
@@ -123,13 +126,27 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
       formatCode: formState.selectedFormat,
       isAudioOnly: formState.isAudioOnly,
     });
-  } catch (error: unknown) {
+  } catch {
     notification.close(key);
-    const errorMessage =
-      error instanceof Error ? error.message : 'An unknown error occurred';
     notification.error({
       message: 'Download Failed',
-      description: errorMessage,
+      description: () =>
+        h(Fragment, null, [
+          h(
+            'p',
+            'An error occurred during download. Check the logs for more details.',
+          ),
+          h(
+            Button,
+            {
+              type: 'primary',
+              size: 'small',
+              class: 'mt-2',
+              onClick: () => uiStore.toggleLogViewer(true),
+            },
+            () => 'View Logs',
+          ),
+        ]),
       placement: 'bottomRight',
     });
     if (activeDownloadUrl.value === key) {
@@ -195,8 +212,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl p-5">
-    <Card title="YouTube Downloader">
+  <div class="m-4">
+    <Card size="small" title="YouTube Downloader">
       <div>
         <Alert
           type="info"
@@ -218,7 +235,11 @@ onUnmounted(() => {
               v-model:value="formState.youtubeUrl"
               placeholder="https://www.youtube.com/watch?v=..."
               @blur="handleUrlBlur"
-            />
+            >
+              <template #suffix>
+                <LoadingOutlined v-if="fetchingFormats" spin />
+              </template>
+            </Input>
           </Form.Item>
 
           <Form.Item v-if="availableFormats.length > 0" label="Video Quality">

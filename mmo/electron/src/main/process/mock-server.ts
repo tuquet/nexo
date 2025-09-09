@@ -36,7 +36,9 @@ export function startMockServer(): void {
 
   try {
     mockServerProcess = fork(serverPath, [], {
-      silent: true // Capture stdout/stderr for the logger instead of printing directly to the console.
+      silent: true, // Capture stdout/stderr for the logger instead of printing directly to the console.
+      // Truyền tường minh các biến môi trường cho tiến trình con để code rõ ràng hơn.
+      env: { ...process.env }
     })
 
     mockServerProcess.on('spawn', () => {

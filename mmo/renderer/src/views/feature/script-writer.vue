@@ -101,8 +101,8 @@ const onFinish = async () => {
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl p-5">
-    <Card title="AI Script Writer">
+  <div class="m-4">
+    <Card size="small" title="AI Script Writer">
       <div>
         <Alert
           type="info"
@@ -120,7 +120,7 @@ const onFinish = async () => {
               name="apiProvider"
               class="md:col-span-1"
             >
-              <Select v-model:value="formState.apiProvider" size="large">
+              <Select v-model:value="formState.apiProvider">
                 <Select.Option v-for="p in apiProviders" :key="p" :value="p">
                   {{ p }}
                 </Select.Option>
@@ -135,7 +135,6 @@ const onFinish = async () => {
               <Input.Password
                 v-model:value="formState.apiKey"
                 placeholder="Enter your API key"
-                size="large"
               />
             </Form.Item>
           </div>
@@ -156,14 +155,14 @@ const onFinish = async () => {
           <!-- Script Parameters -->
           <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Form.Item label="Script Type" name="storyType">
-              <Select v-model:value="formState.storyType" size="large">
+              <Select v-model:value="formState.storyType">
                 <Select.Option v-for="st in storyTypes" :key="st" :value="st">
                   {{ st }}
                 </Select.Option>
               </Select>
             </Form.Item>
             <Form.Item label="Language" name="language">
-              <Select v-model:value="formState.language" size="large">
+              <Select v-model:value="formState.language">
                 <Select.Option
                   v-for="lang in languages"
                   :key="lang"
@@ -178,7 +177,6 @@ const onFinish = async () => {
                 v-model:value="formState.genres"
                 mode="tags"
                 placeholder="Select or type genres"
-                size="large"
                 :options="genres.map((g) => ({ value: g }))"
               />
             </Form.Item>
@@ -193,14 +191,12 @@ const onFinish = async () => {
               <Input
                 v-model:value="formState.mainCharacter"
                 placeholder="e.g., 'Alex'"
-                size="large"
               />
             </Form.Item>
             <Form.Item label="Setting / Context (Optional)" name="setting">
               <Input
                 v-model:value="formState.setting"
                 placeholder="e.g., 'A small, rain-slicked alley in a futuristic city'"
-                size="large"
               />
             </Form.Item>
           </div>
@@ -208,7 +204,7 @@ const onFinish = async () => {
           <!-- Style & Length -->
           <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Form.Item label="Point of View" name="pointOfView">
-              <Select v-model:value="formState.pointOfView" size="large">
+              <Select v-model:value="formState.pointOfView">
                 <Select.Option
                   v-for="pov in pointsOfView"
                   :key="pov"
@@ -219,7 +215,7 @@ const onFinish = async () => {
               </Select>
             </Form.Item>
             <Form.Item label="Dialogue Level" name="dialogueLevel">
-              <Select v-model:value="formState.dialogueLevel" size="large">
+              <Select v-model:value="formState.dialogueLevel">
                 <Select.Option
                   v-for="dl in dialogueLevels"
                   :key="dl"
@@ -235,7 +231,6 @@ const onFinish = async () => {
                 :min="100"
                 :step="50"
                 class="w-full"
-                size="large"
               />
             </Form.Item>
           </div>
@@ -263,7 +258,6 @@ const onFinish = async () => {
                   <Input
                     v-model:value="segment.name"
                     placeholder="Segment Name (e.g., Intro)"
-                    size="large"
                   />
                 </Form.Item>
                 <Form.Item :name="['segments', index, 'description']">
@@ -285,7 +279,7 @@ const onFinish = async () => {
             </div>
           </div>
           <Form.Item>
-            <Button type="dashed" block size="large" @click="addSegment">
+            <Button type="dashed" block @click="addSegment">
               <template #icon><PlusOutlined /></template>
               Add Segment
             </Button>
@@ -297,26 +291,18 @@ const onFinish = async () => {
               <Input
                 v-model:value="formState.targetAudience"
                 placeholder="e.g., 'Beginner programmers'"
-                size="large"
               />
             </Form.Item>
             <Form.Item label="Call to Action (Optional)" name="callToAction">
               <Input
                 v-model:value="formState.callToAction"
                 placeholder="e.g., 'Like and subscribe!'"
-                size="large"
               />
             </Form.Item>
           </div>
 
           <Form.Item>
-            <Button
-              type="primary"
-              html-type="submit"
-              :loading="loading"
-              size="large"
-              block
-            >
+            <Button type="primary" html-type="submit" :loading="loading" block>
               <template #icon>
                 <SendOutlined />
               </template>
@@ -326,7 +312,7 @@ const onFinish = async () => {
         </Form>
 
         <div v-if="loading" class="text-center">
-          <Spin size="large" tip="The AI is thinking... Please wait." />
+          <Spin tip="The AI is thinking... Please wait." />
         </div>
 
         <div

@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { Avatar, Button, Card, TypographyParagraph } from 'ant-design-vue';
 
 import { router } from '#/router';
@@ -46,7 +46,7 @@ const features = [
 <template>
   <div class="p-5">
     <div class="grid gap-4 lg:grid-cols-2">
-      <Card v-for="feature in features" :key="feature.title">
+      <Card size="small" v-for="feature in features" :key="feature.title">
         <template #title>
           <div class="flex cursor-pointer items-center gap-2">
             <Avatar :src="feature.icon" alt="" />

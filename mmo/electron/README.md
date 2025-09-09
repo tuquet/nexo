@@ -32,3 +32,23 @@ $ pnpm build:mac
 # For Linux
 $ pnpm build:linux
 ```
+
+
+### Publish
+
+[Personal access tokens (classic)](https://github.com/settings/tokens)
+
+```bash
+# Navigate to the electron directory
+cd mmo/electron
+```
+
+```powershell
+# For windows
+$env:GH_TOKEN="ghp_your_actual_token_here"; pnpm run publish:win; $env:GH_TOKEN=$null
+```
+
+```bash
+# For macOS/Linux
+export GH_TOKEN="ghp_your_actual_token_here" && pnpm run publish:win && unset GH_TOKEN
+```

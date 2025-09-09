@@ -108,7 +108,6 @@ export function videoCutter(ipc: IpcMain): void {
         child.stderr?.on('data', (data: Buffer) => {
           const text = data.toString()
           stderrBuffer.push(text)
-          log.debug(`[VideoCutter] ffmpeg stderr: ${text}`)
           // Count how many times a new file is created to estimate progress
           if (text.includes('Opening') && text.includes('for writing')) {
             segmentsDone++
