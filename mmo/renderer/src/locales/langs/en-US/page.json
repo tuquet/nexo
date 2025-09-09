@@ -6,6 +6,10 @@
     "qrcodeLogin": "Qr Code Login",
     "register": "Register"
   },
+  "common": {
+    "later": "Later",
+    "ok": "Ok"
+  },
   "dashboard": {
     "analytics": "Analytics",
     "home": "Home",

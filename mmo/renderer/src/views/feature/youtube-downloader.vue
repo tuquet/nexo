@@ -16,7 +16,7 @@ import {
   Select,
 } from 'ant-design-vue';
 
-import { useUiStore } from '#/store/ui';
+import { useUiStore } from '#/store/logger';
 
 interface FormatInfo {
   format_id: string;

@@ -6,7 +6,6 @@ import { h, reactive, ref } from 'vue';
 
 import { SendOutlined } from '@ant-design/icons-vue';
 import {
-  Alert,
   Button,
   Card,
   Form,
@@ -120,76 +119,66 @@ const onFinish = async () => {
 <template>
   <div class="m-4">
     <Card size="small" title="Video Cutter">
-      <div>
-        <Alert
-          type="info"
-          show-icon
-          class="mb-5"
-          message="How to Cut Video"
-          description="Select video > Select save location > Enter the duration for each segment in seconds. The cut videos will be saved directly in the selected location. Example: for a 10-second video, cutting every 2 seconds will result in 5 smaller videos."
-          closable
-        />
-        <Form
-          ref="formRef"
-          :model="formState"
-          :rules="rules"
-          layout="vertical"
-          @finish="onFinish"
-        >
-          <Form.Item label="Video Path" name="videoPath">
-            <Input
-              v-model:value="formState.videoPath"
-              placeholder="Select the video file to cut"
-              readonly
-            >
-              <template #addonAfter>
-                <Button size="small" type="link" @click="handleSelectVideo">
-                  Browse...
-                </Button>
-              </template>
-            </Input>
-          </Form.Item>
+      <Form
+        ref="formRef"
+        :model="formState"
+        :rules="rules"
+        layout="vertical"
+        @finish="onFinish"
+      >
+        <Form.Item label="Video Path" name="videoPath">
+          <Input
+            v-model:value="formState.videoPath"
+            placeholder="Select the video file to cut"
+            readonly
+          >
+            <template #addonAfter>
+              <Button size="small" type="link" @click="handleSelectVideo">
+                Browse...
+              </Button>
+            </template>
+          </Input>
+        </Form.Item>
 
-          <Form.Item label="Save Location" name="outputPath">
-            <Input
-              v-model:value="formState.outputPath"
-              placeholder="Select the folder to save the cut videos"
-              readonly
-            >
-              <template #addonAfter>
-                <Button size="small" type="link" @click="handleSelectOutput">
-                  Browse...
-                </Button>
-              </template>
-            </Input>
-          </Form.Item>
+        <Form.Item label="Save Location" name="outputPath">
+          <Input
+            v-model:value="formState.outputPath"
+            placeholder="Select the folder to save the cut videos"
+            readonly
+          >
+            <template #addonAfter>
+              <Button size="small" type="link" @click="handleSelectOutput">
+                Browse...
+              </Button>
+            </template>
+          </Input>
+        </Form.Item>
 
-          <Form.Item label="Seconds per segment" name="segmentDuration">
-            <InputNumber
-              v-model:value="formState.segmentDuration"
-              placeholder="Example: 10"
-              class="w-full"
-              :min="1"
-              addon-after="seconds"
-            />
-          </Form.Item>
+        <Form.Item label="Seconds per segment" name="segmentDuration">
+          <InputNumber
+            v-model:value="formState.segmentDuration"
+            placeholder="Example: 10"
+            class="w-full"
+            :min="1"
+            addon-after="seconds"
+          />
+        </Form.Item>
 
-          <Form.Item>
-            <Button
-              type="primary"
-              html-type="submit"
-              :loading="loading"
-              size="large"
-              block
-            >
-              <template #icon>
-                <SendOutlined />
-              </template>
-              Start Cutting
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+        <Form.Item>
+          <Button
+            type="primary"
+            html-type="submit"
+            :loading="loading"
+            size="large"
+            block
+          >
+            <template #icon>
+              <SendOutlined />
+            </template>
+            Start Cutting
+          </Button>
+        </Form.Item>
+      </Form>
     </Card>
   </div>
 </template>

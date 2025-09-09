@@ -35,6 +35,8 @@ const IconOffline = defineAsyncComponent(
   () => import('./icons/icon-offline.vue'),
 );
 
+const isDev = import.meta.env.DEV;
+
 const titleText = computed(() => {
   if (props.title) {
     return props.title;
@@ -163,6 +165,7 @@ function refresh() {
     </div>
     <!-- Một helper nhỏ để hiển thị route hiện tại trên màn hình khi đang development -->
     <div
+      v-if="isDev"
       class="fixed bottom-2 left-2 z-[1000] rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow-lg"
     >
       Current Route: {{ route.fullPath }}

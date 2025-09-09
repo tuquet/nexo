@@ -1,13 +1,9 @@
 <script lang="ts" setup>
-import type { NotificationItem } from '@vben/layouts';
-
-import type { LogEntry } from '#/store/ui';
-
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, ref, watch } from 'vue';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
+import { CarbonTerminal } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -17,27 +13,26 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
-import { DownOutlined, UpOutlined } from '@ant-design/icons-vue';
-import { Drawer, FloatButton } from 'ant-design-vue';
+import { CloudDownloadOutlined } from '@ant-design/icons-vue';
+import { FloatButton } from 'ant-design-vue';
 
-import AppUpdater from '#/components/AppUpdater.vue';
-import LogViewer from '#/components/LogViewer.vue';
-import { useAuthStore } from '#/store';
-import { useUiStore } from '#/store/ui';
+import AppUpdater from '#/components/AppUpdater.vue'; // This component is self-contained
+import LogViewer from '#/components/LogViewer.vue'; // This component is now self-contained
+import {
+  useAuthStore,
+  useLoggerStore,
+  useNotificationStore,
+  useUpdaterStore,
+} from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<NotificationItem[]>([]);
-const logViewerHeight = 300;
-
-const uiStore = useUiStore();
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
-const route = useRoute();
+const notificationStore = useNotificationStore();
+const updaterStore = useUpdaterStore();
+const loggerStore = useLoggerStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
-const showDot = computed(() =>
-  notifications.value.some((item) => !item.isRead),
-);
 
 const menus = computed(() => [
   // {
@@ -73,16 +68,14 @@ const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
 
+const appUpdaterRef = ref<InstanceType<typeof AppUpdater> | null>(null);
+
 async function handleLogout() {
   await authStore.logout(false);
 }
 
-function handleNoticeClear() {
-  notifications.value = [];
-}
-
-function handleMakeAll() {
-  notifications.value.forEach((item) => (item.isRead = true));
+function handleViewAllNotifications() {
+  // This can be extended to navigate to a dedicated notifications page
 }
 
 watch(
@@ -100,36 +93,6 @@ watch(
     immediate: true,
   },
 );
-
-let removeLogListener: (() => void) | undefined;
-
-onMounted(() => {
-  // Thiết lập listener cho log ở cấp layout để đảm bảo log được thu thập
-  // ngay cả khi LogViewer không hiển thị. Log sẽ được lưu trong store.
-  if (window.electron?.ipcRenderer) {
-    removeLogListener = window.electron.ipcRenderer.on(
-      'app-log',
-      (_event: any, logEntry: LogEntry) => {
-        uiStore.addLog(logEntry);
-      },
-    );
-  } else {
-    // Fallback cho môi trường không phải Electron hoặc khi preload thất bại
-    console.warn(
-      'window.electron.ipcRenderer is not available. Cannot receive logs from main process.',
-    );
-    uiStore.addLog({
-      level: 'warn',
-      message:
-        'window.electron.ipcRenderer is not available. Cannot receive logs from main process.',
-      date: new Date(),
-    });
-  }
-});
-
-onUnmounted(() => {
-  removeLogListener?.();
-});
 </script>
 
 <template>
@@ -146,10 +109,11 @@ onUnmounted(() => {
     </template>
     <template #notification>
       <Notification
-        :dot="showDot"
-        :notifications="notifications"
-        @clear="handleNoticeClear"
-        @make-all="handleMakeAll"
+        :dot="notificationStore.getUnreadCount > 0"
+        :notifications="notificationStore.getNotifications"
+        @clear="notificationStore.clearAll"
+        @make-all="notificationStore.markAllAsRead"
+        @view-all="handleViewAllNotifications"
       />
     </template>
     <template #extra>
@@ -159,48 +123,40 @@ onUnmounted(() => {
       >
         <LoginForm />
       </AuthenticationLoginExpiredModal>
-      <AppUpdater />
+      <AppUpdater ref="appUpdaterRef" />
+      <LogViewer />
 
-      <!-- Drawer để hiển thị LogViewer, có thể thò ra thụt vào -->
-      <Drawer
-        v-model:open="uiStore.logViewerVisible"
-        placement="bottom"
-        :height="logViewerHeight"
-        :body-style="{ padding: 0 }"
-        :mask="false"
-        :destroy-on-close="true"
-        :header-style="{ display: 'none' }"
-      >
-        <!-- Không cần lắng nghe sự kiện 'close' nữa vì component con sẽ tự xử lý -->
-        <LogViewer class="h-full" />
-      </Drawer>
+      <!-- Nhóm các nút chức năng nổi -->
+      <FloatButton.Group shape="square" :right="24" :bottom="100">
+        <!-- Nút cập nhật, chỉ hiển thị khi có bản cập nhật -->
+        <FloatButton
+          v-if="
+            updaterStore.updateState === 'available' ||
+            updaterStore.updateState === 'downloaded'
+          "
+          :badge="{ dot: true }"
+          :tooltip="
+            updaterStore.updateState === 'available'
+              ? `Cập nhật lên phiên bản ${updaterStore.updateInfo?.version}`
+              : 'Cập nhật đã sẵn sàng, khởi động lại ngay!'
+          "
+          type="primary"
+          @click="appUpdaterRef?.open()"
+        >
+          <template #icon><CloudDownloadOutlined /></template>
+        </FloatButton>
 
-      <!-- Nút nổi để bật/tắt LogViewer -->
-      <FloatButton
-        v-if="!uiStore.logViewerVisible"
-        :tooltip="
-          uiStore.logViewerVisible ? 'Hide Logs' : 'View Application Logs'
-        "
-        :style="{
-          bottom: uiStore.logViewerVisible ? `${logViewerHeight}px` : '24px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          transition: 'bottom 0.3s ease-in-out',
-        }"
-        @click="uiStore.toggleLogViewer()"
-      >
-        <template #icon>
-          <DownOutlined v-if="uiStore.logViewerVisible" />
-          <UpOutlined v-else />
-        </template>
-      </FloatButton>
-
-      <!-- Một helper nhỏ để hiển thị route hiện tại trên màn hình khi đang development -->
-      <div
-        class="fixed bottom-2 left-2 z-[1000] rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow-lg"
-      >
-        Current Route: {{ route.fullPath }}
-      </div>
+        <!-- Nút xem Log -->
+        <FloatButton
+          :tooltip="loggerStore.logViewerVisible ? 'Ẩn nhật ký' : 'Xem nhật ký'"
+          @click="loggerStore.toggleLogViewer()"
+        >
+          <template #icon>
+            <CarbonTerminal v-if="loggerStore.logViewerVisible" />
+            <CarbonTerminal v-else />
+          </template>
+        </FloatButton>
+      </FloatButton.Group>
     </template>
     <template #lock-screen>
       <LockScreen :avatar @to-login="handleLogout" />

@@ -197,7 +197,7 @@
   "cssVariables.lookupFiles": ["packages/core/base/design/src/**/*.css"],
 
   "i18n-ally.localesPaths": [
-    // "packages/locales/src/langs",
+    "packages/locales/src/langs",
     // "playground/src/locales/langs",
     // "apps/*/src/locales/langs"
     "mmo/renderer/src/locales/langs"
