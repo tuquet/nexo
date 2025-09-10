@@ -79,7 +79,7 @@ function handleConfirm() {
     }
     case 'error': {
       // Reset state after user acknowledges the error
-      updaterStore.resetState();
+      updaterStore.$reset();
       modalApi.close();
       break;
     }

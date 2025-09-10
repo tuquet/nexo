@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
@@ -33,7 +34,8 @@ const notificationStore = useNotificationStore();
 const updaterStore = useUpdaterStore();
 const loggerStore = useLoggerStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
-
+const route = useRoute();
+const isDev = import.meta.env.DEV;
 const menus = computed(() => [
   // {
   //   handler: () => {
@@ -101,9 +103,9 @@ watch(
       <UserDropdown
         :avatar
         :menus
-        :text="userStore.userInfo?.realName"
-        description="Free"
-        tag-text="Pro"
+        text="Mèo Nhỏ"
+        description="Bắt đầu khám phá!"
+        tag-text="Xinh đẹp"
         @logout="handleLogout"
       />
     </template>
@@ -157,6 +159,14 @@ watch(
           </template>
         </FloatButton>
       </FloatButton.Group>
+
+      <!-- Một helper nhỏ để hiển thị route hiện tại trên màn hình khi đang development -->
+      <div
+        v-if="isDev"
+        class="fixed bottom-2 left-2 z-[1000] rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow-lg"
+      >
+        Current Route: {{ route.fullPath }}
+      </div>
     </template>
     <template #lock-screen>
       <LockScreen :avatar @to-login="handleLogout" />

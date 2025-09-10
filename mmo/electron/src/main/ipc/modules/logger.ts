@@ -1,6 +1,6 @@
 import type { IpcMain } from 'electron'
 import log, { type LogMessage, type Transport } from 'electron-log'
-import { getMainWindow } from '../../process/window'
+import { getMainWindow } from '../../bootstrap/window'
 
 /**
  * Định dạng dữ liệu log thành một chuỗi duy nhất.
@@ -43,7 +43,7 @@ function configureRendererTransport(): void {
   // song song với các transport mặc định (ghi ra file, console).
   log.transports.renderer = rendererTransport
 
-  log.info('Logger transport to renderer has been configured.')
+  log.info('[Logger] Transport to renderer has been configured.')
 }
 
 let isTransportConfigured = false

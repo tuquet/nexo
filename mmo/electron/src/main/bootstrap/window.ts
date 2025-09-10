@@ -20,15 +20,17 @@ export async function setupMainWindow(): Promise<BrowserWindow> {
     icon,
     webPreferences: {
       preload: fileURLToPath(new URL('../preload/index.mjs', import.meta.url)),
-      sandbox: false
+      sandbox: false,
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow?.show()
-    if (is.dev) {
-      mainWindow?.webContents.openDevTools()
-    }
+    // if (is.dev) {
+    //   mainWindow?.webContents.openDevTools()
+    // }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

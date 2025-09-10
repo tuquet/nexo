@@ -23,8 +23,6 @@ export function startMockServer(): void {
     ? join(__dirname, '..', '..', 'resources', serverEntryPoint)
     : join(process.resourcesPath, serverEntryPoint)
 
-  log.info(`[Mock Server] Attempting to start from: ${serverPath}. is.dev: ${is.dev}`)
-
   // Add a check to see if the file exists for easier debugging.
   if (!fs.existsSync(serverPath)) {
     log.error(`[Mock Server] Script file not found at path: ${serverPath}`)

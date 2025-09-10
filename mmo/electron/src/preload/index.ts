@@ -1,6 +1,13 @@
 import { electronAPI } from '@electron-toolkit/preload'
 import { contextBridge, ipcRenderer } from 'electron'
 
+// Ghi log ra console của tiến trình Main để xác nhận script này đang chạy
+console.log('[Preload] Setting VUE_DEVTOOLS_CONFIG to disable autofill.')
+
+window.VUE_DEVTOOLS_CONFIG = {
+  disableAutofill: true
+}
+
 // Custom APIs for renderer
 const api = {
   /** Gửi một sự kiện 'ping' đến tiến trình Main */

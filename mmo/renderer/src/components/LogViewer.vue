@@ -1,29 +1,30 @@
 <script setup lang="ts">
-import type { LogEntry } from '#/store/logger';
-
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 import { CloseOutlined } from '@ant-design/icons-vue';
 import {
   Button,
   Card,
   Checkbox,
+  CheckboxGroup,
   Drawer,
+  Empty,
   List,
   ListItem,
   Space,
 } from 'ant-design-vue';
 import { storeToRefs } from 'pinia';
 
-import { useLoggerStore } from '#/store';
+import { ALL_LOG_LEVELS, useLoggerStore } from '#/store';
 
 const loggerStore = useLoggerStore();
-const { logs } = storeToRefs(loggerStore);
+// Sử dụng filteredLogs để hiển thị và selectedLevels để điều khiển bộ lọc
+const { filteredLogs, selectedLevels } = storeToRefs(loggerStore);
 const logContainer = ref<HTMLElement | null>(null);
 const isAutoScrollEnabled = ref(true);
 const logViewerHeight = 300;
 
-const getLevelColor = (level: LogEntry['level']) => {
+const getLevelColor = (level: any) => {
   switch (level) {
     case 'debug': {
       return 'text-gray-500';
@@ -44,7 +45,8 @@ const getLevelColor = (level: LogEntry['level']) => {
 };
 
 watch(
-  logs,
+  // Theo dõi danh sách log đã được lọc để tự động cuộn
+  filteredLogs,
   async () => {
     if (isAutoScrollEnabled.value) {
       await nextTick();
@@ -62,36 +64,6 @@ const handleScroll = () => {
     isAutoScrollEnabled.value = scrollTop + clientHeight >= scrollHeight - 20;
   }
 };
-
-let removeLogListener: (() => void) | undefined;
-
-onMounted(() => {
-  // Thiết lập listener cho log ở cấp component để đảm bảo log được thu thập
-  // ngay cả khi LogViewer không hiển thị. Log sẽ được lưu trong store.
-  if (window.electron?.ipcRenderer) {
-    removeLogListener = window.electron.ipcRenderer.on(
-      'app-log',
-      (_event: any, logEntry: LogEntry) => {
-        loggerStore.addLog(logEntry);
-      },
-    );
-  } else {
-    // Fallback cho môi trường không phải Electron hoặc khi preload thất bại
-    console.warn(
-      'window.electron.ipcRenderer is not available. Cannot receive logs from main process.',
-    );
-    loggerStore.addLog({
-      level: 'warn',
-      message:
-        'window.electron.ipcRenderer is not available. Cannot receive logs from main process.',
-      date: new Date(),
-    });
-  }
-});
-
-onUnmounted(() => {
-  removeLogListener?.();
-});
 </script>
 
 <template>
@@ -119,6 +91,12 @@ onUnmounted(() => {
     >
       <template #extra>
         <Space>
+          <!-- Bộ lọc theo cấp độ log -->
+          <CheckboxGroup
+            :value="selectedLevels"
+            :options="ALL_LOG_LEVELS"
+            @update:value="loggerStore.updateSelectedLevels"
+          />
           <Checkbox v-model:checked="isAutoScrollEnabled">
             Auto-scroll
           </Checkbox>
@@ -147,7 +125,12 @@ onUnmounted(() => {
         class="flex-1 overflow-y-auto font-mono text-xs"
         @scroll="handleScroll"
       >
-        <List :data-source="logs" :split="false" item-layout="horizontal">
+        <List
+          v-if="filteredLogs.length > 0"
+          :data-source="filteredLogs"
+          :split="false"
+          item-layout="horizontal"
+        >
           <template #renderItem="{ item, index }">
             <ListItem :key="index" class="!p-1 font-mono text-xs">
               <div class="flex items-start gap-2">
@@ -167,6 +150,10 @@ onUnmounted(() => {
             </ListItem>
           </template>
         </List>
+        <!-- Hiển thị thông báo khi không có log nào khớp với bộ lọc -->
+        <div v-else class="flex h-full items-center justify-center">
+          <Empty description="Không có log nào để hiển thị." />
+        </div>
       </div>
     </Card>
   </Drawer>

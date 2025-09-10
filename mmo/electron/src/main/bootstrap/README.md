@@ -1,4 +1,4 @@
-# Khởi tạo Ứng dụng (Bootstrap)
+# Quản lý Tiến trình Chính (Main Process)
 
 Thư mục `bootstrap` chứa toàn bộ logic cốt lõi để khởi tạo và quản lý vòng đời của tiến trình **Main** trong Electron. Nó chịu trách nhiệm thiết lập môi trường, tạo cửa sổ, xử lý các sự kiện cấp ứng dụng và cấu hình các dịch vụ nền.
 
@@ -21,8 +21,6 @@ Khi ứng dụng khởi động, file `main.ts` (ở thư mục `src/main`) sẽ
 
 - **`logger.ts`**: Cấu hình `electron-log` cho tiến trình Main, bao gồm vị trí lưu file log và cách xử lý các lỗi nghiêm trọng (uncaught exceptions, unhandled rejections) để đảm bảo ứng dụng tắt một cách an toàn.
 
-- **`config.ts`**: Nơi tập trung các cấu hình của ứng dụng, chẳng hạn như thông tin repo GitHub, các khóa API, hoặc các cờ tính năng (feature flags).
-
 - **`protocol.ts`**: Quản lý việc đăng ký và xử lý custom URL scheme (ví dụ: `catalyst://`), cho phép ứng dụng phản hồi các yêu cầu từ trình duyệt hoặc hệ điều hành.
 
 - **`path.ts`**: Một module tập trung, định nghĩa và xuất ra các đường dẫn thư mục quan trọng mà ứng dụng sử dụng, chẳng hạn như thư mục dữ liệu người dùng (`userData`).
@@ -32,3 +30,5 @@ Khi ứng dụng khởi động, file `main.ts` (ở thư mục `src/main`) sẽ
 - **`api.ts`**: Chứa các hàm để tương tác với các API bên ngoài, ví dụ như lấy danh sách các phiên bản đã phát hành từ GitHub.
 
 - **`mock-server.ts`**: Quản lý việc khởi động và dừng một server giả lập (mock server) trong môi trường phát triển, giúp frontend có thể hoạt động mà không cần backend thật.
+
+- **`store.ts`**: Khởi tạo và quản lý `electron-store`, cung cấp một cơ chế lưu trữ dữ liệu bền vững (persistent storage) cho các cài đặt và dữ liệu của người dùng.

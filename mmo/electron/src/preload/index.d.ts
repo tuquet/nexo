@@ -9,5 +9,8 @@ declare global {
   interface Window {
     api: ICustomAPI
     electron: ElectronAPI
+    VUE_DEVTOOLS_CONFIG?: {
+      disableAutofill?: boolean
+    }
   }
 }

@@ -6,7 +6,7 @@ import log from 'electron-log'
 import ffmpegPath from 'ffmpeg-static'
 import { path as ffprobePath } from 'ffprobe-static'
 import { is } from '@electron-toolkit/utils'
-import { getMainWindow } from '../../process/window'
+import { getMainWindow } from '../../bootstrap/window'
 
 // Correct paths for ASAR packaging
 const ffmpeg = is.dev ? ffmpegPath : ffmpegPath?.replace('app.asar', 'app.asar.unpacked')
@@ -62,8 +62,12 @@ export function videoCutter(ipc: IpcMain): void {
           ffprobeProcess.stderr.on('data', (data) => (stderr += data))
 
           ffprobeProcess.on('close', (code) => {
-            if (code === 0) resolve(stdout.trim())
-            else reject(new Error(`ffprobe failed with code ${code}: ${stderr}`))
+            if (code === 0) {
+              resolve(stdout.trim())
+            } else {
+              log.error(`[VideoCutter] ffprobe failed with code ${code}: ${stderr}`)
+              reject(new Error(`ffprobe failed with code ${code}: ${stderr}`))
+            }
           })
           ffprobeProcess.on('error', reject)
         })
@@ -72,6 +76,9 @@ export function videoCutter(ipc: IpcMain): void {
         const totalDuration = parseFloat(durationStdout)
 
         if (isNaN(totalDuration)) {
+          log.error(
+            `[VideoCutter] Could not parse video duration from ffprobe output: "${durationStdout}"`
+          )
           throw new Error('Could not get video duration.')
         }
 
@@ -122,7 +129,9 @@ export function videoCutter(ipc: IpcMain): void {
         return new Promise<void>((resolve, reject) => {
           child.on('close', (code) => {
             if (code === 0) {
-              log.info('[VideoCutter] Video cutting completed successfully.')
+              log.info(
+                `[VideoCutter] Video cutting completed successfully. ${totalSegments} segments created in '${outputPath}'.`
+              )
               resolve()
             } else {
               const fullError = stderrBuffer.join('')

@@ -8,7 +8,7 @@ import { useNotificationStore } from './notification';
 
 // These types are copied from AppUpdater.vue to avoid circular dependencies
 // and keep the store self-contained.
-interface UpdateInfo {
+export interface UpdateInfo {
   files: {
     sha512: string;
     size: number;
@@ -23,7 +23,7 @@ interface UpdateInfo {
   version: string;
 }
 
-interface ProgressInfo {
+export interface ProgressInfo {
   percent: number;
 }
 
@@ -104,7 +104,7 @@ export const useUpdaterStore = defineStore('app-updater', () => {
     window.electron.ipcRenderer.send('updater:quit-and-install');
   }
 
-  function resetState() {
+  function $reset() {
     updateState.value = 'idle';
     errorMessage.value = '';
     updateInfo.value = null;
@@ -123,6 +123,6 @@ export const useUpdaterStore = defineStore('app-updater', () => {
     handleError,
     startDownload,
     quitAndInstall,
-    resetState,
+    $reset,
   };
 });

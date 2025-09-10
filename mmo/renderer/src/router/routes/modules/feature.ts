@@ -7,38 +7,38 @@ const routes: RouteRecordRaw[] = [
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
-      title: $t('page.feature.title'),
+      title: $t('page.features.title'),
     },
     name: 'Feature',
-    path: '/feature',
+    path: '/features',
     children: [
       {
         name: 'VideoCutter',
         path: '/video-cutter',
-        component: () => import('#/views/feature/video-cutter.vue'),
+        component: () => import('#/views/features/video-cutter.vue'),
         meta: {
           icon: 'carbon:workspace',
-          title: $t('page.feature.video-cutter'),
+          title: $t('page.videoCutter.title'),
           keepAlive: true,
         },
       },
       {
         name: 'YoutubeDownloader',
         path: '/youtube-downloader',
-        component: () => import('#/views/feature/youtube-downloader.vue'),
+        component: () => import('#/views/features/youtube-downloader.vue'),
         meta: {
           icon: 'ant-design:youtube-filled',
-          title: $t('page.feature.youtube-downloader'),
+          title: $t('page.youtubeDownloader.title'),
           keepAlive: true,
         },
       },
       {
         name: 'ScriptWriter',
-        path: '/script-writer',
-        component: () => import('#/views/feature/script-writer.vue'),
+        path: '/ai-script-writer',
+        component: () => import('#/views/features/ai-script-writer.vue'),
         meta: {
           icon: 'ant-design:google-outlined',
-          title: $t('page.feature.script-writer'),
+          title: $t('page.aiScriptWriter.title'),
           keepAlive: true,
         },
       },

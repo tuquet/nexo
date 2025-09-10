@@ -49,6 +49,16 @@ const routes: RouteRecordRaw[] = [
           title: $t('page.dashboard.home'),
         },
       },
+      {
+        path: '/settings',
+        name: 'Settings',
+        component: () => import('#/views/dashboard/settings/index.vue'),
+        meta: {
+          // Sử dụng icon từ thư viện icon của bạn, ví dụ: Ant Design Icons
+          icon: 'carbon:ibm-cloud-sysdig-secure',
+          title: 'Cài đặt', // Sẽ được i18n dịch sau
+        },
+      },
     ],
   },
 ];

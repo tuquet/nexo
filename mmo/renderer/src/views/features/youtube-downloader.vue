@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance, Rule } from 'ant-design-vue/es/form';
 
-import { Fragment, h, onUnmounted, reactive, ref } from 'vue';
+import { Fragment, h, reactive, ref } from 'vue';
 
 import { LoadingOutlined, SendOutlined } from '@ant-design/icons-vue';
 import {
@@ -16,7 +16,7 @@ import {
   Select,
 } from 'ant-design-vue';
 
-import { useUiStore } from '#/store/logger';
+import { useLoggerStore } from '#/store';
 
 interface FormatInfo {
   format_id: string;
@@ -44,7 +44,6 @@ const formRef = ref<FormInstance>();
 const loading = ref(false);
 const fetchingFormats = ref(false);
 const availableFormats = ref<FormatInfo[]>([]);
-const uiStore = useUiStore();
 
 // Use a ref to track the URL of the download in progress.
 // This is more reliable than `formState.youtubeUrl` which can be changed by the user or reset.
@@ -106,6 +105,32 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
   const key = values.youtubeUrl;
   activeDownloadUrl.value = key;
 
+  // --- Listener Setup ---
+  // Thiết lập listener ngay trước khi bắt đầu và dọn dẹp ngay sau khi kết thúc.
+  // Đây là một pattern mạnh mẽ để quản lý các sự kiện tạm thời.
+  const unlistenStarted = window.electron.ipcRenderer.on(
+    'youtube:download-started',
+    (_event: any, { key, title }: DownloadStartedPayload) => {
+      message.info(`Download started for: ${title} (${key})`);
+    },
+  );
+
+  const unlistenProgress = window.electron.ipcRenderer.on(
+    'youtube:download-progress',
+    (_event: any, { key, percent, title }: DownloadProgressPayload) => {
+      if (activeDownloadUrl.value === key) {
+        updateProgressNotification(key, percent, title);
+      }
+    },
+  );
+
+  const unlistenComplete = window.electron.ipcRenderer.on(
+    'youtube:download-complete',
+    (_event: any, payload: DownloadCompletePayload) => {
+      handleDownloadComplete(payload);
+    },
+  );
+
   notification.open({
     key,
     message: 'Preparing Download',
@@ -118,6 +143,16 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
     placement: 'bottomRight',
   });
 
+  const cleanup = () => {
+    unlistenStarted();
+    unlistenProgress();
+    unlistenComplete();
+    if (activeDownloadUrl.value === key) {
+      activeDownloadUrl.value = null;
+    }
+    loading.value = false;
+  };
+
   try {
     await window.electron.ipcRenderer.invoke('youtube:download-video', {
       videoUrl: values.youtubeUrl,
@@ -126,7 +161,10 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
       isAudioOnly: formState.isAudioOnly,
     });
   } catch {
+    // Đóng thông báo "Preparing" trước khi hiển thị lỗi.
     notification.close(key);
+
+    const loggerStore = useLoggerStore();
     notification.error({
       message: 'Download Failed',
       description: () =>
@@ -141,73 +179,51 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
               type: 'primary',
               size: 'small',
               class: 'mt-2',
-              onClick: () => uiStore.toggleLogViewer(true),
+              onClick: () => loggerStore.toggleLogViewer(true),
             },
             () => 'View Logs',
           ),
         ]),
       placement: 'bottomRight',
     });
-    if (activeDownloadUrl.value === key) {
-      activeDownloadUrl.value = null;
-    }
-    loading.value = false;
+  } finally {
+    // Dọn dẹp listener và trạng thái bất kể thành công hay thất bại.
+    cleanup();
   }
 };
 
-// Listen for when the download has a title and can start showing progress
-const unlistenStarted = window.electron.ipcRenderer.on(
-  'youtube:download-started',
-  (_event: any, { key, title }: DownloadStartedPayload) => {
-    // The 'youtube:download-progress' event will handle the notification update
-    // once we have a title. This listener is now mainly for logging or future use.
-    message.info(`Download started for: ${title} (${key})`);
-  },
-);
+function updateProgressNotification(
+  key: string,
+  percent: number,
+  title: null | string,
+) {
+  notification.open({
+    key,
+    message: title ? `Downloading: ${title}` : 'Starting download...',
+    description: () =>
+      h('div', [
+        h(Progress, { percent: Math.round(percent), status: 'active' }),
+      ]),
+    duration: 0,
+    placement: 'bottomRight',
+  });
+}
 
-// Listen for progress updates
-const unlistenProgress = window.electron.ipcRenderer.on(
-  'youtube:download-progress',
-  (_event: any, { key, percent, title }: DownloadProgressPayload) => {
-    if (activeDownloadUrl.value === key) {
-      notification.open({
-        key,
-        message: title ? `Downloading: ${title}` : 'Starting download...',
-        description: () =>
-          h('div', [
-            // Use a standard percentage-based progress bar
-            h(Progress, { percent: Math.round(percent), status: 'active' }),
-          ]),
-        duration: 0,
-        placement: 'bottomRight',
-      });
-    }
-  },
-);
-
-// Listen for completion
-const unlistenComplete = window.electron.ipcRenderer.on(
-  'youtube:download-complete',
-  (_event: any, { key, filePath, title }: DownloadCompletePayload) => {
-    if (activeDownloadUrl.value === key) {
-      notification.close(key);
-      notification.success({
-        message: `Download successful: ${title}`,
-        description: `Video saved at: ${filePath}`,
-        placement: 'bottomRight',
-      });
-      loading.value = false;
-      formRef.value?.resetFields();
-      activeDownloadUrl.value = null;
-    }
-  },
-);
-
-onUnmounted(() => {
-  unlistenStarted();
-  unlistenProgress();
-  unlistenComplete();
-});
+function handleDownloadComplete({
+  key,
+  filePath,
+  title,
+}: DownloadCompletePayload) {
+  if (activeDownloadUrl.value === key) {
+    notification.close(key);
+    notification.success({
+      message: `Download successful: ${title}`,
+      description: `Video saved at: ${filePath}`,
+      placement: 'bottomRight',
+    });
+    formRef.value?.resetFields();
+  }
+}
 </script>
 
 <template>

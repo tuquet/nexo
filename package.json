@@ -44,6 +44,8 @@
     "commit": "czg",
     "dev": "turbo-run dev",
     "dev:mmo": "turbo run dev --parallel -F @mmo/electron -F @mmo/renderer",
+    "dev:rend": "turbo run dev -F @mmo/renderer",
+    "dev:elec": "turbo run dev -F @mmo/electron",
     "dev:antd": "pnpm -F @vben/web-antd run dev",
     "dev:docs": "pnpm -F @vben/docs run dev",
     "dev:ele": "pnpm -F @vben/web-ele run dev",

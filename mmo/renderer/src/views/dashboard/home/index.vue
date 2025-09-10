@@ -1,62 +1,38 @@
 <script lang="ts" setup>
-import { Avatar, Button, Card, TypographyParagraph } from 'ant-design-vue';
+import { $t } from '@vben/locales';
 
-import { router } from '#/router';
+import {
+  Avatar,
+  Button,
+  Card,
+  TypographyParagraph,
+  TypographyText,
+} from 'ant-design-vue';
 
-const features = [
-  {
-    title: 'Video Cutter: Quickly Cut & Split Videos',
-    description:
-      'Turn long videos into meaningful short clips. Cut and share your favorite video segments in just a few seconds.',
-    icon: 'https://cdn-icons-png.flaticon.com/128/10728/10728392.png',
-    cover:
-      'https://images.unsplash.com/photo-1574717519105-620355a34723?q=80&w=800&h=450&auto=format&fit=crop',
-    actionText: 'Explore',
-    action: () => {
-      router.push('/video-cutter');
-    },
-  },
-  {
-    title: 'YouTube Downloader: Download Videos from YouTube',
-    description:
-      'Paste a YouTube video link and easily download it to your computer in high quality.',
-    icon: 'https://cdn-icons-png.flaticon.com/128/1384/1384060.png',
-    cover:
-      'https://images.unsplash.com/photo-1611162617213-6d22e5257410?q=80&w=800&h=450&auto=format&fit=crop',
-    actionText: 'Explore',
-    action: () => {
-      router.push('/youtube-downloader');
-    },
-  },
-  {
-    title: 'AI Script Writer: Generate Video Scripts',
-    description:
-      'Never run out of ideas. Describe your topic, and let AI generate a detailed video script for you, from intro to outro.',
-    icon: 'https://cdn-icons-png.flaticon.com/128/11510/11510353.png',
-    cover:
-      'https://images.unsplash.com/photo-1677756119517-756a188d2d94?q=80&w=800&h=450&auto=format&fit=crop',
-    actionText: 'Explore',
-    action: () => {
-      router.push('/script-writer');
-    },
-  },
-];
+import { features } from './data';
 </script>
 
 <template>
   <div class="p-5">
-    <div class="grid gap-4 lg:grid-cols-2">
-      <Card size="small" v-for="feature in features" :key="feature.title">
+    <div class="grid gap-4 lg:grid-cols-3">
+      <Card size="small" v-for="feature in features" :key="feature.key">
         <template #title>
           <div class="flex cursor-pointer items-center gap-2">
             <Avatar :src="feature.icon" alt="" />
-            <div>{{ feature.title }}</div>
+            <TypographyText
+              :ellipsis="{ tooltip: true }"
+              :content="$t(`page.${feature.key}.title`)"
+            />
           </div>
         </template>
-        <TypographyParagraph :content="feature.description" />
+        <TypographyParagraph
+          :ellipsis="{ rows: 2, tooltip: true }"
+          :content="$t(`page.${feature.key}.description`)"
+          class="h-11"
+        />
         <template #actions>
           <Button @click="feature.action()" type="primary">
-            {{ feature.actionText }}
+            {{ $t(`page.${feature.key}.actionText`) }}
           </Button>
         </template>
       </Card>

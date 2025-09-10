@@ -1,0 +1,136 @@
+{
+  "auth": {
+    "codeLogin": "Đăng nhập bằng mã",
+    "forgetPassword": "Quên mật khẩu",
+    "login": "Đăng nhập",
+    "qrcodeLogin": "Đăng nhập bằng mã QR",
+    "register": "Đăng ký"
+  },
+  "common": {
+    "later": "Để sau",
+    "ok": "Đồng ý"
+  },
+  "dashboard": {
+    "analytics": "Phân tích",
+    "home": "Trang chủ",
+    "title": "Bảng điều khiển",
+    "workspace": "Không gian làm việc"
+  },
+  "features": {
+    "title": "Tính năng"
+  },
+  "videoCutter": {
+    "title": "Cắt và Chia nhỏ Video Nhanh chóng",
+    "description": "Biến video dài thành các clip ngắn ý nghĩa. Cắt và chia sẻ các đoạn video yêu thích của bạn chỉ trong vài giây.",
+    "actionText": "Sử dụng ngay"
+  },
+  "youtubeDownloader": {
+    "title": "Tải Video từ YouTube",
+    "description": "Dán liên kết video YouTube và dễ dàng tải về máy tính của bạn với chất lượng cao.",
+    "actionText": "Sử dụng ngay"
+  },
+  "aiScriptWriter": {
+    "title": "Viết kịch bản bằng AI",
+    "description": "Không bao giờ cạn ý tưởng. Mô tả chủ đề của bạn và để AI tạo ra một kịch bản video chi tiết, từ mở đầu đến kết thúc.",
+    "actionText": "Sử dụng ngay",
+    "apiProvider": {
+      "label": "Nhà cung cấp AI",
+      "options": {
+        "gemini": "Google Gemini",
+        "chatGPT": "OpenAI ChatGPT"
+      }
+    },
+    "topic": {
+      "label": "Chủ đề Video / Ý tưởng chính",
+      "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
+      "required": "Vui lòng nhập chủ đề!"
+    },
+    "scriptType": {
+      "label": "Loại kịch bản",
+      "options": {
+        "shortFilm": "Phim ngắn",
+        "vlogOutline": "Dàn ý Vlog",
+        "podcastScript": "Kịch bản Podcast"
+      }
+    },
+    "language": {
+      "label": "Ngôn ngữ",
+      "options": {
+        "english": "Tiếng Anh",
+        "vietnamese": "Tiếng Việt"
+      }
+    },
+    "genres": {
+      "label": "Thể loại",
+      "placeholder": "Chọn hoặc nhập thể loại"
+    },
+    "mainCharacter": {
+      "label": "Tên nhân vật chính (Tùy chọn)",
+      "placeholder": "VD: 'Alex'"
+    },
+    "setting": {
+      "label": "Bối cảnh (Tùy chọn)",
+      "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
+    },
+    "pointOfView": {
+      "label": "Góc nhìn",
+      "options": {
+        "firstPerson": "Ngôi thứ nhất",
+        "thirdPerson": "Ngôi thứ ba"
+      }
+    },
+    "dialogueLevel": {
+      "label": "Mức độ hội thoại",
+      "options": { "low": "Thấp", "moderate": "Vừa phải", "high": "Cao" }
+    },
+    "characterCount": { "label": "Độ dài dự kiến (ký tự)" },
+    "advancedOptions": "Tùy chọn nâng cao",
+    "segments": {
+      "title": "Phân đoạn {index}",
+      "name": {
+        "placeholder": "Tên phân đoạn (VD: Mở đầu)",
+        "required": "Vui lòng nhập tên phân đoạn"
+      },
+      "description": {
+        "placeholder": "Mô tả ngắn gọn những gì xảy ra trong phân đoạn này."
+      },
+      "add": "Thêm phân đoạn"
+    },
+    "targetAudience": {
+      "label": "Đối tượng mục tiêu (Tùy chọn)",
+      "placeholder": "VD: 'Lập trình viên mới bắt đầu'"
+    },
+    "callToAction": {
+      "label": "Kêu gọi hành động (Tùy chọn)",
+      "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
+    },
+    "generateButton": "Tạo kịch bản",
+    "generatingTip": "AI đang suy nghĩ... Vui lòng chờ.",
+    "generatedScript": {
+      "title": "Kịch bản đã tạo:",
+      "submitted": "Yêu cầu đã được gửi cho chủ đề: \"{topic}\". Vui lòng kiểm tra console để biết chi tiết."
+    },
+    "resetButton": "Đặt lại Form",
+    "resetSuccess": "Form đã được đặt lại về giá trị mặc định.",
+    "apiKeyWarning": {
+      "title": "Chưa có API Key",
+      "description": "Bạn chưa thiết lập API Key cho {provider}. Vui lòng vào trang Cài đặt để thêm key.",
+      "goToSettings": "Đi đến Cài đặt"
+    }
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "apiKeys": {
+      "openAI": {
+        "label": "OpenAI API Key",
+        "placeholder": "Nhập API key của bạn (ví dụ: sk-...)"
+      },
+      "gemini": {
+        "label": "Google Gemini API Key",
+        "placeholder": "Nhập API key của bạn"
+      }
+    },
+    "saveButton": "Lưu thay đổi",
+    "saveSuccess": "Đã lưu cài đặt thành công!"
+  }
+}

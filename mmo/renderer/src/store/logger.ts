@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { defineStore } from 'pinia';
 
@@ -10,6 +10,21 @@ export interface LogEntry {
   level: 'debug' | 'error' | 'info' | 'silly' | 'verbose' | 'warn';
   message: string;
 }
+
+/**
+ * Hằng số chứa tất cả các cấp độ log có thể có.
+ * Giúp UI và logic đồng bộ và dễ bảo trì.
+ */
+export const ALL_LOG_LEVELS: LogEntry['level'][] = [
+  'info',
+  'warn',
+  'error',
+  'verbose',
+  'silly',
+  'debug',
+];
+
+export const DEFAULT_LOG_LEVEL: LogEntry['level'][] = ['info', 'warn', 'error'];
 
 /**
  * Store quản lý trạng thái và dữ liệu cho trình xem log (LogViewer).
@@ -24,6 +39,20 @@ export const useLoggerStore = defineStore('logger', () => {
    * Mảng chứa tất cả các mục log.
    */
   const logs = ref<LogEntry[]>([]);
+
+  /**
+   * Mảng chứa các cấp độ log đang được chọn để hiển thị.
+   * Mặc định hiển thị tất cả.
+   */
+  const selectedLevels = ref<LogEntry['level'][]>([...DEFAULT_LOG_LEVEL]);
+
+  /**
+   * Danh sách log đã được lọc, chỉ chứa các mục có level nằm trong `selectedLevels`.
+   * Đây là một computed property, sẽ tự động cập nhật khi `logs` hoặc `selectedLevels` thay đổi.
+   */
+  const filteredLogs = computed(() => {
+    return logs.value.filter((log) => selectedLevels.value.includes(log.level));
+  });
 
   /**
    * Bật/tắt hoặc thiết lập trạng thái hiển thị của Log Viewer.
@@ -42,10 +71,29 @@ export const useLoggerStore = defineStore('logger', () => {
     logs.value = [];
   }
 
+  /**
+   * Cập nhật danh sách các cấp độ log được chọn.
+   * @param levels - Mảng các cấp độ log mới.
+   */
+  function updateSelectedLevels(levels: LogEntry['level'][]) {
+    selectedLevels.value = levels;
+  }
+
   function $reset() {
     logs.value = [];
     logViewerVisible.value = false;
+    selectedLevels.value = [...ALL_LOG_LEVELS];
   }
 
-  return { logViewerVisible, toggleLogViewer, logs, addLog, clearLogs, $reset };
+  return {
+    logViewerVisible,
+    toggleLogViewer,
+    logs,
+    filteredLogs,
+    selectedLevels,
+    updateSelectedLevels,
+    addLog,
+    clearLogs,
+    $reset,
+  };
 });

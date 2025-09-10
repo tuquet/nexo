@@ -9,12 +9,13 @@ export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
     layout: 'header-nav',
-    locale: 'en-US',
+    locale: 'vi-VN',
     name: import.meta.env.VITE_APP_TITLE,
     authPageLayout: 'panel-center',
     loginExpiredMode: 'modal',
     defaultHomePath: '/home',
     enablePreferences: true,
+    defaultAvatar: 'https://cdn-icons-png.flaticon.com/128/16683/16683419.png',
   },
   sidebar: {
     collapsed: true,
@@ -37,5 +38,11 @@ export const overridesPreferences = defineOverridesPreferences({
     fullscreen: false,
     themeToggle: true,
     lockScreen: false,
+  },
+  footer: {
+    enable: true,
+  },
+  theme: {
+    radius: '0.75',
   },
 });

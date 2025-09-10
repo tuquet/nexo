@@ -3,13 +3,13 @@ import process from 'node:process'
 
 import log from 'electron-log'
 import { app } from 'electron'
-import { setupAppEvents } from './process/event'
-import { setupLogger } from './process/logger'
-import { APP_PATH } from './process/path'
-import { setupProtocol } from './process/protocol'
-import { setupMainWindow } from './process/window'
+import { setupAppEvents } from './bootstrap/event'
+import { setupLogger } from './bootstrap/logger'
+import { APP_PATH } from './bootstrap/path'
+import { setupProtocol } from './bootstrap/protocol'
+import { setupMainWindow } from './bootstrap/window'
 import { setupIpcHandlers } from './ipc'
-import { startMockServer, stopMockServer } from './process/mock-server'
+import { startMockServer, stopMockServer } from './bootstrap/mock-server'
 
 const DATABASE_PATH = path.join(APP_PATH, process.env.VITE_DATABASE_NAME || '')
 
@@ -20,7 +20,7 @@ process.env.VITE_DATABASE_NAME = DATABASE_PATH
 void (async () => {
   try {
     if (!process.env.VITE_DATABASE_NAME) {
-      log.warn('VITE_DATABASE_NAME is not set.  Application may not work as expected.')
+      log.warn('[Boostrap] VITE_DATABASE_NAME is not set. Application may not work as expected.')
     }
 
     await setupLogger()

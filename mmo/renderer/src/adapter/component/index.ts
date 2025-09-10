@@ -48,6 +48,7 @@ const RangePicker = defineAsyncComponent(() =>
 );
 const Rate = defineAsyncComponent(() => import('ant-design-vue/es/rate'));
 const Select = defineAsyncComponent(() => import('ant-design-vue/es/select'));
+const Slider = defineAsyncComponent(() => import('ant-design-vue/es/slider'));
 const Space = defineAsyncComponent(() => import('ant-design-vue/es/space'));
 const Switch = defineAsyncComponent(() => import('ant-design-vue/es/switch'));
 const Textarea = defineAsyncComponent(() =>
@@ -116,6 +117,7 @@ export type ComponentType =
   | 'RangePicker'
   | 'Rate'
   | 'Select'
+  | 'Slider'
   | 'Space'
   | 'Switch'
   | 'Textarea'
@@ -184,6 +186,7 @@ async function initComponentAdapter() {
     RangePicker,
     Rate,
     Select: withDefaultPlaceholder(Select, 'select'),
+    Slider,
     Space,
     Switch,
     Textarea: withDefaultPlaceholder(Textarea, 'input'),

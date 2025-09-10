@@ -4,7 +4,7 @@ import youtubedl from 'youtube-dl-exec'
 import log from 'electron-log'
 import ffmpegPath from 'ffmpeg-static'
 import { is } from '@electron-toolkit/utils'
-import { getMainWindow } from '../../process/window'
+import { getMainWindow } from '../../bootstrap/window'
 
 /**
  * Handles executable paths for development and production (packaged) environments.
@@ -150,6 +150,7 @@ export function youtube(ipc: IpcMain): void {
         let videoTitle: string | null = null
         const stdoutBuffer: string[] = []
         const stderrBuffer: string[] = []
+        let fileAlreadyDownloaded = false // Flag to detect the specific case
 
         const handleDataChunk = (text: string): void => {
           // yt-dlp can output multiple progress lines in a single data chunk.
@@ -183,7 +184,15 @@ export function youtube(ipc: IpcMain): void {
 
         subprocess.stdout?.on('data', (data) => {
           const text = data.toString() // Convert buffer to string
-          // log.debug(`[YouTube] stdout: ${text.trim()}`)
+          // Check for the specific "already downloaded" message
+          if (text.includes('has already been downloaded')) {
+            fileAlreadyDownloaded = true
+            // Log this specific message as an error, as requested
+            log.error(`[YouTube] Download skipped: ${text.trim()}`)
+          } else {
+            // Log other stdout messages as debug
+            log.verbose(`[YouTube] stdout: ${text.trim()}`)
+          }
           stdoutBuffer.push(text)
           handleDataChunk(text)
         })
@@ -197,8 +206,15 @@ export function youtube(ipc: IpcMain): void {
         })
 
         subprocess.on('close', (code) => {
-          log.info(`[YouTube] Process finished with code: ${code}`)
           const fullStderr = stderrBuffer.join('')
+
+          // If we detected the file was already downloaded, reject the promise
+          // even if the exit code is 0.
+          if (fileAlreadyDownloaded) {
+            return reject(
+              new Error('File has already been downloaded and exists in the output folder.')
+            )
+          }
 
           if (fullStderr.toLowerCase().includes('error:')) {
             return reject(new Error(fullStderr.trim()))
@@ -210,12 +226,14 @@ export function youtube(ipc: IpcMain): void {
             const destinationMatch = fullOutput.match(destinationRegex)
             const finalPath = destinationMatch ? destinationMatch[1] || destinationMatch[2] : null
 
-            if (!finalPath) {
-              // If the final path cannot be parsed, report an error.
-              // This is better than sending an incorrect path to the user.
-              return reject(
-                new Error('Could not determine the path of the downloaded file from the output.')
+            if (finalPath) {
+              log.info(`[YouTube] Download successful. Title: ${videoTitle}, Path: ${finalPath}`)
+            } else {
+              // If the final path cannot be parsed, log an error and reject.
+              log.error(
+                '[YouTube] Download process finished, but could not parse final file path from output.'
               )
+              return reject(new Error('Could not determine the path of the downloaded file.'))
             }
             const resolvedPath = finalPath
             mainWindow.webContents.send('youtube:download-complete', {
@@ -225,11 +243,8 @@ export function youtube(ipc: IpcMain): void {
             })
             resolve()
           } else {
-            reject(
-              new Error(
-                `Video download process failed with exit code: ${code}. Please check the logs.`
-              )
-            )
+            log.error(`[YouTube] Process exited with non-zero code: ${code}. Stderr: ${fullStderr}`)
+            reject(new Error(`Download failed with exit code: ${code}. Please check the logs.`))
           }
         })
 

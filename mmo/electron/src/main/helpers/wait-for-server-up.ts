@@ -1,7 +1,8 @@
 import * as http from 'node:http'
+import log from 'electron-log'
 
 export async function waitForServerUp(url: string) {
-  console.log(`Waiting for server catalyst-frontend to be up at ${url}`)
+  log.info(`[Bootstrap] Waiting for server catalyst-frontend to be up at ${url}`)
   while (true) {
     const isUp = await isHostUp(url)
     if (isUp) break
