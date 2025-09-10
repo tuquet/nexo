@@ -3,19 +3,9 @@ productName: Catalyst
 directories:
   buildResources: build
 files:
-  - '!**/.vscode/*'
-  - '!src/*'
-  - '!electron.vite.config.{js,ts,mjs,cjs}'
-  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - 'out/**/*'
 asarUnpack:
-  # Unpack các module native (.node, .dll). Đây là một cấu hình tốt nên giữ lại.
-  # Chủ động unpack các thư viện chứa file thực thi để đảm bảo chúng hoạt động sau khi đóng gói.
-  - '**/*.{node,dll}' # Giữ lại cho các module native
-  - '**/node_modules/ffmpeg-static/**'
-  - '**/node_modules/ffprobe-static/**'
-  - '**/node_modules/youtube-dl-exec/**' # Unpack the wrapper which contains the binary
+  - '**/*.{node,dll}'
 extraResources:
   - from: resources/
     to: .

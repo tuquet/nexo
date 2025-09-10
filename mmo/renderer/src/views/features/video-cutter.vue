@@ -2,7 +2,7 @@
 import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 
-import { computed, h, reactive, ref } from 'vue';
+import { computed, h, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -18,8 +18,22 @@ import {
   Progress,
 } from 'ant-design-vue';
 
+import { useBinaryManager } from '#/composables/useBinaryManager';
+
+const {
+  binaryManagerState,
+  ensureBinaries,
+  BinaryManagerModal,
+  binaryManagerModalApi,
+} = useBinaryManager();
+
 const formRef = ref<FormInstance>();
 const loading = ref(false);
+
+// Computed property to disable the form while binaries are not ready
+const isFormDisabled = computed(
+  () => loading.value || !binaryManagerState.isReady,
+);
 
 const formState = reactive({
   videoPath: '',
@@ -48,7 +62,7 @@ const rules = computed((): Record<string, Rule[]> => {
 
 const handleSelectVideo = async () => {
   // Gọi IPC để mở hộp thoại chọn file từ tiến trình chính
-  const path = await window.electron.ipcRenderer.invoke('dialog:openFile');
+  const path = await window.electron.ipcRenderer.invoke('dialog:select-file');
   if (path) {
     formState.videoPath = path;
     formRef.value?.validateFields('videoPath');
@@ -57,12 +71,20 @@ const handleSelectVideo = async () => {
 
 const handleSelectOutput = async () => {
   // Gọi IPC để mở hộp thoại chọn thư mục từ tiến trình chính
-  const path = await window.electron.ipcRenderer.invoke('dialog:openDirectory');
+  const path = await window.electron.ipcRenderer.invoke(
+    'dialog:select-directory',
+  );
   if (path) {
     formState.outputPath = path;
     formRef.value?.validateFields('outputPath');
   }
 };
+
+onMounted(() => {
+  // Kích hoạt kiểm tra công cụ khi component được mount.
+  // Composable sẽ xử lý modal và cập nhật trạng thái.
+  ensureBinaries(['ffmpeg', 'ffprobe']);
+});
 
 const onFinish = async () => {
   loading.value = true;
@@ -133,12 +155,29 @@ const onFinish = async () => {
     :title="$t('page.videoCutter.title')"
     :description="$t('page.videoCutter.description')"
   >
+    <BinaryManagerModal
+      :title="$t('page.binaryManager.preparing')"
+      :show-confirm-button="binaryManagerState.status === 'error'"
+      :confirm-text="$t('page.common.ok')"
+      @confirm="() => binaryManagerModalApi.close()"
+    >
+      <div class="p-4 text-center">
+        <p>{{ binaryManagerState.message }}</p>
+        <Progress
+          v-if="binaryManagerState.status === 'downloading'"
+          :percent="binaryManagerState.percent"
+          class="mt-4"
+          status="active"
+        />
+      </div>
+    </BinaryManagerModal>
     <Card :title="$t('page.videoCutter.cardTitle')">
       <Form
         ref="formRef"
         :model="formState"
         :rules="rules"
         layout="vertical"
+        :disabled="isFormDisabled"
         @finish="onFinish"
       >
         <Form.Item

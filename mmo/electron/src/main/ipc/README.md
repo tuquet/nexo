@@ -50,7 +50,6 @@ Dưới đây là danh sách các handler hiện có và chức năng của chú
 - `dialog.ts`: Mở hộp thoại native để chọn file hoặc thư mục.
 - `logger.ts`: Chuyển tiếp log từ tiến trình Main sang Renderer để hiển thị trên giao diện (Log Viewer).
 - `open-external.ts`: Mở một URL trong trình duyệt mặc định của người dùng.
-- `open-path.ts`: Mở một đường dẫn thư mục trên hệ thống file.
 - `ping.ts`: Một handler `ping-pong` đơn giản để kiểm tra kết nối IPC.
 - `updater.ts`: Quản lý vòng đời tự động cập nhật ứng dụng (kiểm tra, tải về, cài đặt).
 - `video-cutter.ts`: Cung cấp chức năng cắt video sử dụng `ffmpeg`.

@@ -4,6 +4,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 
+import { Progress } from 'ant-design-vue';
 import DOMPurify from 'dompurify';
 import { storeToRefs } from 'pinia';
 
@@ -198,18 +199,9 @@ defineExpose({ open: modalApi.open });
       </div>
     </div>
     <div v-else-if="updateState === 'downloading'">
-      <p>
-        Đang tải bản cập nhật...
-        {{ downloadProgress?.percent.toFixed(0) || 0 }}%
-      </p>
+      <p>Đang tải bản cập nhật...</p>
       <div class="mt-4">
-        <!-- Simple progress bar -->
-        <div class="h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-          <div
-            class="h-2.5 rounded-full bg-blue-600"
-            :style="{ width: `${downloadProgress?.percent.toFixed(0) || 0}%` }"
-          ></div>
-        </div>
+        <Progress :percent="Math.round(downloadProgress?.percent || 0)" />
       </div>
     </div>
     <div v-else-if="updateState === 'downloaded'">
@@ -220,14 +212,5 @@ defineExpose({ open: modalApi.open });
       Đã xảy ra lỗi: {{ errorMessage }}
     </div>
     <div v-else>Đang kiểm tra cập nhật...</div>
-    <div v-if="updateState === 'downloading'" class="mt-4">
-      <!-- Simple progress bar -->
-      <div class="h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-        <div
-          class="h-2.5 rounded-full bg-blue-600"
-          :style="{ width: `${downloadProgress?.percent.toFixed(0) || 0}%` }"
-        ></div>
-      </div>
-    </div>
   </UpdateNoticeModal>
 </template>

@@ -21,6 +21,16 @@
   "features": {
     "title": "Tính năng"
   },
+  "binaryManager": {
+    "preparing": "Đang cài đặt công cụ",
+    "status": {
+      "downloading": "Đang tải công cụ cần thiết ...",
+      "downloadingFile": "Đang tải {file}...",
+      "error": "Tải công cụ thất bại. Vui lòng kiểm tra kết nối mạng.",
+      "complete": "Cài đặt công cụ thành công.",
+      "verifying": "Đang kiểm tra các công cụ cần thiết..."
+    }
+  },
   "videoCutter": {
     "actionText": "Sử dụng ngay",
     "browse": "Duyệt...",
@@ -61,6 +71,7 @@
     "description": "Dán liên kết video YouTube và dễ dàng tải về máy tính của bạn với chất lượng cao.",
     "notifications": {
       "downloading": "Đang tải: {title}",
+      "openFolder": "Mở thư mục",
       "failed": "Tải xuống thất bại",
       "failedDescription": "Đã xảy ra lỗi trong quá trình tải xuống. Kiểm tra logs để biết thêm chi tiết.",
       "fetchError": "Lỗi khi lấy thông tin video: {error}",

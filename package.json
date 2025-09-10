@@ -25,7 +25,7 @@
   },
   "type": "module",
   "scripts": {
-    "build:mmo": "turbo run build:unpack --filter=@mmo/electron",
+    "build:mmo": "turbo run build:win --filter=@mmo/electron",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 turbo build",
     "build:analyze": "turbo build:analyze",
     "build:antd": "pnpm run build --filter=@vben/web-antd",

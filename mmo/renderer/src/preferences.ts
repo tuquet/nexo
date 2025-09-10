@@ -15,7 +15,7 @@ export const overridesPreferences = defineOverridesPreferences({
     loginExpiredMode: 'modal',
     defaultHomePath: '/home',
     enablePreferences: true,
-    defaultAvatar: 'https://cdn-icons-png.flaticon.com/128/16683/16683419.png',
+    defaultAvatar: 'https://cdn-icons-png.flaticon.com/128/3906/3906577.png',
   },
   sidebar: {
     collapsed: true,

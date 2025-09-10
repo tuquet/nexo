@@ -1,40 +1,10 @@
 import { IpcMain } from 'electron'
 import path from 'node:path'
-import youtubedl from 'youtube-dl-exec'
+import { spawn } from 'node:child_process'
 import log from 'electron-log'
-import ffmpegPath from 'ffmpeg-static'
-import { is } from '@electron-toolkit/utils'
 import { getMainWindow } from '../../bootstrap/window'
-
-/**
- * Handles executable paths for development and production (packaged) environments.
- * In production, binaries from dependencies (like ffmpeg, yt-dlp) are unpacked
- * from the asar archive to a separate `app.asar.unpacked` directory.
- */
-const ffmpeg = is.dev ? ffmpegPath : ffmpegPath?.replace('app.asar', 'app.asar.unpacked')
-
-// Create a dedicated instance of youtubedl pointing to the correct binary path for production.
-let youtubedlInstance: any = youtubedl
-
-// In production, we need to point `youtube-dl-exec` to the unpacked `yt-dlp` binary.
-if (!is.dev) {
-  try {
-    const platformBinary = process.platform === 'win32' ? 'yt-dlp.exe' : 'yt-dlp'
-    // This path is determined by the `asarUnpack` configuration in `electron-builder.yml`.
-    const ytdlpPath = path.join(
-      process.resourcesPath,
-      'app.asar.unpacked',
-      'node_modules',
-      'youtube-dl-exec',
-      'bin',
-      platformBinary
-    )
-    youtubedlInstance = youtubedl.create(ytdlpPath)
-    log.info(`[YouTube] Production mode: yt-dlp instance created with path: ${ytdlpPath}`)
-  } catch (error) {
-    log.error('[YouTube] Failed to create yt-dlp instance for production:', error)
-  }
-}
+import { ensureBinaries } from '../../lib/binary-manager'
+import { ensureYtDlp } from '../../lib/yt-dlp-manager'
 
 export function youtube(ipc: IpcMain): void {
   /**
@@ -44,38 +14,66 @@ export function youtube(ipc: IpcMain): void {
   ipc.handle('youtube:get-formats', async (_, videoUrl: string) => {
     log.info(`[YouTube] Fetching formats for URL: ${videoUrl}`)
     try {
-      // Sử dụng --dump-single-json để lấy metadata của video mà không cần tải xuống
-      const metadata = await youtubedlInstance(videoUrl, {
-        dumpSingleJson: true,
-        noWarnings: true,
-        callHome: false,
-        noCheckCertificates: true
-      })
+      const ytdlpPath = await ensureYtDlp()
+      log.info(`[YouTube] Using yt-dlp at: ${ytdlpPath}`)
 
-      // Type guard để đảm bảo metadata là một đối tượng hợp lệ trước khi xử lý.
-      if (typeof metadata === 'string' || !metadata) {
-        throw new Error('Failed to parse video metadata.')
-      }
+      const args = [videoUrl, '--dump-single-json', '--no-warnings', '--no-call-home']
 
-      // Lọc và ánh xạ các định dạng sang một cấu trúc thân thiện hơn với frontend.
-      const formats = metadata.formats
-        .filter(
-          (f) =>
-            (f.resolution || (f.acodec && f.acodec !== 'none')) && // Phải có độ phân giải (video) hoặc có audio
-            f.vcodec !== 'none' && // Loại bỏ các định dạng chỉ có audio trong danh sách này
-            f.ext !== 'mhtml' // Loại bỏ các định dạng trang web
-        )
-        .map((f) => {
-          const sizeMB = f.filesize || f.filesize_approx
-          const sizeText = sizeMB ? `~${(sizeMB / 1024 / 1024).toFixed(1)} MB` : ''
-          return {
-            format_id: f.format_id,
-            label: `${f.resolution} (${f.ext}) - ${f.format_note || 'Video'} ${sizeText}`.trim()
+      const process = spawn(ytdlpPath, args)
+
+      let stdoutData = ''
+      let stderrData = ''
+      process.stdout.on('data', (data) => (stdoutData += data.toString()))
+      process.stderr.on('data', (data) => (stderrData += data.toString()))
+
+      return new Promise((resolve, reject) => {
+        process.on('close', (code) => {
+          if (code === 0) {
+            try {
+              const metadata = JSON.parse(stdoutData)
+
+              if (typeof metadata === 'string' || !metadata) {
+                throw new Error('Failed to parse video metadata.')
+              }
+
+              const formats = metadata.formats
+                .filter(
+                  (f: any) =>
+                    (f.resolution || (f.acodec && f.acodec !== 'none')) &&
+                    f.vcodec !== 'none' &&
+                    f.ext !== 'mhtml'
+                )
+                .map((f: any) => {
+                  const sizeMB = f.filesize || f.filesize_approx
+                  const sizeText = sizeMB ? `~${(sizeMB / 1024 / 1024).toFixed(1)} MB` : ''
+                  return {
+                    format_id: f.format_id,
+                    label:
+                      `${f.resolution} (${f.ext}) - ${f.format_note || 'Video'} ${sizeText}`.trim()
+                  }
+                })
+
+              log.info(`[YouTube] Found ${formats.length} suitable formats.`)
+              resolve(formats)
+            } catch (e) {
+              log.error(
+                '[YouTube] Failed to parse yt-dlp JSON output:',
+                e,
+                'Raw output:',
+                stdoutData
+              )
+              reject(new Error('Failed to parse video metadata.'))
+            }
+          } else {
+            log.error(`[YouTube] yt-dlp exited with code ${code}. Stderr: ${stderrData}`)
+            reject(new Error(`Failed to get video information: ${stderrData}`))
           }
         })
-
-      log.info(`[YouTube] Found ${formats.length} suitable formats.`)
-      return formats
+        process.on('error', (err) => {
+          log.error('[YouTube] Failed to spawn yt-dlp process:', err)
+          reject(err)
+        })
+      })
     } catch (error: any) {
       // Log toàn bộ đối tượng lỗi để có thêm thông tin, vì 'error.message' có thể trống.
       // Đặc biệt là các lỗi liên quan đến process spawn (ENOENT).
@@ -103,41 +101,50 @@ export function youtube(ipc: IpcMain): void {
         throw new Error('Main window does not exist.')
       }
 
-      if (!ffmpeg) {
-        log.error('[YouTube] FFmpeg not found. Merging files might fail.')
-        throw new Error('FFmpeg not found. Cannot merge video and audio.')
+      let ffmpegPath: string, ytdlpPath: string
+      try {
+        log.info('[YouTube] Verifying required binaries (FFmpeg & yt-dlp)...')
+        const [binaries, ytdlp] = await Promise.all([ensureBinaries(), ensureYtDlp()])
+        ffmpegPath = binaries.ffmpeg
+        ytdlpPath = ytdlp
+        log.info(`[YouTube] Using ffmpeg at: ${ffmpegPath}`)
+        log.info(`[YouTube] Using yt-dlp at: ${ytdlpPath}`)
+      } catch (error: any) {
+        log.error('[YouTube] Failed to get required binaries:', error)
+        throw new Error(`Failed to prepare tools: ${error.message}`)
       }
 
       // Sử dụng template của yt-dlp để tự động đặt tên file. `%(title)s` sẽ được thay thế bằng tiêu đề video.
       const outputTemplate = path.join(outputPath, '%(title)s.%(ext)s')
       log.info(`[YouTube] Output template: ${outputTemplate}`)
 
-      // Use a promise to handle stream events
       return new Promise<void>((resolve, reject) => {
-        const args: Parameters<typeof youtubedl.exec>[1] = {
-          output: outputTemplate,
-          noPlaylist: true,
-          mergeOutputFormat: 'mp4',
-          noWarnings: true,
-          callHome: false,
-          ffmpegLocation: ffmpeg,
-          noCheckCertificates: true
-        }
+        const args: string[] = [
+          videoUrl,
+          '--output',
+          outputTemplate,
+          '--no-playlist',
+          '--merge-output-format',
+          'mp4',
+          '--no-warnings',
+          '--no-call-home',
+          '--ffmpeg-location',
+          ffmpegPath,
+          '--no-check-certificates'
+        ]
 
         if (isAudioOnly) {
           log.info('[YouTube] Audio only download requested. Setting format to mp3.')
-          args.extractAudio = true
-          args.audioFormat = 'mp3'
-          args.format = 'bestaudio/best'
+          args.push('--extract-audio', '--audio-format', 'mp3', '--format', 'bestaudio/best')
         } else if (formatCode) {
           log.info(`[YouTube] Using selected format code: ${formatCode}`)
-          args.format = `${formatCode}+bestaudio/${formatCode}`
+          args.push('--format', `${formatCode}+bestaudio/${formatCode}`)
         } else {
           log.info('[YouTube] No format code selected, using default best quality.')
-          args.format = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+          args.push('--format', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best')
         }
 
-        const subprocess = youtubedlInstance.exec(videoUrl, args)
+        const subprocess = spawn(ytdlpPath, args)
         log.info('[YouTube] yt-dlp process started.')
 
         // Regex to parse progress from yt-dlp output

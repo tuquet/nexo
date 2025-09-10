@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance, Rule } from 'ant-design-vue/es/form';
 
-import { computed, Fragment, h, reactive, ref } from 'vue';
+import { computed, Fragment, h, onMounted, reactive, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
@@ -19,6 +19,7 @@ import {
   Select,
 } from 'ant-design-vue';
 
+import { useBinaryManager } from '#/composables/useBinaryManager';
 import { useLoggerStore } from '#/store';
 
 interface FormatInfo {
@@ -43,13 +44,23 @@ interface DownloadCompletePayload {
   title: null | string;
 }
 
+const {
+  binaryManagerState,
+  ensureBinaries,
+  BinaryManagerModal,
+  binaryManagerModalApi,
+} = useBinaryManager();
+
 const formRef = ref<FormInstance>();
 const loading = ref(false);
 const fetchingFormats = ref(false);
 const availableFormats = ref<FormatInfo[]>([]);
 
-// Use a ref to track the URL of the download in progress.
-// This is more reliable than `formState.youtubeUrl` which can be changed by the user or reset.
+// Vô hiệu hóa form khi đang tải công cụ hoặc đang thực hiện một tác vụ
+const isFormDisabled = computed(
+  () => loading.value || fetchingFormats.value || !binaryManagerState.isReady,
+);
+
 const activeDownloadUrl = ref<null | string>(null);
 
 const formState = reactive({
@@ -78,7 +89,9 @@ const rules = computed((): Record<string, Rule[]> => {
 });
 
 const handleSelectOutput = async () => {
-  const path = await window.electron.ipcRenderer.invoke('dialog:openDirectory');
+  const path = await window.electron.ipcRenderer.invoke(
+    'dialog:select-directory',
+  );
   if (path) {
     formState.outputPath = path;
     formRef.value?.validateFields('outputPath');
@@ -116,6 +129,12 @@ const handleUrlBlur = async () => {
     }
   }
 };
+
+onMounted(() => {
+  // Yêu cầu các công cụ cần thiết (yt-dlp và ffmpeg) ngay khi vào màn hình.
+  // Composable sẽ tự động xử lý việc hiển thị modal và cập nhật trạng thái.
+  ensureBinaries(['yt-dlp', 'ffmpeg']);
+});
 
 const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
   loading.value = true;
@@ -246,6 +265,19 @@ function handleDownloadComplete({
         'page.youtubeDownloader.notifications.successDescription',
         { filePath },
       ),
+      btn: () =>
+        h(
+          Button,
+          {
+            type: 'primary',
+            size: 'small',
+            onClick: () => {
+              // Gọi IPC để mở thư mục chứa file
+              window.electron.ipcRenderer.send('shell:open-path', filePath);
+            },
+          },
+          () => $t('page.youtubeDownloader.notifications.openFolder'),
+        ),
       placement: 'bottomRight',
     });
     formRef.value?.resetFields();
@@ -264,6 +296,7 @@ function handleDownloadComplete({
         :model="formState"
         :rules="rules"
         layout="vertical"
+        :disabled="isFormDisabled"
         @finish="onFinish"
       >
         <Form.Item
@@ -340,5 +373,22 @@ function handleDownloadComplete({
         </Form.Item>
       </Form>
     </Card>
+
+    <BinaryManagerModal
+      :title="$t('page.binaryManager.preparing')"
+      :show-confirm-button="binaryManagerState.status === 'error'"
+      :confirm-text="$t('page.common.ok')"
+      @confirm="() => binaryManagerModalApi.close()"
+    >
+      <div class="p-4 text-center">
+        <p>{{ binaryManagerState.message }}</p>
+        <Progress
+          v-if="binaryManagerState.status === 'downloading'"
+          :percent="binaryManagerState.percent"
+          class="mt-4"
+          status="active"
+        />
+      </div>
+    </BinaryManagerModal>
   </Page>
 </template>

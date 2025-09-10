@@ -1,8 +1,10 @@
-import { dialog, IpcMain } from 'electron'
+import { IpcMain, dialog } from 'electron'
 
-export function openDialog(ipc: IpcMain): void {
-  // Mở hộp thoại chọn file
-  ipc.handle('dialog:openFile', async () => {
+export function dialogModule(ipc: IpcMain): void {
+  /**
+   * Mở hộp thoại để người dùng chọn một file.
+   */
+  ipc.handle('dialog:select-file', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       properties: ['openFile'],
       filters: [
@@ -16,8 +18,10 @@ export function openDialog(ipc: IpcMain): void {
     return filePaths[0]
   })
 
-  // Mở hộp thoại chọn thư mục
-  ipc.handle('dialog:openDirectory', async () => {
+  /**
+   * Mở hộp thoại để người dùng chọn một thư mục.
+   */
+  ipc.handle('dialog:select-directory', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       properties: ['openDirectory']
     })
