@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue';
 
+import { $t } from '@vben/locales';
+
 import { CloseOutlined } from '@ant-design/icons-vue';
 import {
   Button,
@@ -16,6 +18,10 @@ import {
 import { storeToRefs } from 'pinia';
 
 import { ALL_LOG_LEVELS, useLoggerStore } from '#/store';
+
+// Lấy kiểu union của các cấp độ log từ hằng số đã import.
+// Ví dụ: "debug" | "error" | "info" | ...
+type LogLevel = (typeof ALL_LOG_LEVELS)[number];
 
 const loggerStore = useLoggerStore();
 // Sử dụng filteredLogs để hiển thị và selectedLevels để điều khiển bộ lọc
@@ -64,6 +70,12 @@ const handleScroll = () => {
     isAutoScrollEnabled.value = scrollTop + clientHeight >= scrollHeight - 20;
   }
 };
+
+const handleLevelChange = (levels: any[]) => {
+  // `CheckboxGroup` trả về một mảng các giá trị có kiểu rộng.
+  // Chúng ta cần ép kiểu nó một cách an toàn về kiểu `LogLevel[]` mà store mong đợi.
+  loggerStore.updateSelectedLevels(levels as LogLevel[]);
+};
 </script>
 
 <template>
@@ -78,7 +90,7 @@ const handleScroll = () => {
     :header-style="{ display: 'none' }"
   >
     <Card
-      title="Application Logs"
+      :title="$t('page.logViewer.cardTitle')"
       class="flex h-full flex-col"
       :body-style="{
         flex: 1,
@@ -95,10 +107,10 @@ const handleScroll = () => {
           <CheckboxGroup
             :value="selectedLevels"
             :options="ALL_LOG_LEVELS"
-            @update:value="loggerStore.updateSelectedLevels"
+            @update:value="handleLevelChange"
           />
           <Checkbox v-model:checked="isAutoScrollEnabled">
-            Auto-scroll
+            {{ $t('page.logViewer.autoScroll') }}
           </Checkbox>
           <Button
             type="primary"
@@ -106,12 +118,12 @@ const handleScroll = () => {
             size="small"
             @click="loggerStore.clearLogs()"
           >
-            Clear
+            {{ $t('page.logViewer.clear') }}
           </Button>
           <Button
             shape="circle"
             size="small"
-            title="Close"
+            :title="$t('page.logViewer.close')"
             danger
             @click="loggerStore.toggleLogViewer(false)"
           >
@@ -152,7 +164,7 @@ const handleScroll = () => {
         </List>
         <!-- Hiển thị thông báo khi không có log nào khớp với bộ lọc -->
         <div v-else class="flex h-full items-center justify-center">
-          <Empty description="Không có log nào để hiển thị." />
+          <Empty :description="$t('page.logViewer.empty')" />
         </div>
       </div>
     </Card>

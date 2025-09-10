@@ -1,19 +1,229 @@
 {
+  "aiScriptWriter": {
+    "actionText": "Use now",
+    "advancedSwitch": {
+      "label": "Advanced options"
+    },
+    "apiKeyWarning": {
+      "description": "You have not set up API key for {Provider}. \nPlease go to the installation page to add the key.",
+      "goToSettings": "Go to settings",
+      "title": "No API Key"
+    },
+    "apiProvider": {
+      "label": "Whose supplier",
+      "options": {
+        "chatGPT": "Openai chatgpt",
+        "gemini": "Google Gemini"
+      }
+    },
+    "callToAction": {
+      "label": "Call for action",
+      "placeholder": "Example: 'Click like and subscribe to the channel!'"
+    },
+    "cardTitle": "Enter information to create scripts",
+    "characterCount": {
+      "label": "Expected length (characters)"
+    },
+    "description": "Never run out of ideas. \nDescribe your topic and let anyone create a detailed video script, from the beginning to the end.",
+    "dialogueLevel": {
+      "label": "The level of conversation",
+      "options": {
+        "high": "High",
+        "low": "Short",
+        "moderate": "Reasonable"
+      }
+    },
+    "generateButton": "Create script",
+    "generatedScript": {
+      "submitted": "The request was sent to the topic: \"{Topic}\". \nPlease check the console for details.",
+      "title": "Created scenario:"
+    },
+    "generatingTip": "Who is thinking ... please wait.",
+    "genres": {
+      "label": "Category",
+      "placeholder": "Choose or enter the genre"
+    },
+    "language": {
+      "label": "Language",
+      "options": {
+        "english": "English",
+        "vietnamese": "Vietnamese"
+      }
+    },
+    "mainCharacter": {
+      "label": "Main character name",
+      "placeholder": "Example: 'Alex'"
+    },
+    "pointOfView": {
+      "label": "View",
+      "options": {
+        "firstPerson": "First person",
+        "thirdPerson": "Third"
+      }
+    },
+    "resetButton": "Reset the form",
+    "resetSuccess": "The form has been reseted on the default value.",
+    "scriptType": {
+      "label": "Script type",
+      "options": {
+        "podcastScript": "Podcast script",
+        "shortFilm": "Short film",
+        "status": "Status",
+        "vlogOutline": "Outline vlog"
+      }
+    },
+    "segments": {
+      "add": "Add segment",
+      "description": {
+        "placeholder": "Briefly describe what happens in this segment."
+      },
+      "name": {
+        "placeholder": "Segment name (Example: Introduction)",
+        "required": "Please enter the segment name"
+      },
+      "title": "Segment {index}"
+    },
+    "setting": {
+      "label": "Context",
+      "placeholder": "Example: 'A small, wet alley in a future city'"
+    },
+    "targetAudience": {
+      "label": "Target object",
+      "placeholder": "Example: 'Newly beginning programmer'"
+    },
+    "temperature": {
+      "help": "Higher value will produce more random and creative results.",
+      "label": "Creative level"
+    },
+    "title": "Write a script with AI",
+    "topic": {
+      "label": "Video theme / main idea",
+      "placeholder": "Example: 'A short film about a robot first discovered music.'",
+      "required": "Please enter the topic!"
+    }
+  },
   "auth": {
-    "codeLogin": "Code Login",
-    "forgetPassword": "Forget Password",
-    "login": "Login",
-    "qrcodeLogin": "Qr Code Login",
+    "codeLogin": "Sign in by code",
+    "forgetPassword": "Forgot the password",
+    "login": "Log in",
+    "qrcodeLogin": "Log in with QR code",
     "register": "Register"
   },
   "common": {
-    "later": "Later",
-    "ok": "Ok"
+    "later": "Subsequent",
+    "ok": "Agree"
   },
   "dashboard": {
-    "analytics": "Analytics",
+    "analytics": "Analysis",
     "home": "Home",
+    "homePageDescription": "The tool is all in one for content creator. \nSelect a feature below to start.",
+    "homePageTitle": "Welcome to Catalyst",
     "title": "Dashboard",
-    "workspace": "Workspace"
+    "workspace": "Working space"
+  },
+  "features": {
+    "title": "Feature"
+  },
+  "logViewer": {
+    "autoScroll": "Automatically roll",
+    "cardTitle": "Application Diary",
+    "clear": "Erase",
+    "close": "Close",
+    "empty": "There is no log to display."
+  },
+  "settings": {
+    "apiKeys": {
+      "gemini": {
+        "label": "Google Gemini API Key",
+        "placeholder": "Enter your API key"
+      },
+      "openAI": {
+        "label": "Openai API Key",
+        "placeholder": "Enter your API (e.g. SK -...)"
+      }
+    },
+    "saveButton": "Save change",
+    "saveSuccess": "Save successfully!",
+    "title": "Setting"
+  },
+  "updater": {
+    "checkFailed": "[Updater] Check the failure update:",
+    "checking": "[Updater] is checking the update ..",
+    "downloadFailed": "[Updater] Download failure:",
+    "downloadProgress": "[Updater] is downloading the update: {percent}%",
+    "downloadStarted": "[Updater] Start downloading",
+    "error": "[Updater] Update error:",
+    "quitAndInstall": "[Updater] Exit and install",
+    "updateAvailable": "[Updater] There is a new update {Version}",
+    "updateDownloaded": "[Updater] has finished downloading the update:"
+  },
+  "videoCutter": {
+    "actionText": "Use now",
+    "browse": "Browse ...",
+    "cardTitle": "Video cutting configuration",
+    "description": "Turn long video into meaningful short clips. \nCut and share your favorite videos in seconds.",
+    "notifications": {
+      "complete": "Complete",
+      "completeDescription": "The video has been cut and saved successfully in the \"{Path}\" folder.",
+      "failed": "Handling failure",
+      "preparing": "Preparing for video cutting ...",
+      "processing": "Video processing ...",
+      "unknownError": "Unknown error occurred"
+    },
+    "outputPath": {
+      "label": "Saving",
+      "placeholder": "Select the folder to save the cutting videos",
+      "rule": "Please choose the way to save!"
+    },
+    "segmentDuration": {
+      "addon": "second",
+      "label": "Second seconds of segment",
+      "placeholder": "Example: 10",
+      "rule": "Please enter the duration of segment (seconds, must be greater than 0)!"
+    },
+    "startCutting": "Start cutting",
+    "title": "Cut and split videos quickly",
+    "videoPath": {
+      "label": "Video path",
+      "placeholder": "Select the video file to cut",
+      "rule": "Please select the video path!"
+    }
+  },
+  "youtubeDownloader": {
+    "actionText": "Use now",
+    "audioOnly": "Only download sound (mp3)",
+    "browse": "Browse ...",
+    "cardTitle": "Download download",
+    "description": "Paste YouTube video links and easily download your computer with high quality.",
+    "notifications": {
+      "downloading": "Download: {Title}",
+      "failed": "Download failure",
+      "failedDescription": "Error has occurred during the download process. \nCheck the logs for more details.",
+      "fetchError": "Error when taking video information: {Error}",
+      "fetching": "Video information ...",
+      "preparing": "Prepare load",
+      "started": "Start downloading: {Title} ({key})",
+      "starting": "Start downloading ...",
+      "success": "Download successfully: {Title}",
+      "successDescription": "The video was saved at: {FilePath}"
+    },
+    "outputPath": {
+      "label": "Saving",
+      "placeholder": "Select the folder to save the video",
+      "rule": "Please choose the way to save!"
+    },
+    "quality": {
+      "label": "Video quality",
+      "placeholder": "Choose quality (default is the best)"
+    },
+    "startDownload": "Start download",
+    "title": "Download videos from youtube",
+    "viewLogs": "View logs",
+    "youtubeUrl": {
+      "label": "YouTube video URL",
+      "placeholder": "https: //www.youtube.com/watch? V = ...",
+      "ruleInvalid": "The URL is invalid!",
+      "ruleRequired": "Please enter YouTube video URL!"
+    }
   }
 }

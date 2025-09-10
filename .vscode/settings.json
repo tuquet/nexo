@@ -204,7 +204,7 @@
   ],
   "i18n-ally.pathMatcher": "{locale}/{namespace}.{ext}",
   "i18n-ally.enabledParsers": ["json"],
-  "i18n-ally.sourceLanguage": "vi",
+  "i18n-ally.sourceLanguage": "vi-VN",
   "i18n-ally.displayLanguage": "vi-VN",
   "i18n-ally.enabledFrameworks": ["vue", "react"],
   "i18n-ally.keystyle": "nested",

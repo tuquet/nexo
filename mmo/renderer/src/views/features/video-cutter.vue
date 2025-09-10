@@ -2,7 +2,10 @@
 import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 
-import { h, reactive, ref } from 'vue';
+import { computed, h, reactive, ref } from 'vue';
+
+import { Page } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { SendOutlined } from '@ant-design/icons-vue';
 import {
@@ -24,19 +27,24 @@ const formState = reactive({
   segmentDuration: 5,
 });
 
-const rules: Record<string, Rule[]> = {
-  videoPath: [{ required: true, message: 'Please select a video path!' }],
-  outputPath: [{ required: true, message: 'Please select an output path!' }],
-  segmentDuration: [
-    {
-      required: true,
-      type: 'number',
-      min: 1,
-      message:
-        'Please enter the segment duration in seconds (must be greater than 0)!',
-    },
-  ],
-};
+const rules = computed((): Record<string, Rule[]> => {
+  return {
+    videoPath: [
+      { required: true, message: $t('page.videoCutter.videoPath.rule') },
+    ],
+    outputPath: [
+      { required: true, message: $t('page.videoCutter.outputPath.rule') },
+    ],
+    segmentDuration: [
+      {
+        required: true,
+        type: 'number',
+        min: 1,
+        message: $t('page.videoCutter.segmentDuration.rule'),
+      },
+    ],
+  };
+});
 
 const handleSelectVideo = async () => {
   // Gọi IPC để mở hộp thoại chọn file từ tiến trình chính
@@ -60,7 +68,7 @@ const onFinish = async () => {
   loading.value = true;
   const key = `progress-${Date.now()}`;
   const progress = ref(0);
-  const progressMessage = ref('Preparing to cut video...');
+  const progressMessage = ref($t('page.videoCutter.notifications.preparing'));
 
   // Lắng nghe sự kiện cập nhật tiến trình từ main process
   const unlistenProgress = window.electron.ipcRenderer.on(
@@ -77,7 +85,7 @@ const onFinish = async () => {
   // Mở thông báo một lần, nó sẽ tự cập nhật nhờ vào reactivity của Vue
   notification.open({
     key,
-    message: 'Processing video...',
+    message: $t('page.videoCutter.notifications.processing'),
     description: () =>
       h('div', [
         h(Progress, { percent: progress.value, status: 'active' }),
@@ -95,16 +103,20 @@ const onFinish = async () => {
     });
 
     notification.success({
-      message: 'Complete',
-      description: `Video has been successfully cut and saved in the "${formState.outputPath}" folder.`,
+      message: $t('page.videoCutter.notifications.complete'),
+      description: $t('page.videoCutter.notifications.completeDescription', {
+        path: formState.outputPath,
+      }),
       placement: 'bottomRight',
     });
     formRef.value?.resetFields();
   } catch (error: unknown) {
     const errorMessage =
-      error instanceof Error ? error.message : 'An unknown error occurred';
+      error instanceof Error
+        ? error.message
+        : $t('page.videoCutter.notifications.unknownError');
     notification.error({
-      message: 'Processing Failed',
+      message: $t('page.videoCutter.notifications.failed'),
       description: errorMessage,
       placement: 'bottomRight',
     });
@@ -117,8 +129,11 @@ const onFinish = async () => {
 </script>
 
 <template>
-  <div class="m-4">
-    <Card size="small" title="Video Cutter">
+  <Page
+    :title="$t('page.videoCutter.title')"
+    :description="$t('page.videoCutter.description')"
+  >
+    <Card :title="$t('page.videoCutter.cardTitle')">
       <Form
         ref="formRef"
         :model="formState"
@@ -126,41 +141,50 @@ const onFinish = async () => {
         layout="vertical"
         @finish="onFinish"
       >
-        <Form.Item label="Video Path" name="videoPath">
+        <Form.Item
+          :label="$t('page.videoCutter.videoPath.label')"
+          name="videoPath"
+        >
           <Input
             v-model:value="formState.videoPath"
-            placeholder="Select the video file to cut"
+            :placeholder="$t('page.videoCutter.videoPath.placeholder')"
             readonly
           >
             <template #addonAfter>
               <Button size="small" type="link" @click="handleSelectVideo">
-                Browse...
+                {{ $t('page.videoCutter.browse') }}
               </Button>
             </template>
           </Input>
         </Form.Item>
 
-        <Form.Item label="Save Location" name="outputPath">
+        <Form.Item
+          :label="$t('page.videoCutter.outputPath.label')"
+          name="outputPath"
+        >
           <Input
             v-model:value="formState.outputPath"
-            placeholder="Select the folder to save the cut videos"
+            :placeholder="$t('page.videoCutter.outputPath.placeholder')"
             readonly
           >
             <template #addonAfter>
               <Button size="small" type="link" @click="handleSelectOutput">
-                Browse...
+                {{ $t('page.videoCutter.browse') }}
               </Button>
             </template>
           </Input>
         </Form.Item>
 
-        <Form.Item label="Seconds per segment" name="segmentDuration">
+        <Form.Item
+          :label="$t('page.videoCutter.segmentDuration.label')"
+          name="segmentDuration"
+        >
           <InputNumber
             v-model:value="formState.segmentDuration"
-            placeholder="Example: 10"
+            :placeholder="$t('page.videoCutter.segmentDuration.placeholder')"
             class="w-full"
             :min="1"
-            addon-after="seconds"
+            :addon-after="$t('page.videoCutter.segmentDuration.addon')"
           />
         </Form.Item>
 
@@ -175,12 +199,12 @@ const onFinish = async () => {
             <template #icon>
               <SendOutlined />
             </template>
-            Start Cutting
+            {{ $t('page.videoCutter.startCutting') }}
           </Button>
         </Form.Item>
       </Form>
     </Card>
-  </div>
+  </Page>
 </template>
 
 <style scoped></style>

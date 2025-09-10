@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { FormInstance, Rule } from 'ant-design-vue/es/form';
 
-import { Fragment, h, reactive, ref } from 'vue';
+import { computed, Fragment, h, reactive, ref } from 'vue';
+
+import { Page } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { LoadingOutlined, SendOutlined } from '@ant-design/icons-vue';
 import {
@@ -56,13 +59,23 @@ const formState = reactive({
   isAudioOnly: false,
 });
 
-const rules: Record<string, Rule[]> = {
-  youtubeUrl: [
-    { required: true, message: 'Please enter a YouTube video URL!' },
-    { type: 'url', message: 'The URL is invalid!' },
-  ],
-  outputPath: [{ required: true, message: 'Please select an output path!' }],
-};
+const rules = computed((): Record<string, Rule[]> => {
+  return {
+    youtubeUrl: [
+      {
+        required: true,
+        message: $t('page.youtubeDownloader.youtubeUrl.ruleRequired'),
+      },
+      {
+        type: 'url',
+        message: $t('page.youtubeDownloader.youtubeUrl.ruleInvalid'),
+      },
+    ],
+    outputPath: [
+      { required: true, message: $t('page.youtubeDownloader.outputPath.rule') },
+    ],
+  };
+});
 
 const handleSelectOutput = async () => {
   const path = await window.electron.ipcRenderer.invoke('dialog:openDirectory');
@@ -93,7 +106,11 @@ const handleUrlBlur = async () => {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'An unknown error occurred';
-      message.error(`Error fetching video info: ${errorMessage}`);
+      message.error(
+        $t('page.youtubeDownloader.notifications.fetchError', {
+          error: errorMessage,
+        }),
+      );
     } finally {
       fetchingFormats.value = false;
     }
@@ -111,7 +128,9 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
   const unlistenStarted = window.electron.ipcRenderer.on(
     'youtube:download-started',
     (_event: any, { key, title }: DownloadStartedPayload) => {
-      message.info(`Download started for: ${title} (${key})`);
+      message.info(
+        $t('page.youtubeDownloader.notifications.started', { title, key }),
+      );
     },
   );
 
@@ -133,11 +152,15 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
 
   notification.open({
     key,
-    message: 'Preparing Download',
+    message: $t('page.youtubeDownloader.notifications.preparing'),
     description: () =>
       h('div', [
         h(Progress, { percent: 0, status: 'active' }),
-        h('p', { style: { marginTop: '8px' } }, 'Fetching video info...'),
+        h(
+          'p',
+          { style: { marginTop: '8px' } },
+          $t('page.youtubeDownloader.notifications.fetching'),
+        ),
       ]),
     duration: 0,
     placement: 'bottomRight',
@@ -166,13 +189,10 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
 
     const loggerStore = useLoggerStore();
     notification.error({
-      message: 'Download Failed',
+      message: $t('page.youtubeDownloader.notifications.failed'),
       description: () =>
         h(Fragment, null, [
-          h(
-            'p',
-            'An error occurred during download. Check the logs for more details.',
-          ),
+          h('p', $t('page.youtubeDownloader.notifications.failedDescription')),
           h(
             Button,
             {
@@ -181,7 +201,7 @@ const onFinish = async (values: { outputPath: string; youtubeUrl: string }) => {
               class: 'mt-2',
               onClick: () => loggerStore.toggleLogViewer(true),
             },
-            () => 'View Logs',
+            () => $t('page.youtubeDownloader.viewLogs'),
           ),
         ]),
       placement: 'bottomRight',
@@ -199,7 +219,9 @@ function updateProgressNotification(
 ) {
   notification.open({
     key,
-    message: title ? `Downloading: ${title}` : 'Starting download...',
+    message: title
+      ? $t('page.youtubeDownloader.notifications.downloading', { title })
+      : $t('page.youtubeDownloader.notifications.starting'),
     description: () =>
       h('div', [
         h(Progress, { percent: Math.round(percent), status: 'active' }),
@@ -217,8 +239,13 @@ function handleDownloadComplete({
   if (activeDownloadUrl.value === key) {
     notification.close(key);
     notification.success({
-      message: `Download successful: ${title}`,
-      description: `Video saved at: ${filePath}`,
+      message: $t('page.youtubeDownloader.notifications.success', {
+        title: title || '',
+      }),
+      description: $t(
+        'page.youtubeDownloader.notifications.successDescription',
+        { filePath },
+      ),
       placement: 'bottomRight',
     });
     formRef.value?.resetFields();
@@ -227,8 +254,11 @@ function handleDownloadComplete({
 </script>
 
 <template>
-  <div class="m-4">
-    <Card size="small" title="YouTube Downloader">
+  <Page
+    :title="$t('page.youtubeDownloader.title')"
+    :description="$t('page.youtubeDownloader.description')"
+  >
+    <Card :title="$t('page.youtubeDownloader.cardTitle')">
       <Form
         ref="formRef"
         :model="formState"
@@ -236,10 +266,13 @@ function handleDownloadComplete({
         layout="vertical"
         @finish="onFinish"
       >
-        <Form.Item label="YouTube Video URL" name="youtubeUrl">
+        <Form.Item
+          :label="$t('page.youtubeDownloader.youtubeUrl.label')"
+          name="youtubeUrl"
+        >
           <Input
             v-model:value="formState.youtubeUrl"
-            placeholder="https://www.youtube.com/watch?v=..."
+            :placeholder="$t('page.youtubeDownloader.youtubeUrl.placeholder')"
             @blur="handleUrlBlur"
           >
             <template #suffix>
@@ -248,10 +281,13 @@ function handleDownloadComplete({
           </Input>
         </Form.Item>
 
-        <Form.Item v-if="availableFormats.length > 0" label="Video Quality">
+        <Form.Item
+          v-if="availableFormats.length > 0"
+          :label="$t('page.youtubeDownloader.quality.label')"
+        >
           <Select
             v-model:value="formState.selectedFormat"
-            placeholder="Select quality (default is best)"
+            :placeholder="$t('page.youtubeDownloader.quality.placeholder')"
             :loading="fetchingFormats"
             allow-clear
           >
@@ -267,19 +303,22 @@ function handleDownloadComplete({
 
         <Form.Item>
           <Checkbox v-model:checked="formState.isAudioOnly">
-            Audio only (MP3)
+            {{ $t('page.youtubeDownloader.audioOnly') }}
           </Checkbox>
         </Form.Item>
 
-        <Form.Item label="Save Location" name="outputPath">
+        <Form.Item
+          :label="$t('page.youtubeDownloader.outputPath.label')"
+          name="outputPath"
+        >
           <Input
             v-model:value="formState.outputPath"
-            placeholder="Select a folder to save the video"
+            :placeholder="$t('page.youtubeDownloader.outputPath.placeholder')"
             readonly
           >
             <template #addonAfter>
               <Button size="small" type="link" @click="handleSelectOutput">
-                Browse...
+                {{ $t('page.youtubeDownloader.browse') }}
               </Button>
             </template>
           </Input>
@@ -296,10 +335,10 @@ function handleDownloadComplete({
             <template #icon>
               <SendOutlined />
             </template>
-            Start Download
+            {{ $t('page.youtubeDownloader.startDownload') }}
           </Button>
         </Form.Item>
       </Form>
     </Card>
-  </div>
+  </Page>
 </template>

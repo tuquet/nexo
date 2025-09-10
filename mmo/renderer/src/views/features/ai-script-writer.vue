@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Page } from '@vben/common-ui';
+import { $t } from '@vben/locales';
 
 import { Card, message } from 'ant-design-vue';
 
@@ -14,12 +15,18 @@ const [Form] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'apiProvider',
-      label: 'Nhà cung cấp AI',
+      label: $t('page.aiScriptWriter.apiProvider.label'),
       componentProps: {
         class: 'w-full',
         options: [
-          { label: 'Google Gemini', value: 'gemini' },
-          { label: 'OpenAI ChatGPT', value: 'chatGPT' },
+          {
+            label: $t('page.aiScriptWriter.apiProvider.options.gemini'),
+            value: 'gemini',
+          },
+          {
+            label: $t('page.aiScriptWriter.apiProvider.options.chatGPT'),
+            value: 'chatGPT',
+          },
         ],
       },
       rules: 'required',
@@ -27,10 +34,9 @@ const [Form] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'topic',
-      label: 'Chủ đề Video / Ý tưởng chính',
+      label: $t('page.aiScriptWriter.topic.label'),
       componentProps: {
-        placeholder:
-          "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
+        placeholder: $t('page.aiScriptWriter.topic.placeholder'),
         rows: 4,
       },
       rules: 'required',
@@ -38,14 +44,26 @@ const [Form] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'scriptType',
-      label: 'Loại kịch bản',
+      label: $t('page.aiScriptWriter.scriptType.label'),
       componentProps: {
         class: 'w-full',
         options: [
-          { label: 'Phim ngắn', value: 'shortFilm' },
-          { label: 'Vlog', value: 'vlogOutline' },
-          { label: 'Podcast', value: 'podcastScript' },
-          { label: 'Trạng thái', value: 'status' },
+          {
+            label: $t('page.aiScriptWriter.scriptType.options.shortFilm'),
+            value: 'shortFilm',
+          },
+          {
+            label: $t('page.aiScriptWriter.scriptType.options.vlogOutline'),
+            value: 'vlogOutline',
+          },
+          {
+            label: $t('page.aiScriptWriter.scriptType.options.podcastScript'),
+            value: 'podcastScript',
+          },
+          {
+            label: $t('page.aiScriptWriter.scriptType.options.status'),
+            value: 'status',
+          },
         ],
       },
       rules: 'required',
@@ -53,12 +71,18 @@ const [Form] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'language',
-      label: 'Ngôn ngữ',
+      label: $t('page.aiScriptWriter.language.label'),
       componentProps: {
         class: 'w-full',
         options: [
-          { label: 'Tiếng Việt', value: 'vietnamese' },
-          { label: 'Tiếng Anh', value: 'english' },
+          {
+            label: $t('page.aiScriptWriter.language.options.vietnamese'),
+            value: 'vietnamese',
+          },
+          {
+            label: $t('page.aiScriptWriter.language.options.english'),
+            value: 'english',
+          },
         ],
       },
       rules: 'required',
@@ -66,17 +90,17 @@ const [Form] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'genres',
-      label: 'Thể loại',
+      label: $t('page.aiScriptWriter.genres.label'),
       componentProps: {
         class: 'w-full',
         mode: 'tags',
-        placeholder: 'Chọn hoặc nhập thể loại',
+        placeholder: $t('page.aiScriptWriter.genres.placeholder'),
       },
     },
     {
       component: 'InputNumber',
       fieldName: 'characterCount',
-      label: 'Độ dài dự kiến (Ký tự)',
+      label: $t('page.aiScriptWriter.characterCount.label'),
       componentProps: {
         class: 'w-full',
         min: 10,
@@ -86,45 +110,44 @@ const [Form] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'mainCharacter',
-      label: 'Tên nhân vật chính',
+      label: $t('page.aiScriptWriter.mainCharacter.label'),
       componentProps: {
-        placeholder: "VD: 'Alex'",
+        placeholder: $t('page.aiScriptWriter.mainCharacter.placeholder'),
       },
     },
     {
       component: 'Input',
       fieldName: 'setting',
-      label: 'Bối cảnh',
+      label: $t('page.aiScriptWriter.setting.label'),
       componentProps: {
-        placeholder:
-          "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'",
+        placeholder: $t('page.aiScriptWriter.setting.placeholder'),
       },
     },
     {
       component: 'Input',
       fieldName: 'targetAudience',
-      label: 'Đối tượng mục tiêu',
+      label: $t('page.aiScriptWriter.targetAudience.label'),
       componentProps: {
-        placeholder: "VD: 'Lập trình viên mới bắt đầu'",
+        placeholder: $t('page.aiScriptWriter.targetAudience.placeholder'),
       },
     },
     {
       component: 'Input',
       fieldName: 'callToAction',
-      label: 'Kêu gọi hành động',
+      label: $t('page.aiScriptWriter.callToAction.label'),
       componentProps: {
-        placeholder: "VD: 'Hãy nhấn Like và Đăng ký kênh!'",
+        placeholder: $t('page.aiScriptWriter.callToAction.placeholder'),
       },
     },
     {
       component: 'Switch',
       fieldName: 'advancedSwitch',
-      label: 'Tùy chọn nâng cao',
+      label: $t('page.aiScriptWriter.advancedSwitch.label'),
     },
     {
       component: 'InputNumber',
       fieldName: 'temperature',
-      label: 'Mức độ sáng tạo',
+      label: $t('page.aiScriptWriter.temperature.label'),
       componentProps: {
         min: 0,
         max: 1,
@@ -134,14 +157,14 @@ const [Form] = useVbenForm({
         if: (values) => values.advancedSwitch,
         triggerFields: ['advancedSwitch'],
       },
-      help: 'Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.',
+      help: $t('page.aiScriptWriter.temperature.help'),
     },
   ],
 });
 
 function handleSubmit(values: Record<string, any>) {
   message.loading({
-    content: 'AI đang suy nghĩ... Vui lòng chờ.',
+    content: $t('page.aiScriptWriter.generatingTip'),
     duration: 0, // indefinite
   });
 
@@ -149,7 +172,9 @@ function handleSubmit(values: Record<string, any>) {
   setTimeout(() => {
     message.destroy(); // Đóng thông báo loading
     message.success({
-      content: `Yêu cầu đã được gửi cho chủ đề: "${values.topic}". Vui lòng kiểm tra console để biết chi tiết.`,
+      content: $t('page.aiScriptWriter.generatedScript.submitted', {
+        topic: values.topic,
+      }),
     });
     // Tại đây, bạn sẽ xử lý và hiển thị kết quả trả về từ AI.
   }, 2000);
@@ -158,10 +183,10 @@ function handleSubmit(values: Record<string, any>) {
 
 <template>
   <Page
-    description="Không bao giờ cạn ý tưởng. Mô tả chủ đề của bạn và để AI tạo ra một kịch bản video chi tiết, từ mở đầu đến kết thúc."
-    title="Viết kịch bản bằng AI"
+    :description="$t('page.aiScriptWriter.description')"
+    :title="$t('page.aiScriptWriter.title')"
   >
-    <Card title="Nhập thông tin để tạo kịch bản">
+    <Card :title="$t('page.aiScriptWriter.cardTitle')">
       <Form />
     </Card>
   </Page>

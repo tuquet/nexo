@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import {
@@ -13,7 +14,10 @@ import { features } from './data';
 </script>
 
 <template>
-  <div class="p-5">
+  <Page
+    :description="$t('page.dashboard.homePageDescription')"
+    :title="$t('page.dashboard.homePageTitle')"
+  >
     <div class="grid gap-4 lg:grid-cols-3">
       <Card size="small" v-for="feature in features" :key="feature.key">
         <template #title>
@@ -37,7 +41,7 @@ import { features } from './data';
         </template>
       </Card>
     </div>
-  </div>
+  </Page>
 </template>
 
 <style lang="scss" scoped></style>

@@ -13,6 +13,8 @@
   "dashboard": {
     "analytics": "Phân tích",
     "home": "Trang chủ",
+    "homePageDescription": "Công cụ tất cả trong một dành cho nhà sáng tạo nội dung. Chọn một tính năng bên dưới để bắt đầu.",
+    "homePageTitle": "Chào mừng đến với Catalyst",
     "title": "Bảng điều khiển",
     "workspace": "Không gian làm việc"
   },
@@ -20,25 +22,95 @@
     "title": "Tính năng"
   },
   "videoCutter": {
-    "title": "Cắt và Chia nhỏ Video Nhanh chóng",
+    "actionText": "Sử dụng ngay",
+    "browse": "Duyệt...",
+    "cardTitle": "Cấu hình cắt video",
     "description": "Biến video dài thành các clip ngắn ý nghĩa. Cắt và chia sẻ các đoạn video yêu thích của bạn chỉ trong vài giây.",
-    "actionText": "Sử dụng ngay"
+    "notifications": {
+      "complete": "Hoàn thành",
+      "completeDescription": "Video đã được cắt và lưu thành công trong thư mục \"{path}\".",
+      "failed": "Xử lý thất bại",
+      "preparing": "Đang chuẩn bị cắt video...",
+      "processing": "Đang xử lý video...",
+      "unknownError": "Đã xảy ra lỗi không xác định"
+    },
+    "outputPath": {
+      "label": "Nơi lưu",
+      "placeholder": "Chọn thư mục để lưu các video đã cắt",
+      "rule": "Vui lòng chọn đường dẫn lưu!"
+    },
+    "segmentDuration": {
+      "addon": "giây",
+      "label": "Số giây mỗi phân đoạn",
+      "placeholder": "Ví dụ: 10",
+      "rule": "Vui lòng nhập thời lượng phân đoạn (giây, phải lớn hơn 0)!"
+    },
+    "startCutting": "Bắt đầu cắt",
+    "title": "Cắt và Chia nhỏ Video Nhanh chóng",
+    "videoPath": {
+      "label": "Đường dẫn Video",
+      "placeholder": "Chọn file video để cắt",
+      "rule": "Vui lòng chọn đường dẫn video!"
+    }
   },
   "youtubeDownloader": {
-    "title": "Tải Video từ YouTube",
+    "actionText": "Sử dụng ngay",
+    "audioOnly": "Chỉ tải âm thanh (MP3)",
+    "browse": "Duyệt...",
+    "cardTitle": "Cấu hình tải xuống",
     "description": "Dán liên kết video YouTube và dễ dàng tải về máy tính của bạn với chất lượng cao.",
-    "actionText": "Sử dụng ngay"
+    "notifications": {
+      "downloading": "Đang tải: {title}",
+      "failed": "Tải xuống thất bại",
+      "failedDescription": "Đã xảy ra lỗi trong quá trình tải xuống. Kiểm tra logs để biết thêm chi tiết.",
+      "fetchError": "Lỗi khi lấy thông tin video: {error}",
+      "fetching": "Đang lấy thông tin video...",
+      "preparing": "Đang chuẩn bị tải",
+      "started": "Bắt đầu tải: {title} ({key})",
+      "starting": "Bắt đầu tải...",
+      "success": "Tải xuống thành công: {title}",
+      "successDescription": "Video đã được lưu tại: {filePath}"
+    },
+    "outputPath": {
+      "label": "Nơi lưu",
+      "placeholder": "Chọn thư mục để lưu video",
+      "rule": "Vui lòng chọn đường dẫn lưu!"
+    },
+    "quality": {
+      "label": "Chất lượng Video",
+      "placeholder": "Chọn chất lượng (mặc định là tốt nhất)"
+    },
+    "startDownload": "Bắt đầu tải",
+    "title": "Tải Video từ YouTube",
+    "viewLogs": "Xem Logs",
+    "youtubeUrl": {
+      "label": "URL Video YouTube",
+      "placeholder": "https://www.youtube.com/watch?v=...",
+      "ruleInvalid": "URL không hợp lệ!",
+      "ruleRequired": "Vui lòng nhập URL video YouTube!"
+    }
   },
   "aiScriptWriter": {
     "title": "Viết kịch bản bằng AI",
     "description": "Không bao giờ cạn ý tưởng. Mô tả chủ đề của bạn và để AI tạo ra một kịch bản video chi tiết, từ mở đầu đến kết thúc.",
     "actionText": "Sử dụng ngay",
+    "advancedSwitch": {
+      "label": "Tùy chọn nâng cao"
+    },
     "apiProvider": {
       "label": "Nhà cung cấp AI",
       "options": {
         "gemini": "Google Gemini",
         "chatGPT": "OpenAI ChatGPT"
       }
+    },
+    "callToAction": {
+      "label": "Kêu gọi hành động",
+      "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
+    },
+    "cardTitle": "Nhập thông tin để tạo kịch bản",
+    "characterCount": {
+      "label": "Độ dài dự kiến (Ký tự)"
     },
     "topic": {
       "label": "Chủ đề Video / Ý tưởng chính",
@@ -50,7 +122,8 @@
       "options": {
         "shortFilm": "Phim ngắn",
         "vlogOutline": "Dàn ý Vlog",
-        "podcastScript": "Kịch bản Podcast"
+        "podcastScript": "Kịch bản Podcast",
+        "status": "Trạng thái"
       }
     },
     "language": {
@@ -65,11 +138,11 @@
       "placeholder": "Chọn hoặc nhập thể loại"
     },
     "mainCharacter": {
-      "label": "Tên nhân vật chính (Tùy chọn)",
+      "label": "Tên nhân vật chính",
       "placeholder": "VD: 'Alex'"
     },
     "setting": {
-      "label": "Bối cảnh (Tùy chọn)",
+      "label": "Bối cảnh",
       "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
     },
     "pointOfView": {
@@ -83,8 +156,6 @@
       "label": "Mức độ hội thoại",
       "options": { "low": "Thấp", "moderate": "Vừa phải", "high": "Cao" }
     },
-    "characterCount": { "label": "Độ dài dự kiến (ký tự)" },
-    "advancedOptions": "Tùy chọn nâng cao",
     "segments": {
       "title": "Phân đoạn {index}",
       "name": {
@@ -97,12 +168,12 @@
       "add": "Thêm phân đoạn"
     },
     "targetAudience": {
-      "label": "Đối tượng mục tiêu (Tùy chọn)",
+      "label": "Đối tượng mục tiêu",
       "placeholder": "VD: 'Lập trình viên mới bắt đầu'"
     },
-    "callToAction": {
-      "label": "Kêu gọi hành động (Tùy chọn)",
-      "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
+    "temperature": {
+      "help": "Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.",
+      "label": "Mức độ sáng tạo"
     },
     "generateButton": "Tạo kịch bản",
     "generatingTip": "AI đang suy nghĩ... Vui lòng chờ.",
@@ -132,5 +203,23 @@
     },
     "saveButton": "Lưu thay đổi",
     "saveSuccess": "Đã lưu cài đặt thành công!"
+  },
+  "logViewer": {
+    "autoScroll": "Tự động cuộn",
+    "cardTitle": "Nhật ký ứng dụng",
+    "clear": "Xóa",
+    "close": "Đóng",
+    "empty": "Không có log nào để hiển thị."
+  },
+  "updater": {
+    "updateAvailable": "[Updater] Có bản cập nhật mới {version}",
+    "downloadProgress": "[Updater] Đang tải bản cập nhật: {percent}%",
+    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:",
+    "error": "[Updater] Lỗi cập nhật:",
+    "checking": "[Updater] Đang kiểm tra bản cập nhật..",
+    "checkFailed": "[Updater] Kiểm tra cập nhật thất bại:",
+    "downloadStarted": "[Updater] Bắt đầu tải xuống",
+    "downloadFailed": "[Updater] Tải xuống thất bại:",
+    "quitAndInstall": "[Updater] Thoát và cài đặt"
   }
 }
