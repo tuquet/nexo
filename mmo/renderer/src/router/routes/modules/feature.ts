@@ -24,11 +24,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'YoutubeDownloader',
-        path: '/youtube-downloader',
-        component: () => import('#/views/features/youtube-downloader.vue'),
+        path: '/video-downloader',
+        component: () => import('#/views/features/video-downloader.vue'),
         meta: {
-          icon: 'ant-design:youtube-filled',
-          title: $t('page.youtubeDownloader.title'),
+          icon: 'ant-design:videoilled',
+          title: $t('page.videoDownloader.title'),
           keepAlive: true,
         },
       },

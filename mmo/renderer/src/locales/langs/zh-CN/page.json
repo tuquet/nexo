@@ -109,6 +109,16 @@
     "qrcodeLogin": "二维码登录",
     "register": "注册"
   },
+  "binaryManager": {
+    "preparing": "安装工具",
+    "status": {
+      "complete": "安装成功的工具。",
+      "downloading": "加载必要的工具...",
+      "downloadingFile": "下载{file} ...",
+      "error": "下载失败的工具。请检查网络连接。",
+      "verifying": "正在检查必要的工具..."
+    }
+  },
   "common": {
     "later": "随后的",
     "ok": "同意"
@@ -189,18 +199,21 @@
       "rule": "请选择视频路径！"
     }
   },
-  "youtubeDownloader": {
+  "videoDownloader": {
     "actionText": "现在使用",
     "audioOnly": "仅下载声音（mp3）",
     "browse": "浏览...",
     "cardTitle": "下载下载",
     "description": "粘贴YouTube视频链接，并以高质量轻松下载计算机。",
+    "downloadQueueTitle": "迟到下载",
     "notifications": {
       "downloading": "下载：{title}",
       "failed": "下载失败",
       "failedDescription": "下载过程中发生了错误。检查日志以获取更多详细信息。",
       "fetchError": "获取视频信息时的错误：{error}",
       "fetching": "视频信息...",
+      "openFile": "打开文件",
+      "openFolder": "打开文件夹",
       "preparing": "准备负载",
       "started": "开始下载：{title}（{key}）",
       "starting": "开始下载...",
@@ -218,10 +231,11 @@
     },
     "startDownload": "开始下载",
     "title": "从YouTube下载视频",
+    "useBrowserCookies": "使用cookie浏览器（用于视频限制视频）",
     "viewLogs": "查看日志",
-    "youtubeUrl": {
+    "videoUrl": {
       "label": "YouTube视频URL",
-      "placeholder": "https：//www.youtube.com/watch？ V = ...",
+      "placeholder": "https：//www.Video.com/watch？ V = ...",
       "ruleInvalid": "URL无效！",
       "ruleRequired": "请输入YouTube视频URL！"
     }

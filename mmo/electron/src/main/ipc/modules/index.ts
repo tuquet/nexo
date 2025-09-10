@@ -1,6 +1,6 @@
 export * from './ping'
 export * from './dialog'
-export * from './youtube'
+export * from './video-downloader'
 export * from './video-cutter'
 export * from './logger'
 export * from './updater'

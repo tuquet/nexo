@@ -18,12 +18,12 @@ export const features: Feature[] = [
     },
   },
   {
-    key: 'youtubeDownloader',
+    key: 'videoDownloader',
     icon: 'https://cdn-icons-png.flaticon.com/128/1384/1384060.png',
     cover:
       'https://images.unsplash.com/photo-1611162617213-6d22e5257410?q=80&w=800&h=450&auto=format&fit=crop',
     action: () => {
-      router.push('/youtube-downloader');
+      router.push('/Video-downloader');
     },
   },
   {

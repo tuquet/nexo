@@ -8,7 +8,7 @@ Hệ thống IPC được thiết kế theo dạng module để dễ dàng quả
 
 - **`ipc/index.ts`**: Đây là file "nhạc trưởng", có nhiệm vụ tự động tìm và đăng ký tất cả các handler được định nghĩa trong thư mục `modules`. Điều này giúp việc thêm một handler mới trở nên cực kỳ đơn giản mà không cần sửa đổi logic đăng ký.
 
-- **`ipc/modules/`**: Thư mục này chứa các file riêng lẻ, mỗi file chịu trách nhiệm cho một nhóm chức năng cụ thể. Ví dụ, `youtube.ts` xử lý các tác vụ liên quan đến YouTube, trong khi `dialog.ts` quản lý các hộp thoại hệ thống.
+- **`ipc/modules/`**: Thư mục này chứa các file riêng lẻ, mỗi file chịu trách nhiệm cho một nhóm chức năng cụ thể. Ví dụ, `Video.ts` xử lý các tác vụ liên quan đến Video, trong khi `dialog.ts` quản lý các hộp thoại hệ thống.
 
 ## Làm thế nào để thêm một IPC Handler mới?
 
@@ -54,7 +54,7 @@ Dưới đây là danh sách các handler hiện có và chức năng của chú
 - `updater.ts`: Quản lý vòng đời tự động cập nhật ứng dụng (kiểm tra, tải về, cài đặt).
 - `video-cutter.ts`: Cung cấp chức năng cắt video sử dụng `ffmpeg`.
 - `settings.ts`: Cung cấp giao diện để đọc và ghi cài đặt ứng dụng, tự động mã hóa các dữ liệu nhạy cảm.
-- `youtube.ts`: Cung cấp chức năng tải video và lấy thông tin định dạng từ YouTube sử dụng `yt-dlp`.
+- `videos`: Cung cấp chức năng tải video và lấy thông tin định dạng từ Vivideodụng `yt-dlp`.
 
 ## Lưu ý quan trọng
 

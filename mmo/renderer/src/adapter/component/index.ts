@@ -198,6 +198,11 @@ async function initComponentAdapter() {
   // 将组件注册到全局共享状态中
   globalShareState.setComponents(components);
 
+  // Cấu hình vị trí mặc định cho tất cả các thông báo là ở góc dưới bên trái.
+  notification.config({
+    placement: 'bottomLeft',
+  });
+
   // 定义全局共享状态中的消息提示
   globalShareState.defineMessage({
     // 复制成功消息提示
@@ -205,7 +210,6 @@ async function initComponentAdapter() {
       notification.success({
         description: content,
         message: title,
-        placement: 'bottomRight',
       });
     },
   });

@@ -26,7 +26,7 @@ async function createCodeWorkspace({
 }: CodeWorkspaceCommandOptions) {
   const { packages, rootDir } = await getPackages();
 
-  let folders = packages.map((pkg) => {
+  let folders = packages.map((pkg: any) => {
     const { dir, packageJson } = pkg;
     return {
       name: packageJson.name,

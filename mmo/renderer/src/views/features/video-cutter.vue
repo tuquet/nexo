@@ -2,12 +2,13 @@
 import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
 
-import { computed, h, onMounted, reactive, ref } from 'vue';
+import { computed, h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { SendOutlined } from '@ant-design/icons-vue';
+import { useStorage } from '@vueuse/core';
 import {
   Button,
   Card,
@@ -35,10 +36,14 @@ const isFormDisabled = computed(
   () => loading.value || !binaryManagerState.isReady,
 );
 
-const formState = reactive({
+const defaultFormState = {
   videoPath: '',
-  outputPath: String.raw`C:\Users\Admin\Videos\youtube-download\cutter`,
+  outputPath: '',
   segmentDuration: 5,
+};
+
+const formState = useStorage('video-cutter-form-state', {
+  ...defaultFormState,
 });
 
 const rules = computed((): Record<string, Rule[]> => {
@@ -64,7 +69,7 @@ const handleSelectVideo = async () => {
   // Gọi IPC để mở hộp thoại chọn file từ tiến trình chính
   const path = await window.electron.ipcRenderer.invoke('dialog:select-file');
   if (path) {
-    formState.videoPath = path;
+    formState.value.videoPath = path;
     formRef.value?.validateFields('videoPath');
   }
 };
@@ -75,7 +80,7 @@ const handleSelectOutput = async () => {
     'dialog:select-directory',
   );
   if (path) {
-    formState.outputPath = path;
+    formState.value.outputPath = path;
     formRef.value?.validateFields('outputPath');
   }
 };
@@ -114,37 +119,57 @@ const onFinish = async () => {
         h('p', { style: { marginTop: '8px' } }, progressMessage.value),
       ]),
     duration: 0,
-    placement: 'bottomRight',
   });
 
   try {
     await window.electron.ipcRenderer.invoke('video:cut', {
-      videoPath: formState.videoPath,
-      outputPath: formState.outputPath,
-      segmentDuration: formState.segmentDuration,
+      videoPath: formState.value.videoPath,
+      outputPath: formState.value.outputPath,
+      segmentDuration: formState.value.segmentDuration,
     });
 
+    // Cập nhật thông báo hiện tại thành trạng thái thành công và tự động đóng
     notification.success({
+      key,
       message: $t('page.videoCutter.notifications.complete'),
       description: $t('page.videoCutter.notifications.completeDescription', {
-        path: formState.outputPath,
+        path: formState.value.outputPath,
       }),
-      placement: 'bottomRight',
+      btn: () =>
+        h(
+          Button,
+          {
+            type: 'primary',
+            size: 'small',
+            onClick: () => {
+              // Mở thư mục chứa các file đã cắt
+              window.electron.ipcRenderer.send(
+                'shell:open-path',
+                formState.value.outputPath,
+              );
+            },
+          },
+          // Tái sử dụng key dịch thuật từ màn hình video-downloader
+          () => $t('page.videoDownloader.notifications.openFolder'),
+        ),
+      duration: 10, // Cho người dùng 10 giây để nhấn nút trước khi tự đóng
     });
-    formRef.value?.resetFields();
+    formState.value = { ...defaultFormState };
+    formRef.value?.clearValidate();
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error
         ? error.message
         : $t('page.videoCutter.notifications.unknownError');
+    // Cập nhật thông báo hiện tại thành trạng thái lỗi và giữ nó lại
     notification.error({
+      key,
       message: $t('page.videoCutter.notifications.failed'),
       description: errorMessage,
-      placement: 'bottomRight',
+      duration: 0, // Giữ thông báo lỗi cho đến khi người dùng tự đóng
     });
   } finally {
     loading.value = false;
-    notification.close(key);
     unlistenProgress(); // Dọn dẹp listener
   }
 };
@@ -184,34 +209,26 @@ const onFinish = async () => {
           :label="$t('page.videoCutter.videoPath.label')"
           name="videoPath"
         >
-          <Input
+          <Input.Search
             v-model:value="formState.videoPath"
             :placeholder="$t('page.videoCutter.videoPath.placeholder')"
+            :enter-button="$t('page.videoCutter.browse')"
             readonly
-          >
-            <template #addonAfter>
-              <Button size="small" type="link" @click="handleSelectVideo">
-                {{ $t('page.videoCutter.browse') }}
-              </Button>
-            </template>
-          </Input>
+            @search="handleSelectVideo"
+          />
         </Form.Item>
 
         <Form.Item
           :label="$t('page.videoCutter.outputPath.label')"
           name="outputPath"
         >
-          <Input
+          <Input.Search
             v-model:value="formState.outputPath"
             :placeholder="$t('page.videoCutter.outputPath.placeholder')"
+            :enter-button="$t('page.videoCutter.browse')"
             readonly
-          >
-            <template #addonAfter>
-              <Button size="small" type="link" @click="handleSelectOutput">
-                {{ $t('page.videoCutter.browse') }}
-              </Button>
-            </template>
-          </Input>
+            @search="handleSelectOutput"
+          />
         </Form.Item>
 
         <Form.Item

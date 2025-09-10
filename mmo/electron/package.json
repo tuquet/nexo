@@ -1,6 +1,6 @@
 {
   "name": "@mmo/electron",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "An Electron application with Vue and TypeScript",
   "homepage": "https://electron-vite.org",
   "author": "example.com",

@@ -23,4 +23,12 @@ export function shellModule(ipc: IpcMain): void {
       log.error(`[Shell] Failed to open external URL ${url}:`, err)
     })
   })
+
+  /**
+   * Hiển thị một file trong trình quản lý file của hệ thống.
+   */
+  ipc.on('shell:show-item-in-folder', (_, fullPath: string) => {
+    log.info(`[Shell] Showing item in folder: ${fullPath}`)
+    shell.showItemInFolder(fullPath)
+  })
 }

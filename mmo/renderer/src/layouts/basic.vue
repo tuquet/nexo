@@ -4,15 +4,17 @@ import { useRoute } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
-import { CarbonTerminal } from '@vben/icons';
+import { CarbonTerminal, CircleHelp } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
   Notification,
   UserDropdown,
 } from '@vben/layouts';
+import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
+import { openWindow } from '@vben/utils';
 
 import { CloudDownloadOutlined } from '@ant-design/icons-vue';
 import { FloatButton } from 'ant-design-vue';
@@ -55,15 +57,15 @@ const menus = computed(() => [
   //   icon: MdiGithub,
   //   text: 'GitHub',
   // },
-  // {
-  //   handler: () => {
-  //     openWindow(`${VBEN_GITHUB_URL}/issues`, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: CircleHelp,
-  //   text: $t('ui.widgets.qa'),
-  // },
+  {
+    handler: () => {
+      openWindow('https://www.facebook.com/profile.php?id=61580420255865', {
+        target: '_blank',
+      });
+    },
+    icon: CircleHelp,
+    text: $t('ui.widgets.qa'),
+  },
 ]);
 
 const avatar = computed(() => {

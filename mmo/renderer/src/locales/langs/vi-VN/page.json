@@ -1,10 +1,123 @@
 {
+  "aiScriptWriter": {
+    "actionText": "Sử dụng ngay",
+    "advancedSwitch": {
+      "label": "Tùy chọn nâng cao"
+    },
+    "apiKeyWarning": {
+      "description": "Bạn chưa thiết lập API Key cho {provider}. Vui lòng vào trang Cài đặt để thêm key.",
+      "goToSettings": "Đi đến Cài đặt",
+      "title": "Chưa có API Key"
+    },
+    "apiProvider": {
+      "label": "Nhà cung cấp AI",
+      "options": {
+        "chatGPT": "OpenAI ChatGPT",
+        "gemini": "Google Gemini"
+      }
+    },
+    "callToAction": {
+      "label": "Kêu gọi hành động",
+      "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
+    },
+    "cardTitle": "Nhập thông tin để tạo kịch bản",
+    "characterCount": {
+      "label": "Độ dài dự kiến (Ký tự)"
+    },
+    "description": "Không bao giờ cạn ý tưởng. Mô tả chủ đề của bạn và để AI tạo ra một kịch bản video chi tiết, từ mở đầu đến kết thúc.",
+    "dialogueLevel": {
+      "label": "Mức độ hội thoại",
+      "options": {
+        "high": "Cao",
+        "low": "Thấp",
+        "moderate": "Vừa phải"
+      }
+    },
+    "generateButton": "Tạo kịch bản",
+    "generatedScript": {
+      "submitted": "Yêu cầu đã được gửi cho chủ đề: \"{topic}\". Vui lòng kiểm tra console để biết chi tiết.",
+      "title": "Kịch bản đã tạo:"
+    },
+    "generatingTip": "AI đang suy nghĩ... Vui lòng chờ.",
+    "genres": {
+      "label": "Thể loại",
+      "placeholder": "Chọn hoặc nhập thể loại"
+    },
+    "language": {
+      "label": "Ngôn ngữ",
+      "options": {
+        "english": "Tiếng Anh",
+        "vietnamese": "Tiếng Việt"
+      }
+    },
+    "mainCharacter": {
+      "label": "Tên nhân vật chính",
+      "placeholder": "VD: 'Alex'"
+    },
+    "pointOfView": {
+      "label": "Góc nhìn",
+      "options": {
+        "firstPerson": "Ngôi thứ nhất",
+        "thirdPerson": "Ngôi thứ ba"
+      }
+    },
+    "resetButton": "Đặt lại Form",
+    "resetSuccess": "Form đã được đặt lại về giá trị mặc định.",
+    "scriptType": {
+      "label": "Loại kịch bản",
+      "options": {
+        "podcastScript": "Kịch bản Podcast",
+        "shortFilm": "Phim ngắn",
+        "status": "Trạng thái",
+        "vlogOutline": "Dàn ý Vlog"
+      }
+    },
+    "segments": {
+      "add": "Thêm phân đoạn",
+      "description": {
+        "placeholder": "Mô tả ngắn gọn những gì xảy ra trong phân đoạn này."
+      },
+      "name": {
+        "placeholder": "Tên phân đoạn (VD: Mở đầu)",
+        "required": "Vui lòng nhập tên phân đoạn"
+      },
+      "title": "Phân đoạn {index}"
+    },
+    "setting": {
+      "label": "Bối cảnh",
+      "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
+    },
+    "targetAudience": {
+      "label": "Đối tượng mục tiêu",
+      "placeholder": "VD: 'Lập trình viên mới bắt đầu'"
+    },
+    "temperature": {
+      "help": "Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.",
+      "label": "Mức độ sáng tạo"
+    },
+    "title": "Viết kịch bản bằng AI",
+    "topic": {
+      "label": "Chủ đề Video / Ý tưởng chính",
+      "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
+      "required": "Vui lòng nhập chủ đề!"
+    }
+  },
   "auth": {
     "codeLogin": "Đăng nhập bằng mã",
     "forgetPassword": "Quên mật khẩu",
     "login": "Đăng nhập",
     "qrcodeLogin": "Đăng nhập bằng mã QR",
     "register": "Đăng ký"
+  },
+  "binaryManager": {
+    "preparing": "Đang cài đặt công cụ",
+    "status": {
+      "complete": "Cài đặt công cụ thành công.",
+      "downloading": "Đang tải công cụ cần thiết ...",
+      "downloadingFile": "Đang tải {file}...",
+      "error": "Tải công cụ thất bại. Vui lòng kiểm tra kết nối mạng.",
+      "verifying": "Đang kiểm tra các công cụ cần thiết..."
+    }
   },
   "common": {
     "later": "Để sau",
@@ -21,15 +134,38 @@
   "features": {
     "title": "Tính năng"
   },
-  "binaryManager": {
-    "preparing": "Đang cài đặt công cụ",
-    "status": {
-      "downloading": "Đang tải công cụ cần thiết ...",
-      "downloadingFile": "Đang tải {file}...",
-      "error": "Tải công cụ thất bại. Vui lòng kiểm tra kết nối mạng.",
-      "complete": "Cài đặt công cụ thành công.",
-      "verifying": "Đang kiểm tra các công cụ cần thiết..."
-    }
+  "logViewer": {
+    "autoScroll": "Tự động cuộn",
+    "cardTitle": "Nhật ký ứng dụng",
+    "clear": "Xóa",
+    "close": "Đóng",
+    "empty": "Không có log nào để hiển thị."
+  },
+  "settings": {
+    "apiKeys": {
+      "gemini": {
+        "label": "Google Gemini API Key",
+        "placeholder": "Nhập API key của bạn"
+      },
+      "openAI": {
+        "label": "OpenAI API Key",
+        "placeholder": "Nhập API key của bạn (ví dụ: sk-...)"
+      }
+    },
+    "saveButton": "Lưu thay đổi",
+    "saveSuccess": "Đã lưu cài đặt thành công!",
+    "title": "Cài đặt"
+  },
+  "updater": {
+    "checkFailed": "[Updater] Kiểm tra cập nhật thất bại:",
+    "checking": "[Updater] Đang kiểm tra bản cập nhật..",
+    "downloadFailed": "[Updater] Tải xuống thất bại:",
+    "downloadProgress": "[Updater] Đang tải bản cập nhật: {percent}%",
+    "downloadStarted": "[Updater] Bắt đầu tải xuống",
+    "error": "[Updater] Lỗi cập nhật:",
+    "quitAndInstall": "[Updater] Thoát và cài đặt",
+    "updateAvailable": "[Updater] Có bản cập nhật mới {version}",
+    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:"
   },
   "videoCutter": {
     "actionText": "Sử dụng ngay",
@@ -63,19 +199,26 @@
       "rule": "Vui lòng chọn đường dẫn video!"
     }
   },
-  "youtubeDownloader": {
+  "videoDownloader": {
     "actionText": "Sử dụng ngay",
+    "actions": {
+      "remove": "Xóa",
+      "retry": "Tải lại"
+    },
     "audioOnly": "Chỉ tải âm thanh (MP3)",
     "browse": "Duyệt...",
     "cardTitle": "Cấu hình tải xuống",
-    "description": "Dán liên kết video YouTube và dễ dàng tải về máy tính của bạn với chất lượng cao.",
+    "description": "Dán liên kết video từ Video, Douyin, TikTok, Facebook, v.v. và dễ dàng tải về máy tính của bạn.",
+    "downloadQueueTitle": "Hàng đợi tải xuống",
+    "downloadPlaylist": "Tải toàn bộ playlist/album (nếu có)",
     "notifications": {
       "downloading": "Đang tải: {title}",
-      "openFolder": "Mở thư mục",
       "failed": "Tải xuống thất bại",
       "failedDescription": "Đã xảy ra lỗi trong quá trình tải xuống. Kiểm tra logs để biết thêm chi tiết.",
       "fetchError": "Lỗi khi lấy thông tin video: {error}",
       "fetching": "Đang lấy thông tin video...",
+      "openFile": "Mở file",
+      "openFolder": "Mở thư mục",
       "preparing": "Đang chuẩn bị tải",
       "started": "Bắt đầu tải: {title} ({key})",
       "starting": "Bắt đầu tải...",
@@ -91,146 +234,28 @@
       "label": "Chất lượng Video",
       "placeholder": "Chọn chất lượng (mặc định là tốt nhất)"
     },
+    "resetForm": "Đặt lại",
+    "status": {
+      "downloading": "Đang tải...",
+      "failed": "Thất bại",
+      "pending": "Đang chờ",
+      "success": "Thành công"
+    },
+    "resetSuccess": "Đã đặt lại các tùy chọn về mặc định.",
     "startDownload": "Bắt đầu tải",
-    "title": "Tải Video từ YouTube",
+    "title": "Tải Video Online",
     "viewLogs": "Xem Logs",
-    "youtubeUrl": {
-      "label": "URL Video YouTube",
-      "placeholder": "https://www.youtube.com/watch?v=...",
+    "useCookieFile": "Sử dụng cookie",
+    "cookieFilePath": {
+      "label": "Đường dẫn file cookie",
+      "placeholder": "Chọn file cookies.txt (định dạng Netscape)",
+      "rule": "Vui lòng chọn file cookie!"
+    },
+    "videoUrl": {
+      "label": "URL Video",
+      "placeholder": "Dán URL video tại đây (hỗ trợ Video, Douyin, TikTok, v.v.). Dán mỗi URL trên một dòng.",
       "ruleInvalid": "URL không hợp lệ!",
-      "ruleRequired": "Vui lòng nhập URL video YouTube!"
+      "ruleRequired": "Vui lòng nhập URL video!"
     }
-  },
-  "aiScriptWriter": {
-    "title": "Viết kịch bản bằng AI",
-    "description": "Không bao giờ cạn ý tưởng. Mô tả chủ đề của bạn và để AI tạo ra một kịch bản video chi tiết, từ mở đầu đến kết thúc.",
-    "actionText": "Sử dụng ngay",
-    "advancedSwitch": {
-      "label": "Tùy chọn nâng cao"
-    },
-    "apiProvider": {
-      "label": "Nhà cung cấp AI",
-      "options": {
-        "gemini": "Google Gemini",
-        "chatGPT": "OpenAI ChatGPT"
-      }
-    },
-    "callToAction": {
-      "label": "Kêu gọi hành động",
-      "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
-    },
-    "cardTitle": "Nhập thông tin để tạo kịch bản",
-    "characterCount": {
-      "label": "Độ dài dự kiến (Ký tự)"
-    },
-    "topic": {
-      "label": "Chủ đề Video / Ý tưởng chính",
-      "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
-      "required": "Vui lòng nhập chủ đề!"
-    },
-    "scriptType": {
-      "label": "Loại kịch bản",
-      "options": {
-        "shortFilm": "Phim ngắn",
-        "vlogOutline": "Dàn ý Vlog",
-        "podcastScript": "Kịch bản Podcast",
-        "status": "Trạng thái"
-      }
-    },
-    "language": {
-      "label": "Ngôn ngữ",
-      "options": {
-        "english": "Tiếng Anh",
-        "vietnamese": "Tiếng Việt"
-      }
-    },
-    "genres": {
-      "label": "Thể loại",
-      "placeholder": "Chọn hoặc nhập thể loại"
-    },
-    "mainCharacter": {
-      "label": "Tên nhân vật chính",
-      "placeholder": "VD: 'Alex'"
-    },
-    "setting": {
-      "label": "Bối cảnh",
-      "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
-    },
-    "pointOfView": {
-      "label": "Góc nhìn",
-      "options": {
-        "firstPerson": "Ngôi thứ nhất",
-        "thirdPerson": "Ngôi thứ ba"
-      }
-    },
-    "dialogueLevel": {
-      "label": "Mức độ hội thoại",
-      "options": { "low": "Thấp", "moderate": "Vừa phải", "high": "Cao" }
-    },
-    "segments": {
-      "title": "Phân đoạn {index}",
-      "name": {
-        "placeholder": "Tên phân đoạn (VD: Mở đầu)",
-        "required": "Vui lòng nhập tên phân đoạn"
-      },
-      "description": {
-        "placeholder": "Mô tả ngắn gọn những gì xảy ra trong phân đoạn này."
-      },
-      "add": "Thêm phân đoạn"
-    },
-    "targetAudience": {
-      "label": "Đối tượng mục tiêu",
-      "placeholder": "VD: 'Lập trình viên mới bắt đầu'"
-    },
-    "temperature": {
-      "help": "Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.",
-      "label": "Mức độ sáng tạo"
-    },
-    "generateButton": "Tạo kịch bản",
-    "generatingTip": "AI đang suy nghĩ... Vui lòng chờ.",
-    "generatedScript": {
-      "title": "Kịch bản đã tạo:",
-      "submitted": "Yêu cầu đã được gửi cho chủ đề: \"{topic}\". Vui lòng kiểm tra console để biết chi tiết."
-    },
-    "resetButton": "Đặt lại Form",
-    "resetSuccess": "Form đã được đặt lại về giá trị mặc định.",
-    "apiKeyWarning": {
-      "title": "Chưa có API Key",
-      "description": "Bạn chưa thiết lập API Key cho {provider}. Vui lòng vào trang Cài đặt để thêm key.",
-      "goToSettings": "Đi đến Cài đặt"
-    }
-  },
-  "settings": {
-    "title": "Cài đặt",
-    "apiKeys": {
-      "openAI": {
-        "label": "OpenAI API Key",
-        "placeholder": "Nhập API key của bạn (ví dụ: sk-...)"
-      },
-      "gemini": {
-        "label": "Google Gemini API Key",
-        "placeholder": "Nhập API key của bạn"
-      }
-    },
-    "saveButton": "Lưu thay đổi",
-    "saveSuccess": "Đã lưu cài đặt thành công!"
-  },
-  "logViewer": {
-    "autoScroll": "Tự động cuộn",
-    "cardTitle": "Nhật ký ứng dụng",
-    "clear": "Xóa",
-    "close": "Đóng",
-    "empty": "Không có log nào để hiển thị."
-  },
-  "updater": {
-    "updateAvailable": "[Updater] Có bản cập nhật mới {version}",
-    "downloadProgress": "[Updater] Đang tải bản cập nhật: {percent}%",
-    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:",
-    "error": "[Updater] Lỗi cập nhật:",
-    "checking": "[Updater] Đang kiểm tra bản cập nhật..",
-    "checkFailed": "[Updater] Kiểm tra cập nhật thất bại:",
-    "downloadStarted": "[Updater] Bắt đầu tải xuống",
-    "downloadFailed": "[Updater] Tải xuống thất bại:",
-    "quitAndInstall": "[Updater] Thoát và cài đặt"
   }
 }
