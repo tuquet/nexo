@@ -43,6 +43,13 @@ export const overridesPreferences = defineOverridesPreferences({
     enable: true,
   },
   theme: {
-    radius: '0.75',
+    radius: '0.5',
+    semiDarkHeader: true,
+    mode: 'auto',
+    builtinType: 'custom',
+    colorDestructive: 'hsl(348 100% 61%)',
+    colorPrimary: 'hsl(153 71% 40%)',
+    colorSuccess: 'hsla(234, 82%, 43%, 1.00)',
+    colorWarning: 'hsl(42 84% 61%)',
   },
 });

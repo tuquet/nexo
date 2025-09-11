@@ -201,10 +201,20 @@
   },
   "videoDownloader": {
     "actionText": "现在使用",
+    "actions": {
+      "remove": "擦除",
+      "retry": "重新加载"
+    },
     "audioOnly": "仅下载声音（mp3）",
     "browse": "浏览...",
     "cardTitle": "下载下载",
+    "cookieFilePath": {
+      "label": "cookie文件链接",
+      "placeholder": "选择cookies.txt文件（Netscape格式）",
+      "rule": "请选择cookie文件！"
+    },
     "description": "粘贴YouTube视频链接，并以高质量轻松下载计算机。",
+    "downloadPlaylist": "下载所有播放列表/专辑（如果有）",
     "downloadQueueTitle": "迟到下载",
     "notifications": {
       "downloading": "下载：{title}",
@@ -229,15 +239,24 @@
       "label": "视频质量",
       "placeholder": "选择质量（默认是最好的）"
     },
+    "resetForm": "重置",
+    "resetSuccess": "重置默认选项。",
     "startDownload": "开始下载",
+    "status": {
+      "downloading": "下载...",
+      "failed": "失败",
+      "pending": "等待",
+      "success": "成功"
+    },
     "title": "从YouTube下载视频",
     "useBrowserCookies": "使用cookie浏览器（用于视频限制视频）",
-    "viewLogs": "查看日志",
+    "useCookieFile": "使用cookie",
     "videoUrl": {
       "label": "YouTube视频URL",
       "placeholder": "https：//www.Video.com/watch？ V = ...",
       "ruleInvalid": "URL无效！",
       "ruleRequired": "请输入YouTube视频URL！"
-    }
+    },
+    "viewLogs": "查看日志"
   }
 }

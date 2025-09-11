@@ -201,10 +201,20 @@
   },
   "videoDownloader": {
     "actionText": "Use now",
+    "actions": {
+      "remove": "Erase",
+      "retry": "Reload"
+    },
     "audioOnly": "Only download sound (mp3)",
     "browse": "Browse ...",
     "cardTitle": "Download download",
+    "cookieFilePath": {
+      "label": "Cookie file link",
+      "placeholder": "Select Cookies.txt file (Netscape format)",
+      "rule": "Please select the cookie file!"
+    },
     "description": "Paste Video video links and easily download your computer with high quality.",
+    "downloadPlaylist": "Download all playlist/album (if any)",
     "downloadQueueTitle": "Late to download",
     "notifications": {
       "downloading": "Download: {Title}",
@@ -229,15 +239,24 @@
       "label": "Video quality",
       "placeholder": "Choose quality (default is the best)"
     },
+    "resetForm": "Reset",
+    "resetSuccess": "Reset the default options.",
     "startDownload": "Start download",
+    "status": {
+      "downloading": "Downloading ...",
+      "failed": "Failure",
+      "pending": "Waiting",
+      "success": "Success"
+    },
     "title": "Download videos from video",
     "useBrowserCookies": "Use Cookies browser (for video limit videos)",
-    "viewLogs": "View logs",
+    "useCookieFile": "Use Cookie",
     "videoUrl": {
       "label": "videoideo URL",
       "placeholder": "https: //www.videoom/watch? V = ...",
       "ruleInvalid": "The URL is invalid!",
       "ruleRequired": "Please enter videoideo URL!"
-    }
+    },
+    "viewLogs": "View logs"
   }
 }

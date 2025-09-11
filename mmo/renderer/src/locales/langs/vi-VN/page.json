@@ -95,7 +95,7 @@
       "help": "Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.",
       "label": "Mức độ sáng tạo"
     },
-    "title": "Viết kịch bản bằng AI",
+    "title": "Viết kịch bản với AI",
     "topic": {
       "label": "Chủ đề Video / Ý tưởng chính",
       "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
@@ -192,7 +192,7 @@
       "rule": "Vui lòng nhập thời lượng phân đoạn (giây, phải lớn hơn 0)!"
     },
     "startCutting": "Bắt đầu cắt",
-    "title": "Cắt và Chia nhỏ Video Nhanh chóng",
+    "title": "Cắt và Chia nhỏ Video",
     "videoPath": {
       "label": "Đường dẫn Video",
       "placeholder": "Chọn file video để cắt",
@@ -208,9 +208,14 @@
     "audioOnly": "Chỉ tải âm thanh (MP3)",
     "browse": "Duyệt...",
     "cardTitle": "Cấu hình tải xuống",
+    "cookieFilePath": {
+      "label": "Đường dẫn file cookie",
+      "placeholder": "Chọn file cookies.txt (định dạng Netscape)",
+      "rule": "Vui lòng chọn file cookie!"
+    },
     "description": "Dán liên kết video từ Video, Douyin, TikTok, Facebook, v.v. và dễ dàng tải về máy tính của bạn.",
-    "downloadQueueTitle": "Hàng đợi tải xuống",
     "downloadPlaylist": "Tải toàn bộ playlist/album (nếu có)",
+    "downloadQueueTitle": "Hàng đợi tải xuống",
     "notifications": {
       "downloading": "Đang tải: {title}",
       "failed": "Tải xuống thất bại",
@@ -235,27 +240,23 @@
       "placeholder": "Chọn chất lượng (mặc định là tốt nhất)"
     },
     "resetForm": "Đặt lại",
+    "resetSuccess": "Đã đặt lại các tùy chọn về mặc định.",
+    "startDownload": "Bắt đầu tải",
     "status": {
       "downloading": "Đang tải...",
       "failed": "Thất bại",
       "pending": "Đang chờ",
       "success": "Thành công"
     },
-    "resetSuccess": "Đã đặt lại các tùy chọn về mặc định.",
-    "startDownload": "Bắt đầu tải",
     "title": "Tải Video Online",
-    "viewLogs": "Xem Logs",
+    "useBrowserCookies": "Sử dụng Cookie",
     "useCookieFile": "Sử dụng cookie",
-    "cookieFilePath": {
-      "label": "Đường dẫn file cookie",
-      "placeholder": "Chọn file cookies.txt (định dạng Netscape)",
-      "rule": "Vui lòng chọn file cookie!"
-    },
     "videoUrl": {
       "label": "URL Video",
       "placeholder": "Dán URL video tại đây (hỗ trợ Video, Douyin, TikTok, v.v.). Dán mỗi URL trên một dòng.",
       "ruleInvalid": "URL không hợp lệ!",
       "ruleRequired": "Vui lòng nhập URL video!"
-    }
+    },
+    "viewLogs": "Xem Logs"
   }
 }
