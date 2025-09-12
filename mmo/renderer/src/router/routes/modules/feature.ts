@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
         path: '/video-cutter',
         component: () => import('#/views/features/video-cutter.vue'),
         meta: {
-          icon: 'carbon:workspace',
+          icon: 'carbon:cut',
           title: $t('page.videoCutter.title'),
           keepAlive: true,
         },
@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
         path: '/video-downloader',
         component: () => import('#/views/features/video-downloader.vue'),
         meta: {
-          icon: 'ant-design:videoilled',
+          icon: 'carbon:download',
           title: $t('page.videoDownloader.title'),
           keepAlive: true,
         },
@@ -37,7 +37,7 @@ const routes: RouteRecordRaw[] = [
         path: '/ai-script-writer',
         component: () => import('#/views/features/ai-script-writer.vue'),
         meta: {
-          icon: 'ant-design:google-outlined',
+          icon: 'carbon:pen',
           title: $t('page.aiScriptWriter.title'),
           keepAlive: true,
         },

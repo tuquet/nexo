@@ -1,25 +1,39 @@
+<!-- eslint-disable unicorn/prefer-ternary -->
 <script setup lang="ts">
-import type { FormInstance } from 'ant-design-vue';
-import type { Rule } from 'ant-design-vue/es/form';
+import type { VbenFormProps } from '@vben/common-ui';
 
-import { computed, h, onMounted, ref } from 'vue';
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { Page } from '@vben/common-ui';
+import { h, onMounted, ref } from 'vue';
+
+import { Page, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { SendOutlined } from '@ant-design/icons-vue';
 import { useStorage } from '@vueuse/core';
 import {
+  Alert,
   Button,
-  Card,
-  Form,
-  Input,
-  InputNumber,
+  message,
+  Modal,
   notification,
   Progress,
+  Tag,
 } from 'ant-design-vue';
 
+import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { useBinaryManager } from '#/composables/useBinaryManager';
+
+interface CutJob {
+  error?: string;
+  id: string;
+  outputPath: string;
+  progress: number;
+  segmentDuration: number;
+  status: 'canceled' | 'cutting' | 'failed' | 'pending' | 'success';
+  videoName: string;
+  videoPath: string;
+}
 
 const {
   binaryManagerState,
@@ -28,16 +42,11 @@ const {
   binaryManagerModalApi,
 } = useBinaryManager();
 
-const formRef = ref<FormInstance>();
-const loading = ref(false);
-
-// Computed property to disable the form while binaries are not ready
-const isFormDisabled = computed(
-  () => loading.value || !binaryManagerState.isReady,
-);
+const isProcessing = ref(false);
 
 const defaultFormState = {
   videoPath: '',
+  outputMode: 'custom',
   outputPath: '',
   segmentDuration: 5,
 };
@@ -46,131 +55,360 @@ const formState = useStorage('video-cutter-form-state', {
   ...defaultFormState,
 });
 
-const rules = computed((): Record<string, Rule[]> => {
-  return {
-    videoPath: [
-      { required: true, message: $t('page.videoCutter.videoPath.rule') },
-    ],
-    outputPath: [
-      { required: true, message: $t('page.videoCutter.outputPath.rule') },
-    ],
-    segmentDuration: [
-      {
-        required: true,
-        type: 'number',
-        min: 1,
-        message: $t('page.videoCutter.segmentDuration.rule'),
-      },
-    ],
-  };
-});
-
-const handleSelectVideo = async () => {
-  // Gọi IPC để mở hộp thoại chọn file từ tiến trình chính
+async function handleSelectVideo() {
   const path = await window.electron.ipcRenderer.invoke('dialog:select-file');
   if (path) {
-    formState.value.videoPath = path;
-    formRef.value?.validateFields('videoPath');
+    await gridApi.formApi.setValues({ videoPath: path });
   }
-};
+}
 
-const handleSelectOutput = async () => {
-  // Gọi IPC để mở hộp thoại chọn thư mục từ tiến trình chính
+async function handleSelectOutput() {
   const path = await window.electron.ipcRenderer.invoke(
     'dialog:select-directory',
   );
   if (path) {
-    formState.value.outputPath = path;
-    formRef.value?.validateFields('outputPath');
+    await gridApi.formApi.setValues({ outputPath: path });
   }
+}
+
+async function handleReset() {
+  formState.value = { ...defaultFormState };
+  await gridApi.formApi.setValues(formState.value);
+  message.success($t('page.videoDownloader.resetSuccess'));
+}
+
+async function handleSubmit() {
+  if (isProcessing.value) {
+    message.warning($t('page.videoCutter.notifications.processing'));
+    return;
+  }
+
+  const values = await gridApi.formApi.getValues();
+  const videoPath = values.videoPath as string;
+  let outputPath = values.outputPath as string;
+
+  if (values.outputMode === 'sameAsVideo') {
+    // Validation should prevent this, but as a safeguard.
+    if (!videoPath) {
+      return;
+    }
+    const lastDotIndex = videoPath.lastIndexOf('.');
+    // Ensure there's an extension and it's not part of a directory name
+    if (
+      lastDotIndex !== -1 &&
+      lastDotIndex >
+        Math.max(videoPath.lastIndexOf('/'), videoPath.lastIndexOf('\\'))
+    ) {
+      outputPath = videoPath.slice(0, Math.max(0, lastDotIndex));
+    } else {
+      // If no extension is found, use the original path.
+      // The main process will create a directory with this name.
+      outputPath = videoPath;
+    }
+  }
+
+  // Check if the output directory already exists before adding the job
+  const exists = await window.electron.ipcRenderer.invoke(
+    'fs:path-exists',
+    outputPath,
+  );
+  if (exists) {
+    message.error(
+      $t('page.videoCutter.notifications.outputDirExists', {
+        path: outputPath,
+      }),
+    );
+    return;
+  }
+
+  const videoName = videoPath.split(/[/\\]/).pop() || 'Unknown Video';
+
+  const newJob: CutJob = {
+    id: `cut-${Date.now()}`,
+    videoName,
+    videoPath: values.videoPath,
+    outputPath,
+    segmentDuration: values.segmentDuration,
+    status: 'pending',
+    progress: 0,
+  };
+
+  await gridApi.grid?.insertAt(newJob, -1);
+  processJob(newJob);
+}
+
+const formOptions: VbenFormProps = {
+  handleSubmit,
+  handleReset,
+  layout: 'vertical',
+  wrapperClass: 'grid lg:grid-cols-3 gap-x-4',
+  actionLayout: 'newLine',
+  actionWrapperClass: 'mt-3',
+  actionPosition: 'center',
+  compact: true,
+  actionButtonsReverse: true,
+  schema: [
+    {
+      component: 'InputSearch',
+      fieldName: 'videoPath',
+      label: $t('page.videoCutter.videoPath.label'),
+      formItemClass: 'lg:col-span-3',
+      componentProps: {
+        placeholder: $t('page.videoCutter.videoPath.placeholder'),
+        enterButton: $t('page.videoCutter.browse'),
+        readonly: true,
+        onSearch: handleSelectVideo,
+      },
+      rules: z.string().min(1, $t('page.videoCutter.videoPath.rule')),
+    },
+    {
+      component: 'RadioGroup',
+      fieldName: 'outputMode',
+      label: $t('page.videoCutter.outputPath.modeLabel'),
+      formItemClass: 'lg:col-span-3',
+      componentProps: {
+        options: [
+          {
+            label: $t('page.videoCutter.outputPath.options.custom'),
+            value: 'custom',
+          },
+          {
+            label: $t('page.videoCutter.outputPath.options.sameAsVideo'),
+            value: 'sameAsVideo',
+          },
+        ],
+        optionType: 'button',
+        buttonStyle: 'solid',
+      },
+    },
+    {
+      component: 'InputSearch',
+      fieldName: 'outputPath',
+      label: $t('page.videoCutter.outputPath.label'),
+      componentProps: {
+        placeholder: $t('page.videoCutter.outputPath.placeholder'),
+        enterButton: $t('page.videoCutter.browse'),
+        readonly: true,
+        onSearch: handleSelectOutput,
+      },
+      dependencies: {
+        show: (values) => values.outputMode === 'custom',
+        triggerFields: ['outputMode'],
+      },
+      rules: z.string().min(1, $t('page.videoCutter.outputPath.rule')),
+    },
+    {
+      component: 'InputNumber',
+      fieldName: 'segmentDuration',
+      label: $t('page.videoCutter.segmentDuration.label'),
+      componentProps: {
+        min: 1,
+        class: 'w-full',
+        addonAfter: $t('page.videoCutter.segmentDuration.addon'),
+        placeholder: $t('page.videoCutter.segmentDuration.placeholder'),
+      },
+      rules: z.number().min(1, $t('page.videoCutter.segmentDuration.rule')),
+    },
+  ],
+  submitButtonOptions: {
+    innerText: $t('page.videoCutter.startCutting'),
+    slots: {
+      icon: () => h(SendOutlined),
+    },
+  },
+  resetButtonOptions: {
+    innerText: $t('page.videoDownloader.resetForm'),
+  },
+  handleValuesChange(values) {
+    formState.value = values as typeof defaultFormState;
+  },
 };
 
+const gridOptions: VxeGridProps<CutJob> = {
+  autoResize: true,
+  border: true,
+  columns: [
+    {
+      field: 'video',
+      slots: { default: 'video' },
+      title: $t('page.videoCutter.table.video'),
+    },
+    {
+      field: 'outputPath',
+      title: $t('page.videoCutter.table.outputPath'),
+      slots: { default: 'outputPath' },
+      minWidth: 150,
+    },
+    {
+      field: 'status',
+      slots: { default: 'status' },
+      title: $t('page.videoCutter.table.status'),
+      width: 150,
+      align: 'center',
+    },
+    {
+      field: 'action',
+      slots: { default: 'action' },
+      title: $t('page.videoCutter.table.action'),
+      width: 200,
+      align: 'center',
+    },
+  ],
+  data: [],
+  height: 'auto',
+  pagerConfig: { enabled: false },
+  size: 'small',
+  rowConfig: {
+    keyField: 'id',
+  },
+};
+
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions, formOptions });
+
 onMounted(() => {
-  // Kích hoạt kiểm tra công cụ khi component được mount.
-  // Composable sẽ xử lý modal và cập nhật trạng thái.
   ensureBinaries(['ffmpeg', 'ffprobe']);
+  gridApi.formApi.setValues(formState.value);
 });
 
-const onFinish = async () => {
-  loading.value = true;
-  const key = `progress-${Date.now()}`;
-  const progress = ref(0);
-  const progressMessage = ref($t('page.videoCutter.notifications.preparing'));
+async function stopJob(job: CutJob) {
+  // Gửi yêu cầu dừng cắt đến tiến trình main
+  await window.electron.ipcRenderer.invoke('video:stop-cut', job.id);
+}
 
-  // Lắng nghe sự kiện cập nhật tiến trình từ main process
+async function processJob(job: CutJob) {
+  isProcessing.value = true;
+
+  const updateJob = (data: Partial<CutJob>) => {
+    const row = gridApi.grid?.getRowById(job.id);
+    if (row) {
+      Object.assign(row, data);
+    }
+  };
+
+  updateJob({ status: 'cutting' });
+
   const unlistenProgress = window.electron.ipcRenderer.on(
     'video-cutter:progress',
     (
       _event: any,
-      { percent, message: msg }: { message: string; percent: number },
+      { jobId: progressJobId, percent }: { jobId: string; percent: number },
     ) => {
-      progress.value = percent;
-      progressMessage.value = msg;
+      if (job.id === progressJobId) {
+        updateJob({ progress: percent });
+      }
     },
   );
 
-  // Mở thông báo một lần, nó sẽ tự cập nhật nhờ vào reactivity của Vue
-  notification.open({
-    key,
-    message: $t('page.videoCutter.notifications.processing'),
-    description: () =>
-      h('div', [
-        h(Progress, { percent: progress.value, status: 'active' }),
-        h('p', { style: { marginTop: '8px' } }, progressMessage.value),
-      ]),
-    duration: 0,
-  });
-
   try {
     await window.electron.ipcRenderer.invoke('video:cut', {
-      videoPath: formState.value.videoPath,
-      outputPath: formState.value.outputPath,
-      segmentDuration: formState.value.segmentDuration,
+      jobId: job.id,
+      videoPath: job.videoPath,
+      outputPath: job.outputPath,
+      segmentDuration: job.segmentDuration,
     });
 
-    // Cập nhật thông báo hiện tại thành trạng thái thành công và tự động đóng
+    updateJob({ status: 'success', progress: 100 });
     notification.success({
-      key,
       message: $t('page.videoCutter.notifications.complete'),
       description: $t('page.videoCutter.notifications.completeDescription', {
-        path: formState.value.outputPath,
+        path: job.outputPath,
       }),
-      btn: () =>
-        h(
-          Button,
-          {
-            type: 'primary',
-            size: 'small',
-            onClick: () => {
-              // Mở thư mục chứa các file đã cắt
-              window.electron.ipcRenderer.send(
-                'shell:open-path',
-                formState.value.outputPath,
-              );
-            },
-          },
-          // Tái sử dụng key dịch thuật từ màn hình video-downloader
-          () => $t('page.videoDownloader.notifications.openFolder'),
-        ),
-      duration: 10, // Cho người dùng 10 giây để nhấn nút trước khi tự đóng
     });
-    formState.value = { ...defaultFormState };
-    formRef.value?.clearValidate();
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error
-        ? error.message
-        : $t('page.videoCutter.notifications.unknownError');
-    // Cập nhật thông báo hiện tại thành trạng thái lỗi và giữ nó lại
-    notification.error({
-      key,
-      message: $t('page.videoCutter.notifications.failed'),
-      description: errorMessage,
-      duration: 0, // Giữ thông báo lỗi cho đến khi người dùng tự đóng
-    });
+  } catch (error: any) {
+    // Kiểm tra xem có phải lỗi do người dùng hủy không
+    if (error.code === 'CUT_CANCELED') {
+      updateJob({ status: 'canceled', error: error.message });
+    } else {
+      updateJob({ status: 'failed', error: error.message });
+      notification.error({
+        message: $t('page.videoCutter.notifications.failed'),
+        description: error.message,
+      });
+    }
   } finally {
-    loading.value = false;
-    unlistenProgress(); // Dọn dẹp listener
+    isProcessing.value = false;
+    unlistenProgress();
+  }
+}
+
+function removeJob(job: CutJob) {
+  const performRemove = async () => {
+    if (job.status === 'success') {
+      try {
+        await window.electron.ipcRenderer.invoke(
+          'fs:delete-directory',
+          job.outputPath,
+        );
+        message.success($t('page.videoCutter.notifications.directoryDeleted'));
+      } catch (error: any) {
+        message.error(
+          $t('page.videoCutter.notifications.directoryDeleteFailed', {
+            error: error.message,
+          }),
+        );
+        // Do not block removing from list if folder deletion fails
+      }
+    }
+    gridApi.grid?.remove(job);
+  };
+
+  if (job.status === 'success') {
+    Modal.confirm({
+      title: $t('page.videoCutter.confirmDelete.title'),
+      content: $t('page.videoCutter.confirmDelete.content'),
+      okText: $t('page.videoCutter.confirmDelete.okText'),
+      okType: 'danger',
+      cancelText: $t('common.later'),
+      onOk: performRemove,
+    });
+  } else {
+    gridApi.grid?.remove(job);
+  }
+}
+
+function retryJob(job: CutJob) {
+  if (isProcessing.value) {
+    message.warning($t('page.videoCutter.notifications.processing'));
+    return;
+  }
+  const row = gridApi.grid?.getRowById(job.id);
+  if (row) {
+    const newJobState = {
+      ...row,
+      status: 'pending',
+      progress: 0,
+      error: undefined,
+    };
+    // We need to update the row in place before processing
+    Object.assign(row, newJobState);
+    processJob(row);
+  }
+}
+
+function openFolder(path: string) {
+  window.electron.ipcRenderer.send('shell:open-path', path);
+}
+
+const getStatusColor = (status: CutJob['status']) => {
+  switch (status) {
+    case 'canceled': {
+      return 'warning';
+    }
+    case 'cutting': {
+      return 'processing';
+    }
+    case 'failed': {
+      return 'error';
+    }
+    case 'pending': {
+      return 'default';
+    }
+    case 'success': {
+      return 'success';
+    }
+    default: {
+      return 'default';
+    }
   }
 };
 </script>
@@ -179,87 +417,100 @@ const onFinish = async () => {
   <Page
     :title="$t('page.videoCutter.title')"
     :description="$t('page.videoCutter.description')"
+    :auto-content-height="true"
   >
-    <BinaryManagerModal
-      :title="$t('page.binaryManager.preparing')"
-      :show-confirm-button="binaryManagerState.status === 'error'"
-      :confirm-text="$t('page.common.ok')"
-      @confirm="() => binaryManagerModalApi.close()"
-    >
-      <div class="p-4 text-center">
-        <p>{{ binaryManagerState.message }}</p>
-        <Progress
-          v-if="binaryManagerState.status === 'downloading'"
-          :percent="binaryManagerState.percent"
-          class="mt-4"
-          status="active"
-        />
-      </div>
-    </BinaryManagerModal>
-    <Card :title="$t('page.videoCutter.cardTitle')">
-      <Form
-        ref="formRef"
-        :model="formState"
-        :rules="rules"
-        layout="vertical"
-        :disabled="isFormDisabled"
-        @finish="onFinish"
-      >
-        <Form.Item
-          :label="$t('page.videoCutter.videoPath.label')"
-          name="videoPath"
+    <Grid>
+      <template #outputPath="{ row: record }">
+        <a
+          v-if="record.status === 'success'"
+          class="cursor-pointer text-blue-500 hover:underline"
+          :title="record.outputPath"
+          @click="openFolder(record.outputPath)"
         >
-          <Input.Search
-            v-model:value="formState.videoPath"
-            :placeholder="$t('page.videoCutter.videoPath.placeholder')"
-            :enter-button="$t('page.videoCutter.browse')"
-            readonly
-            @search="handleSelectVideo"
-          />
-        </Form.Item>
-
-        <Form.Item
-          :label="$t('page.videoCutter.outputPath.label')"
-          name="outputPath"
-        >
-          <Input.Search
-            v-model:value="formState.outputPath"
-            :placeholder="$t('page.videoCutter.outputPath.placeholder')"
-            :enter-button="$t('page.videoCutter.browse')"
-            readonly
-            @search="handleSelectOutput"
-          />
-        </Form.Item>
-
-        <Form.Item
-          :label="$t('page.videoCutter.segmentDuration.label')"
-          name="segmentDuration"
-        >
-          <InputNumber
-            v-model:value="formState.segmentDuration"
-            :placeholder="$t('page.videoCutter.segmentDuration.placeholder')"
-            class="w-full"
-            :min="1"
-            :addon-after="$t('page.videoCutter.segmentDuration.addon')"
-          />
-        </Form.Item>
-
-        <Form.Item>
+          {{ record.outputPath }}
+        </a>
+        <span v-else :title="record.outputPath">{{ record.outputPath }}</span>
+      </template>
+      <template #video="{ row: record }">
+        <div>
+          <p class="font-semibold" :title="record.videoName">
+            {{ record.videoName }}
+          </p>
+          <p class="text-xs text-gray-500" :title="record.videoPath">
+            {{ record.videoPath }}
+          </p>
+        </div>
+      </template>
+      <template #status="{ row: record }">
+        <div v-if="record.status === 'cutting'">
+          <Progress :percent="record.progress" />
+        </div>
+        <div v-else-if="record.status === 'failed' && record.error">
+          <Alert type="error" :message="record.error" />
+        </div>
+        <Tag v-else :color="getStatusColor(record.status)">
+          {{ $t(`page.videoCutter.status.${record.status}`) }}
+        </Tag>
+      </template>
+      <template #action="{ row: record }">
+        <div class="flex flex-wrap items-center justify-center gap-2">
           <Button
-            type="primary"
-            html-type="submit"
-            :loading="loading"
-            size="large"
-            block
+            v-if="record.status === 'cutting'"
+            danger
+            size="small"
+            @click="stopJob(record)"
           >
-            <template #icon>
-              <SendOutlined />
-            </template>
-            {{ $t('page.videoCutter.startCutting') }}
+            {{ $t('page.videoDownloader.actions.stop') }}
           </Button>
-        </Form.Item>
-      </Form>
-    </Card>
+          <Button
+            v-if="record.status === 'success'"
+            type="primary"
+            size="small"
+            @click="openFolder(record.outputPath)"
+          >
+            {{ $t('page.videoDownloader.notifications.openFolder') }}
+          </Button>
+          <Button
+            v-if="record.status === 'failed'"
+            size="small"
+            @click="retryJob(record)"
+          >
+            {{ $t('page.videoDownloader.actions.retry') }}
+          </Button>
+          <Button
+            v-if="
+              ['pending', 'success', 'failed', 'canceled'].includes(
+                record.status,
+              )
+            "
+            type="dashed"
+            danger
+            size="small"
+            @click="removeJob(record)"
+          >
+            {{ $t('page.videoDownloader.actions.remove') }}
+          </Button>
+        </div>
+      </template>
+    </Grid>
+    <template #footer>
+      <BinaryManagerModal
+        :title="$t('page.binaryManager.preparing')"
+        :show-confirm-button="binaryManagerState.status === 'error'"
+        :confirm-text="$t('page.common.ok')"
+        @confirm="() => binaryManagerModalApi.close()"
+      >
+        <div class="p-4 text-center">
+          <p>{{ binaryManagerState.message }}</p>
+          <Progress
+            v-if="binaryManagerState.status === 'downloading'"
+            :percent="binaryManagerState.percent"
+            class="mt-4"
+            status="active"
+          />
+        </div>
+      </BinaryManagerModal>
+    </template>
   </Page>
 </template>
 

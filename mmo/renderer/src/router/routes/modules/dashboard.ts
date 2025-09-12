@@ -5,7 +5,7 @@ import { $t } from '#/locales';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'lucide:layout-dashboard',
+      icon: 'carbon:home',
       order: -1,
       title: $t('page.dashboard.home'),
     },
@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/dashboard/home/index.vue'),
         meta: {
           affixTab: false,
-          icon: 'carbon:workspace',
+          icon: 'carbon:home',
           title: $t('page.dashboard.workspace'),
           hideInMenu: true,
           hideInMenuTab: true,
@@ -46,7 +46,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/dashboard/home/index.vue'),
         meta: {
           affixTab: true,
-          icon: 'carbon:workspace',
+          icon: 'carbon:home',
           title: $t('page.dashboard.home'),
           hideInMenu: true,
           hideInMenuTab: true,
@@ -60,9 +60,8 @@ const routes: RouteRecordRaw[] = [
     name: 'Settings',
     component: () => import('#/views/dashboard/settings/index.vue'),
     meta: {
-      // Sử dụng icon từ thư viện icon của bạn, ví dụ: Ant Design Icons
-      icon: 'carbon:ibm-cloud-sysdig-secure',
-      title: $t('page.settings.title'),
+      icon: 'carbon:ibm-cloud-hyper-protect-crypto-services',
+      title: $t('page.configs.title'),
     },
   },
 ];

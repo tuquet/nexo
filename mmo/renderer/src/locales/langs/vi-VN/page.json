@@ -123,6 +123,9 @@
     "later": "Để sau",
     "ok": "Đồng ý"
   },
+  "configs": {
+    "title": "Cấu hình"
+  },
   "dashboard": {
     "analytics": "Phân tích",
     "home": "Trang chủ",
@@ -164,8 +167,6 @@
     "downloadStarted": "[Updater] Bắt đầu tải xuống",
     "error": "[Updater] Lỗi cập nhật:",
     "quitAndInstall": "[Updater] Thoát và cài đặt",
-    "updateAvailable": "[Updater] Có bản cập nhật mới {version}",
-    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:",
     "ui": {
       "checkingForUpdate": "Đang kiểm tra cập nhật...",
       "clearAndRecheck": "Xóa cache & Tải lại",
@@ -177,37 +178,45 @@
       "errorMessage": "Đã xảy ra lỗi: {error}",
       "newVersionReady": "Phiên bản mới {version} đã sẵn sàng!",
       "releaseDate": "Phát hành ngày:",
-      "restartAndInstall": "Khởi động lại & Cài đặt",
-      "viewOnGithub": "Xem danh sách phiên bản trên GitHub",
       "releaseType": {
         "prerelease": "Bản thử nghiệm",
         "stable": "Bản chính thức"
-      }
-    }
+      },
+      "restartAndInstall": "Khởi động lại & Cài đặt",
+      "viewOnGithub": "Xem danh sách phiên bản trên GitHub"
+    },
+    "updateAvailable": "[Updater] Có bản cập nhật mới {version}",
+    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:"
   },
   "videoCutter": {
     "actionText": "Sử dụng ngay",
     "browse": "Duyệt...",
     "cardTitle": "Cấu hình cắt video",
+    "confirmDelete": {
+      "content": "Bạn có chắc chắn muốn xóa mục này và tất cả các file đã cắt trong thư mục đầu ra không? Hành động này không thể hoàn tác.",
+      "okText": "Xóa",
+      "title": "Xác nhận xóa"
+    },
     "description": "Cắt video dài thành nhiều clip ngắn đầy ý nghĩa, chọn đoạn yêu thích và chia sẻ nhanh chóng chỉ trong vài giây với thao tác cực kỳ đơn giản.",
     "notifications": {
       "addedToQueue": "Đã thêm vào hàng đợi cắt video.",
       "complete": "Hoàn thành",
       "completeDescription": "Video đã được cắt và lưu thành công trong thư mục \"{path}\".",
-      "directoryDeleted": "Đã xóa thư mục và các file bên trong.",
       "directoryDeleteFailed": "Xóa thư mục thất bại: {error}",
+      "directoryDeleted": "Đã xóa thư mục và các file bên trong.",
       "failed": "Xử lý thất bại",
+      "outputDirExists": "Thư mục đầu ra \"{path}\" đã tồn tại. Vui lòng chọn một thư mục khác.",
       "preparing": "Đang chuẩn bị cắt video...",
       "processing": "Đang xử lý video...",
       "unknownError": "Đã xảy ra lỗi không xác định"
     },
-    "confirmDelete": {
-      "title": "Xác nhận xóa",
-      "content": "Bạn có chắc chắn muốn xóa mục này và tất cả các file đã cắt trong thư mục đầu ra không? Hành động này không thể hoàn tác.",
-      "okText": "Xóa"
-    },
     "outputPath": {
-      "label": "Nơi lưu",
+      "label": "Thư mục lưu tùy chỉnh",
+      "modeLabel": "Tùy chọn nơi lưu",
+      "options": {
+        "custom": "Tùy chỉnh",
+        "sameAsVideo": "Tạo thư mục từ tên video"
+      },
       "placeholder": "Chọn thư mục để lưu các video đã cắt",
       "rule": "Vui lòng chọn đường dẫn lưu!"
     },
@@ -241,31 +250,23 @@
   "videoDownloader": {
     "actionText": "Sử dụng ngay",
     "actions": {
+      "redownload": "Tải lại",
       "remove": "Xóa",
       "retry": "Tải lại",
-      "stop": "Dừng",
-      "redownload": "Tải lại"
-    },
-    "errors": {
-      "HTTP_403_FORBIDDEN": "Lấy thông tin thất bại (Lỗi 403: Bị cấm). Cookie bạn cung cấp có thể không hợp lệ hoặc đã hết hạn. Vui lòng thử xuất lại file cookie và thử lại.",
-      "COOKIES_NEEDED": "Trang web này yêu cầu cookie để tiếp tục. Vui lòng bật tùy chọn 'Sử dụng cookie' và cung cấp file cookies.txt hợp lệ.",
-      "UNSUPPORTED_URL": "URL không được hỗ trợ. Vui lòng đảm bảo bạn đã sao chép đúng đường dẫn trực tiếp của video (ví dụ: https://www.douyin.com/video/...). Các đường dẫn dạng 'jingxuan' hoặc 'modal' có thể không hoạt động.",
-      "AUTH_REQUIRED": "Tải xuống thất bại. Video có thể bị giới hạn độ tuổi hoặc riêng tư. Hãy thử sử dụng tùy chọn cookie với tài khoản đã đăng nhập.",
-      "DOWNLOAD_FAILED": "Tải xuống thất bại. Vui lòng kiểm tra log để biết chi tiết.",
-      "UNKNOWN_ERROR": "Đã xảy ra lỗi không xác định"
-    },
-    "confirmDelete": {
-      "title": "Xác nhận xóa",
-      "content": "Bạn có chắc chắn muốn xóa mục này và file đã tải xuống không? Hành động này không thể hoàn tác.",
-      "okText": "Xóa"
+      "stop": "Dừng"
     },
     "audioOnly": "Chỉ tải âm thanh (MP3)",
     "browse": "Duyệt...",
-    "concurrentDownloads": {
-      "label": "Số lượt tải đồng thời",
-      "help": "Giới hạn số lượng video được tải xuống cùng một lúc. Form sẽ bị khóa khi có tác vụ đang chạy."
-    },
     "cardTitle": "Cấu hình tải xuống",
+    "concurrentDownloads": {
+      "help": "Giới hạn số lượng video được tải xuống cùng một lúc. Form sẽ bị khóa khi có tác vụ đang chạy.",
+      "label": "Số lượt tải đồng thời"
+    },
+    "confirmDelete": {
+      "content": "Bạn có chắc chắn muốn xóa mục này và file đã tải xuống không? Hành động này không thể hoàn tác.",
+      "okText": "Xóa",
+      "title": "Xác nhận xóa"
+    },
     "cookieFilePath": {
       "label": "Đường dẫn file cookie",
       "placeholder": "Chọn file cookies.txt (định dạng Netscape)",
@@ -274,22 +275,30 @@
     "description": "Dán liên kết từ YouTube, Douyin, TikTok, Facebook và hơn 1000 site khác để tải video trực tiếp về máy tính của bạn nhanh gọn và dễ dàng.",
     "downloadPlaylist": "Tải toàn bộ playlist/album (nếu có)",
     "downloadQueueTitle": "Hàng đợi tải xuống",
+    "errors": {
+      "AUTH_REQUIRED": "Tải xuống thất bại. Video có thể bị giới hạn độ tuổi hoặc riêng tư. Hãy thử sử dụng tùy chọn cookie với tài khoản đã đăng nhập.",
+      "COOKIES_NEEDED": "Trang web này yêu cầu cookie để tiếp tục. Vui lòng bật tùy chọn 'Sử dụng cookie' và cung cấp file cookies.txt hợp lệ.",
+      "DOWNLOAD_FAILED": "Tải xuống thất bại. Vui lòng kiểm tra log để biết chi tiết.",
+      "HTTP_403_FORBIDDEN": "Lấy thông tin thất bại (Lỗi 403: Bị cấm). Cookie bạn cung cấp có thể không hợp lệ hoặc đã hết hạn. Vui lòng thử xuất lại file cookie và thử lại.",
+      "UNKNOWN_ERROR": "Đã xảy ra lỗi không xác định",
+      "UNSUPPORTED_URL": "URL không được hỗ trợ. Vui lòng đảm bảo bạn đã sao chép đúng đường dẫn trực tiếp của video (ví dụ: https://www.douyin.com/video/...). Các đường dẫn dạng 'jingxuan' hoặc 'modal' có thể không hoạt động."
+    },
     "notifications": {
       "downloading": "Đang tải: {title}",
       "failed": "Tải xuống thất bại",
       "failedDescription": "Đã xảy ra lỗi trong quá trình tải xuống. Kiểm tra logs để biết thêm chi tiết.",
-      "fetchUrlError": "Lỗi với URL: {url}. {error}",
       "fetchError": "Lỗi khi lấy thông tin video: {error}",
+      "fetchUrlError": "Lỗi với URL: {url}. {error}",
       "fetching": "Đang lấy thông tin video...",
+      "fileDeleteFailed": "Xóa file thất bại: {error}",
+      "fileDeleted": "Đã xóa file thành công.",
       "openFile": "Mở file",
       "openFolder": "Mở thư mục",
       "preparing": "Đang chuẩn bị tải",
       "started": "Bắt đầu tải: {title} ({key})",
       "starting": "Bắt đầu tải...",
       "success": "Tải xuống thành công: {title}",
-      "successDescription": "Video đã được lưu tại: {filePath}",
-      "fileDeleted": "Đã xóa file thành công.",
-      "fileDeleteFailed": "Xóa file thất bại: {error}"
+      "successDescription": "Video đã được lưu tại: {filePath}"
     },
     "outputPath": {
       "label": "Nơi lưu",
