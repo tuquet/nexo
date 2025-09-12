@@ -1171,6 +1171,9 @@ importers:
       fs-extra:
         specifier: ^11.3.1
         version: 11.3.1
+      p-queue:
+        specifier: ^8.1.1
+        version: 8.1.1
     devDependencies:
       '@electron-toolkit/eslint-config-prettier':
         specifier: 3.0.0
@@ -1292,6 +1295,12 @@ importers:
       dompurify:
         specifier: ^3.2.6
         version: 3.2.6
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
+      p-queue:
+        specifier: ^8.1.1
+        version: 8.1.1
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.20(typescript@5.9.2))
@@ -8800,6 +8809,10 @@ packages:
 
   p-map@7.0.3:
     resolution: {integrity: sha512-VkndIv2fIB99swvQoA65bm+fsmt6UNdGeIB0oxBs+WhAhdh08QA04JXpI7rbB9r08/nkbysKoya9rtDERYOYMA==}
+    engines: {node: '>=18'}
+
+  p-queue@8.1.1:
+    resolution: {integrity: sha512-aNZ+VfjobsWryoiPnEApGGmf5WmNsCo9xu8dfaYamG5qaLP7ClhLN6NgsFe6SwJ2UbLEBK5dv9x8Mn5+RVhMWQ==}
     engines: {node: '>=18'}
 
   p-timeout@6.1.4:
@@ -19423,6 +19436,11 @@ snapshots:
       aggregate-error: 3.1.0
 
   p-map@7.0.3: {}
+
+  p-queue@8.1.1:
+    dependencies:
+      eventemitter3: 5.0.1
+      p-timeout: 6.1.4
 
   p-timeout@6.1.4: {}
 

@@ -15,3 +15,11 @@ export const MdiQqchat = createIconifyIcon('mdi:qqchat');
 export const RiDingding = createIconifyIcon('ri:dingding-fill');
 
 export const CarbonTerminal = createIconifyIcon('carbon:terminal');
+
+export const CarbonDebug = createIconifyIcon('carbon:debug');
+
+export const CarbonCloudDownload = createIconifyIcon('carbon:cloud-download');
+
+export const CarbonCicsProgram = createIconifyIcon('carbon:cics-program');
+
+export const CarbonDownload = createIconifyIcon('carbon:download');

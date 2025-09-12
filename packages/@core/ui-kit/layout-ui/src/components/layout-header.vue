@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue';
+import type { CSSProperties, VNode } from 'vue';
 
-import { computed, useSlots } from 'vue';
+import { Comment, computed, Fragment, Text, useSlots } from 'vue';
 
 interface Props {
   /**
@@ -53,6 +53,30 @@ const style = computed((): CSSProperties => {
   };
 });
 
+/**
+ * Checks if a slot has any actual renderable nodes, ignoring comments,
+ * empty text nodes, and empty fragments.
+ */
+function hasVisibleContent(slot: ((...args: any[]) => VNode[]) | undefined) {
+  if (!slot) {
+    return false;
+  }
+  return slot().some((vnode: VNode) => {
+    if (vnode.type === Comment) {
+      return false;
+    }
+    if (vnode.type === Text && `${vnode.children}`.trim() === '') {
+      return false;
+    }
+    if (vnode.type === Fragment && (vnode.children as VNode[]).length === 0) {
+      return false;
+    }
+    return true;
+  });
+}
+
+const hasLogoContent = computed(() => hasVisibleContent(slots.logo));
+
 const logoStyle = computed((): CSSProperties => {
   return {
     minWidth: `${props.isMobile ? 40 : props.sidebarWidth}px`,
@@ -66,7 +90,7 @@ const logoStyle = computed((): CSSProperties => {
     :style="style"
     class="border-border bg-header top-0 flex w-full flex-[0_0_auto] items-center border-b pl-2 transition-[margin-top] duration-200"
   >
-    <div v-if="slots.logo" :style="logoStyle">
+    <div v-if="hasLogoContent" :style="logoStyle">
       <slot name="logo"></slot>
     </div>
 

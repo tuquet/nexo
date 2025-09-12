@@ -122,7 +122,7 @@ export function videoCutter(ipc: IpcMain): void {
           // Count how many times a new file is created to estimate progress
           if (text.includes('Opening') && text.includes('for writing')) {
             segmentsDone++
-            const percent = Math.min(99, Math.round((segmentsDone / totalSegments) * 100))
+            const percent = Math.min(100, Math.round((segmentsDone / totalSegments) * 100))
             mainWindow.webContents.send('video-cutter:progress', {
               percent,
               message: `Đang xử lý phân đoạn ${segmentsDone} của ${totalSegments}...`

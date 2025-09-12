@@ -19,12 +19,17 @@ export const ALL_LOG_LEVELS: LogEntry['level'][] = [
   'info',
   'warn',
   'error',
-  'verbose',
   'silly',
+  'verbose',
   'debug',
 ];
 
-export const DEFAULT_LOG_LEVEL: LogEntry['level'][] = ['info', 'warn', 'error'];
+export const DEFAULT_LOG_LEVEL: LogEntry['level'][] = [
+  'info',
+  'warn',
+  'error',
+  'silly',
+];
 
 /**
  * Store quản lý trạng thái và dữ liệu cho trình xem log (LogViewer).

@@ -84,5 +84,13 @@ export const useSettingsStore = defineStore('settings', () => {
     }
   }
 
-  return { apiKeys, loading, fetchApiKeys, saveApiKeys, fetchSingleApiKey };
+  function $reset() {}
+  return {
+    apiKeys,
+    loading,
+    fetchApiKeys,
+    saveApiKeys,
+    fetchSingleApiKey,
+    $reset,
+  };
 });

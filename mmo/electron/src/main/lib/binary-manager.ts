@@ -36,7 +36,7 @@ interface IBinaryManifest {
 
 /**
  * Lấy tên file tương ứng với hệ điều hành.
- * @param binaryName Tên của tệp nhị phân (ví dụ: 'ffmpeg').
+ * @param binaryName Tên của công cụ (ví dụ: 'ffmpeg').
  * @returns Tên file đầy đủ (ví dụ: 'ffmpeg.exe' trên Windows).
  */
 function getBinaryFilename(binaryName: BinaryName): string {
@@ -44,7 +44,7 @@ function getBinaryFilename(binaryName: BinaryName): string {
 }
 
 /**
- * Kiểm tra xem tất cả các tệp nhị phân cần thiết có tồn tại và có thể thực thi không.
+ * Kiểm tra xem tất cả các công cụ cần thiết có tồn tại và có thể thực thi không.
  * @returns Promise trả về true nếu có, false nếu không.
  */
 async function checkBinariesExist(): Promise<boolean> {
@@ -55,12 +55,10 @@ async function checkBinariesExist(): Promise<boolean> {
       await fs.access(filePath, fs.constants.X_OK) // Kiểm tra quyền thực thi
       binaryPaths[name] = filePath // Lưu đường dẫn vào cache
     }
-    log.info(
-      '[BinaryManager] Tất cả tệp nhị phân đã được tìm thấy và có thể thực thi.' + binariesPath
-    )
+    log.debug('[BinaryManager] Tất cả công cụ đã được tìm thấy và có thể thực thi.' + binariesPath)
     return true
   } catch {
-    log.warn('[BinaryManager] Một hoặc nhiều tệp nhị phân bị thiếu hoặc không thể thực thi.')
+    log.warn('[BinaryManager] Một hoặc nhiều công cụ bị thiếu hoặc không thể thực thi.')
     return false
   }
 }
@@ -86,7 +84,7 @@ function getLatestFfbinariesVersion(): Promise<string> {
 }
 
 /**
- * Tải các tệp nhị phân cần thiết ('ffmpeg', 'ffprobe') bằng ffbinaries.
+ * Tải các công cụ cần thiết ('ffmpeg', 'ffprobe') bằng ffbinaries.
  * Gửi tiến trình về cho tiến trình renderer.
  */
 async function downloadBinaries(versionToDownload: string): Promise<void> {
@@ -115,12 +113,12 @@ async function downloadBinaries(versionToDownload: string): Promise<void> {
       },
       async (err) => {
         if (err) {
-          log.error('[BinaryManager] Tải tệp nhị phân thất bại:', err)
+          log.error('[BinaryManager] Tải công cụ thất bại:', err)
           mainWindow?.webContents.send('binary-manager:status', {
             status: 'error',
             key: 'page.binaryManager.status.error'
           })
-          return reject(new Error('Tải tệp nhị phân thất bại.'))
+          return reject(new Error('Tải công cụ thất bại.'))
         }
 
         // Sau khi tải xong, ghi lại phiên bản vào manifest
@@ -142,7 +140,7 @@ async function downloadBinaries(versionToDownload: string): Promise<void> {
 
 /**
  * Đảm bảo ffmpeg và ffprobe có sẵn, tải chúng nếu cần.
- * @returns Promise trả về một object chứa đường dẫn đến các tệp nhị phân.
+ * @returns Promise trả về một object chứa đường dẫn đến các công cụ.
  */
 export async function ensureBinaries(): Promise<Record<BinaryName, string>> {
   let shouldDownload = false
@@ -151,7 +149,7 @@ export async function ensureBinaries(): Promise<Record<BinaryName, string>> {
 
   if (!filesExist) {
     shouldDownload = true
-    log.info('[BinaryManager] Không tìm thấy tệp nhị phân. Bắt đầu tải.')
+    log.info('[BinaryManager] Không tìm thấy công cụ. Bắt đầu tải.')
   } else {
     // File tồn tại, kiểm tra phiên bản
     try {
@@ -167,8 +165,8 @@ export async function ensureBinaries(): Promise<Record<BinaryName, string>> {
         // Dọn dẹp các file cũ trước khi tải
         await fs.rm(binariesPath, { recursive: true, force: true })
       } else {
-        log.info(
-          `[BinaryManager] Các tệp nhị phân đã ở phiên bản mới nhất (Version: ${latestVersion}).`
+        log.debug(
+          `[BinaryManager] Các công cụ đã ở phiên bản mới nhất (Version: ${latestVersion}).`
         )
       }
     } catch (error) {
@@ -192,7 +190,7 @@ export async function ensureBinaries(): Promise<Record<BinaryName, string>> {
     await downloadBinaries(latestVersion)
     const finalCheck = await checkBinariesExist()
     if (!finalCheck) {
-      throw new Error('Không tìm thấy tệp nhị phân ngay cả sau khi đã thử tải.')
+      throw new Error('Không tìm thấy công cụ ngay cả sau khi đã thử tải.')
     }
   }
   return binaryPaths as Record<BinaryName, string>

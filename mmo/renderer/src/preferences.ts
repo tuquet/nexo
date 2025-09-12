@@ -14,16 +14,20 @@ export const overridesPreferences = defineOverridesPreferences({
     authPageLayout: 'panel-center',
     loginExpiredMode: 'modal',
     defaultHomePath: '/home',
-    enablePreferences: true,
+    enablePreferences: import.meta.env.DEV,
     defaultAvatar: 'https://cdn-icons-png.flaticon.com/128/3906/3906577.png',
+    enableCheckUpdates: false,
   },
   sidebar: {
     collapsed: true,
+    collapsedButton: false,
+    fixedButton: false,
   },
   logo: {
-    enable: true,
+    enable: false,
     source:
       'https://unpkg.com/@tfsoft/static-source@1.0.0/static/logo-square.png',
+    fit: 'cover',
   },
   copyright: {
     companyName: 'tfsoftware',
@@ -38,6 +42,8 @@ export const overridesPreferences = defineOverridesPreferences({
     fullscreen: false,
     themeToggle: true,
     lockScreen: false,
+    notification: false,
+    globalSearch: true,
   },
   footer: {
     enable: true,
@@ -49,7 +55,11 @@ export const overridesPreferences = defineOverridesPreferences({
     builtinType: 'custom',
     colorDestructive: 'hsl(348 100% 61%)',
     colorPrimary: 'hsl(153 71% 40%)',
-    colorSuccess: 'hsla(234, 82%, 43%, 1.00)',
+    colorSuccess: 'hsla(166, 100%, 38%, 1.00)',
     colorWarning: 'hsl(42 84% 61%)',
+  },
+  tabbar: {
+    enable: false,
+    middleClickToClose: true,
   },
 });

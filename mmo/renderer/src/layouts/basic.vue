@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { useWatermark } from '@vben/hooks';
-import { CarbonTerminal, CircleHelp } from '@vben/icons';
+import { CarbonCicsProgram, CarbonDownload, CircleHelp } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -12,15 +12,19 @@ import {
   UserDropdown,
 } from '@vben/layouts';
 import { $t } from '@vben/locales';
-import { preferences } from '@vben/preferences';
+import {
+  clearPreferencesCache,
+  preferences,
+  resetPreferences,
+} from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
 
-import { CloudDownloadOutlined } from '@ant-design/icons-vue';
-import { FloatButton } from 'ant-design-vue';
+import { useMagicKeys, whenever } from '@vueuse/core';
+import { Badge, Button, Popconfirm, Tooltip } from 'ant-design-vue';
 
-import AppUpdater from '#/components/AppUpdater.vue'; // This component is self-contained
-import LogViewer from '#/components/LogViewer.vue'; // This component is now self-contained
+import AppUpdater from '#/components/AppUpdater.vue';
+import LogViewer from '#/components/LogViewer.vue';
 import {
   useAuthStore,
   useLoggerStore,
@@ -38,25 +42,10 @@ const loggerStore = useLoggerStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
 const route = useRoute();
 const isDev = import.meta.env.DEV;
+
+const popconfirmVisible = ref(false);
+
 const menus = computed(() => [
-  // {
-  //   handler: () => {
-  //     openWindow(VBEN_DOC_URL, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: BookOpenText,
-  //   text: $t('ui.widgets.document'),
-  // },
-  // {
-  //   handler: () => {
-  //     openWindow(VBEN_GITHUB_URL, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: MdiGithub,
-  //   text: 'GitHub',
-  // },
   {
     handler: () => {
       openWindow('https://www.facebook.com/profile.php?id=61580420255865', {
@@ -66,16 +55,19 @@ const menus = computed(() => [
     icon: CircleHelp,
     text: $t('ui.widgets.qa'),
   },
+  {
+    divider: true,
+  },
 ]);
 
 const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
 
-const appUpdaterRef = ref<InstanceType<typeof AppUpdater> | null>(null);
-
 async function handleLogout() {
   await authStore.logout(false);
+  await resetPreferences();
+  await clearPreferencesCache();
 }
 
 function handleViewAllNotifications() {
@@ -97,10 +89,85 @@ watch(
     immediate: true,
   },
 );
+
+watch(
+  () => updaterStore.updateState,
+  (newState) => {
+    if (newState === 'available') {
+      popconfirmVisible.value = true;
+    }
+  },
+);
+
+// --- Phím tắt toàn cục cho Log Viewer ---
+// Đặt ở đây để đảm bảo nó được đăng ký một lần và luôn hoạt động
+const keys = useMagicKeys();
+// Theo cài đặt trong preferences/blocks/shortcut-keys/global.vue, phím tắt là Alt+V
+const toggleLoggerShortcut = keys['alt+v'];
+
+whenever(toggleLoggerShortcut!, () => {
+  loggerStore.toggleLogViewer();
+});
 </script>
 
 <template>
   <BasicLayout @clear-preferences-and-logout="handleLogout">
+    <template #header-right-51-updater>
+      <Popconfirm
+        v-if="
+          updaterStore.updateState === 'available' ||
+          updaterStore.updateState === 'downloaded' ||
+          updaterStore.updateState === 'downloading'
+        "
+        v-model:open="popconfirmVisible"
+        cancel-text="Để sau"
+        ok-text="Xem ngay"
+        placement="bottomRight"
+        :trigger="updaterStore.updateState === 'downloading' ? [] : 'hover'"
+        @confirm="updaterStore.toggleUpdaterViewer(true)"
+      >
+        <template #title>
+          <template v-if="updaterStore.updateState === 'available'">
+            <p class="font-semibold">Đã có phiên bản mới!</p>
+            <p>
+              Cập nhật lên phiên bản
+              <strong>{{ updaterStore.updateInfo?.version }}</strong>
+              để trải nghiệm.
+            </p>
+          </template>
+          <template v-if="updaterStore.updateState === 'downloaded'">
+            <p class="font-semibold">Cập nhật đã sẵn sàng!</p>
+            <p>Khởi động lại ứng dụng để hoàn tất.</p>
+          </template>
+        </template>
+        <Badge dot :offset="[-5, 5]">
+          <Button
+            shape="circle"
+            type="text"
+            @click="updaterStore.toggleUpdaterViewer(true)"
+          >
+            <template #icon>
+              <CarbonDownload class="text-foreground text-[18px]" />
+            </template>
+          </Button>
+        </Badge>
+      </Popconfirm>
+    </template>
+    <template #header-right-52-terminal>
+      <Tooltip :title="`${$t('page.logViewer.cardTitle')} (Alt+V)`">
+        <Badge dot :offset="[-5, 5]">
+          <Button
+            type="text"
+            shape="circle"
+            @click="loggerStore.toggleLogViewer()"
+          >
+            <template #icon>
+              <CarbonCicsProgram class="text-foreground text-[18px]" />
+            </template>
+          </Button>
+        </Badge>
+      </Tooltip>
+    </template>
     <template #user-dropdown>
       <UserDropdown
         :avatar
@@ -127,48 +194,14 @@ watch(
       >
         <LoginForm />
       </AuthenticationLoginExpiredModal>
-      <AppUpdater ref="appUpdaterRef" />
-      <LogViewer />
-
-      <!-- Nhóm các nút chức năng nổi -->
-      <FloatButton.Group shape="square" :right="24" :bottom="100">
-        <!-- Nút cập nhật, chỉ hiển thị khi có bản cập nhật -->
-        <FloatButton
-          v-if="
-            updaterStore.updateState === 'available' ||
-            updaterStore.updateState === 'downloaded'
-          "
-          :badge="{ dot: true }"
-          :tooltip="
-            updaterStore.updateState === 'available'
-              ? `Cập nhật lên phiên bản ${updaterStore.updateInfo?.version}`
-              : 'Cập nhật đã sẵn sàng, khởi động lại ngay!'
-          "
-          type="primary"
-          @click="appUpdaterRef?.open()"
-        >
-          <template #icon><CloudDownloadOutlined /></template>
-        </FloatButton>
-
-        <!-- Nút xem Log -->
-        <FloatButton
-          :tooltip="loggerStore.logViewerVisible ? 'Ẩn nhật ký' : 'Xem nhật ký'"
-          @click="loggerStore.toggleLogViewer()"
-        >
-          <template #icon>
-            <CarbonTerminal v-if="loggerStore.logViewerVisible" />
-            <CarbonTerminal v-else />
-          </template>
-        </FloatButton>
-      </FloatButton.Group>
-
-      <!-- Một helper nhỏ để hiển thị route hiện tại trên màn hình khi đang development -->
       <div
         v-if="isDev"
         class="fixed bottom-2 left-2 z-[1000] rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow-lg"
       >
         Current Route: {{ route.fullPath }}
       </div>
+      <AppUpdater />
+      <LogViewer />
     </template>
     <template #lock-screen>
       <LockScreen :avatar @to-login="handleLogout" />

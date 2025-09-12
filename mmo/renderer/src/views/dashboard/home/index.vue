@@ -36,9 +36,9 @@ import { features } from './data';
             :level="3"
           />
           <TypographyParagraph
-            :ellipsis="{ rows: 2, tooltip: true }"
+            :ellipsis="{ rows: 3, tooltip: true }"
             :content="$t(`page.${feature.key}.description`)"
-            class="h-11"
+            class="h-20"
           />
           <div>
             <Button @click="feature.action()" type="primary">

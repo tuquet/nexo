@@ -7,10 +7,11 @@ const routes: RouteRecordRaw[] = [
     meta: {
       icon: 'lucide:layout-dashboard',
       order: -1,
-      title: $t('page.dashboard.title'),
+      title: $t('page.dashboard.home'),
     },
     name: 'Dashboard',
     path: '/dashboard',
+    redirect: '/home',
     children: [
       {
         name: 'Analytics',
@@ -47,19 +48,22 @@ const routes: RouteRecordRaw[] = [
           affixTab: true,
           icon: 'carbon:workspace',
           title: $t('page.dashboard.home'),
-        },
-      },
-      {
-        path: '/settings',
-        name: 'Settings',
-        component: () => import('#/views/dashboard/settings/index.vue'),
-        meta: {
-          // Sử dụng icon từ thư viện icon của bạn, ví dụ: Ant Design Icons
-          icon: 'carbon:ibm-cloud-sysdig-secure',
-          title: 'Cài đặt', // Sẽ được i18n dịch sau
+          hideInMenu: true,
+          hideInMenuTab: true,
+          hideInTab: true,
         },
       },
     ],
+  },
+  {
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('#/views/dashboard/settings/index.vue'),
+    meta: {
+      // Sử dụng icon từ thư viện icon của bạn, ví dụ: Ant Design Icons
+      icon: 'carbon:ibm-cloud-sysdig-secure',
+      title: $t('page.settings.title'),
+    },
   },
 ];
 

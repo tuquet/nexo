@@ -174,6 +174,12 @@ const customConfig: Linter.Config[] = [
       'unicorn/prefer-module': 'off',
     },
   },
+  {
+    files: ['mmo/renderer/**/**'],
+    rules: {
+      'vue/no-v-html': 'off',
+    },
+  },
 ];
 
 export { customConfig };

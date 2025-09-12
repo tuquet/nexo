@@ -24,7 +24,7 @@
     "characterCount": {
       "label": "Độ dài dự kiến (Ký tự)"
     },
-    "description": "Không bao giờ cạn ý tưởng. Mô tả chủ đề của bạn và để AI tạo ra một kịch bản video chi tiết, từ mở đầu đến kết thúc.",
+    "description": "Hãy để AI biến ý tưởng thành kịch bản chi tiết, từ mở đầu đến kết thúc, giúp bạn không bao giờ lo cạn nội dung sáng tạo cho video.",
     "dialogueLevel": {
       "label": "Mức độ hội thoại",
       "options": {
@@ -165,20 +165,46 @@
     "error": "[Updater] Lỗi cập nhật:",
     "quitAndInstall": "[Updater] Thoát và cài đặt",
     "updateAvailable": "[Updater] Có bản cập nhật mới {version}",
-    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:"
+    "updateDownloaded": "[Updater] Đã tải xong bản cập nhật:",
+    "ui": {
+      "checkingForUpdate": "Đang kiểm tra cập nhật...",
+      "clearAndRecheck": "Xóa cache & Tải lại",
+      "clearAndRecheckTooltip": "Xóa file cập nhật đã tải xuống và kiểm tra lại từ đầu.",
+      "downloadNow": "Tải xuống ngay",
+      "downloadSize": "Kích thước tải xuống:",
+      "downloadedMessage": "Bản cập nhật đã được tải xuống. Hãy khởi động lại ứng dụng để áp dụng các thay đổi.",
+      "downloading": "Đang tải bản cập nhật...",
+      "errorMessage": "Đã xảy ra lỗi: {error}",
+      "newVersionReady": "Phiên bản mới {version} đã sẵn sàng!",
+      "releaseDate": "Phát hành ngày:",
+      "restartAndInstall": "Khởi động lại & Cài đặt",
+      "viewOnGithub": "Xem danh sách phiên bản trên GitHub",
+      "releaseType": {
+        "prerelease": "Bản thử nghiệm",
+        "stable": "Bản chính thức"
+      }
+    }
   },
   "videoCutter": {
     "actionText": "Sử dụng ngay",
     "browse": "Duyệt...",
     "cardTitle": "Cấu hình cắt video",
-    "description": "Biến video dài thành các clip ngắn ý nghĩa. Cắt và chia sẻ các đoạn video yêu thích của bạn chỉ trong vài giây.",
+    "description": "Cắt video dài thành nhiều clip ngắn đầy ý nghĩa, chọn đoạn yêu thích và chia sẻ nhanh chóng chỉ trong vài giây với thao tác cực kỳ đơn giản.",
     "notifications": {
+      "addedToQueue": "Đã thêm vào hàng đợi cắt video.",
       "complete": "Hoàn thành",
       "completeDescription": "Video đã được cắt và lưu thành công trong thư mục \"{path}\".",
+      "directoryDeleted": "Đã xóa thư mục và các file bên trong.",
+      "directoryDeleteFailed": "Xóa thư mục thất bại: {error}",
       "failed": "Xử lý thất bại",
       "preparing": "Đang chuẩn bị cắt video...",
       "processing": "Đang xử lý video...",
       "unknownError": "Đã xảy ra lỗi không xác định"
+    },
+    "confirmDelete": {
+      "title": "Xác nhận xóa",
+      "content": "Bạn có chắc chắn muốn xóa mục này và tất cả các file đã cắt trong thư mục đầu ra không? Hành động này không thể hoàn tác.",
+      "okText": "Xóa"
     },
     "outputPath": {
       "label": "Nơi lưu",
@@ -192,6 +218,19 @@
       "rule": "Vui lòng nhập thời lượng phân đoạn (giây, phải lớn hơn 0)!"
     },
     "startCutting": "Bắt đầu cắt",
+    "status": {
+      "canceled": "Đã hủy",
+      "cutting": "Đang cắt...",
+      "failed": "Thất bại",
+      "pending": "Đang chờ",
+      "success": "Thành công"
+    },
+    "table": {
+      "action": "Hành động",
+      "outputPath": "Lưu tại",
+      "status": "Trạng thái",
+      "video": "Video"
+    },
     "title": "Cắt và Chia nhỏ Video",
     "videoPath": {
       "label": "Đường dẫn Video",
@@ -203,23 +242,43 @@
     "actionText": "Sử dụng ngay",
     "actions": {
       "remove": "Xóa",
-      "retry": "Tải lại"
+      "retry": "Tải lại",
+      "stop": "Dừng",
+      "redownload": "Tải lại"
+    },
+    "errors": {
+      "HTTP_403_FORBIDDEN": "Lấy thông tin thất bại (Lỗi 403: Bị cấm). Cookie bạn cung cấp có thể không hợp lệ hoặc đã hết hạn. Vui lòng thử xuất lại file cookie và thử lại.",
+      "COOKIES_NEEDED": "Trang web này yêu cầu cookie để tiếp tục. Vui lòng bật tùy chọn 'Sử dụng cookie' và cung cấp file cookies.txt hợp lệ.",
+      "UNSUPPORTED_URL": "URL không được hỗ trợ. Vui lòng đảm bảo bạn đã sao chép đúng đường dẫn trực tiếp của video (ví dụ: https://www.douyin.com/video/...). Các đường dẫn dạng 'jingxuan' hoặc 'modal' có thể không hoạt động.",
+      "AUTH_REQUIRED": "Tải xuống thất bại. Video có thể bị giới hạn độ tuổi hoặc riêng tư. Hãy thử sử dụng tùy chọn cookie với tài khoản đã đăng nhập.",
+      "DOWNLOAD_FAILED": "Tải xuống thất bại. Vui lòng kiểm tra log để biết chi tiết.",
+      "UNKNOWN_ERROR": "Đã xảy ra lỗi không xác định"
+    },
+    "confirmDelete": {
+      "title": "Xác nhận xóa",
+      "content": "Bạn có chắc chắn muốn xóa mục này và file đã tải xuống không? Hành động này không thể hoàn tác.",
+      "okText": "Xóa"
     },
     "audioOnly": "Chỉ tải âm thanh (MP3)",
     "browse": "Duyệt...",
+    "concurrentDownloads": {
+      "label": "Số lượt tải đồng thời",
+      "help": "Giới hạn số lượng video được tải xuống cùng một lúc. Form sẽ bị khóa khi có tác vụ đang chạy."
+    },
     "cardTitle": "Cấu hình tải xuống",
     "cookieFilePath": {
       "label": "Đường dẫn file cookie",
       "placeholder": "Chọn file cookies.txt (định dạng Netscape)",
       "rule": "Vui lòng chọn file cookie!"
     },
-    "description": "Dán liên kết video từ Video, Douyin, TikTok, Facebook, v.v. và dễ dàng tải về máy tính của bạn.",
+    "description": "Dán liên kết từ YouTube, Douyin, TikTok, Facebook và hơn 1000 site khác để tải video trực tiếp về máy tính của bạn nhanh gọn và dễ dàng.",
     "downloadPlaylist": "Tải toàn bộ playlist/album (nếu có)",
     "downloadQueueTitle": "Hàng đợi tải xuống",
     "notifications": {
       "downloading": "Đang tải: {title}",
       "failed": "Tải xuống thất bại",
       "failedDescription": "Đã xảy ra lỗi trong quá trình tải xuống. Kiểm tra logs để biết thêm chi tiết.",
+      "fetchUrlError": "Lỗi với URL: {url}. {error}",
       "fetchError": "Lỗi khi lấy thông tin video: {error}",
       "fetching": "Đang lấy thông tin video...",
       "openFile": "Mở file",
@@ -228,7 +287,9 @@
       "started": "Bắt đầu tải: {title} ({key})",
       "starting": "Bắt đầu tải...",
       "success": "Tải xuống thành công: {title}",
-      "successDescription": "Video đã được lưu tại: {filePath}"
+      "successDescription": "Video đã được lưu tại: {filePath}",
+      "fileDeleted": "Đã xóa file thành công.",
+      "fileDeleteFailed": "Xóa file thất bại: {error}"
     },
     "outputPath": {
       "label": "Nơi lưu",
@@ -245,8 +306,14 @@
     "status": {
       "downloading": "Đang tải...",
       "failed": "Thất bại",
+      "fetching": "Đang lấy thông tin...",
       "pending": "Đang chờ",
       "success": "Thành công"
+    },
+    "table": {
+      "action": "Hành động",
+      "status": "Trạng thái",
+      "video": "Video"
     },
     "title": "Tải Video Online",
     "useBrowserCookies": "Sử dụng Cookie",

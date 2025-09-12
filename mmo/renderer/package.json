@@ -45,6 +45,8 @@
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
     "dompurify": "^3.2.6",
+    "nanoid": "^5.1.5",
+    "p-queue": "^8.1.1",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

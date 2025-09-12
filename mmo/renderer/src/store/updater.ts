@@ -41,6 +41,7 @@ export const useUpdaterStore = defineStore('app-updater', () => {
   const updateInfo = ref<null | UpdateInfo>(null);
   const downloadProgress = ref<null | ProgressInfo>(null);
   const errorMessage = ref('');
+  const isModalVisible = ref(false);
 
   // Actions
   async function checkForUpdates() {
@@ -100,6 +101,11 @@ export const useUpdaterStore = defineStore('app-updater', () => {
     updateState.value = 'downloading';
   }
 
+  function toggleUpdaterViewer(visible?: boolean) {
+    isModalVisible.value =
+      typeof visible === 'boolean' ? visible : !isModalVisible.value;
+  }
+
   function quitAndInstall() {
     window.electron.ipcRenderer.send('updater:quit-and-install');
   }
@@ -112,10 +118,12 @@ export const useUpdaterStore = defineStore('app-updater', () => {
   }
 
   return {
+    isModalVisible,
     updateState,
     updateInfo,
     downloadProgress,
     errorMessage,
+    toggleUpdaterViewer,
     checkForUpdates,
     handleUpdateAvailable,
     handleDownloadProgress,

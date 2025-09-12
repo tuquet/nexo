@@ -36,6 +36,9 @@ const InputNumber = defineAsyncComponent(
 const InputPassword = defineAsyncComponent(() =>
   import('ant-design-vue/es/input').then((res) => res.InputPassword),
 );
+const InputSearch = defineAsyncComponent(() =>
+  import('ant-design-vue/es/input').then((res) => res.InputSearch),
+);
 const Mentions = defineAsyncComponent(
   () => import('ant-design-vue/es/mentions'),
 );
@@ -110,6 +113,7 @@ export type ComponentType =
   | 'Input'
   | 'InputNumber'
   | 'InputPassword'
+  | 'InputSearch'
   | 'Mentions'
   | 'PrimaryButton'
   | 'Radio'
@@ -176,6 +180,7 @@ async function initComponentAdapter() {
     Input: withDefaultPlaceholder(Input, 'input'),
     InputNumber: withDefaultPlaceholder(InputNumber, 'input'),
     InputPassword: withDefaultPlaceholder(InputPassword, 'input'),
+    InputSearch: withDefaultPlaceholder(InputSearch, 'input'),
     Mentions: withDefaultPlaceholder(Mentions, 'input'),
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {

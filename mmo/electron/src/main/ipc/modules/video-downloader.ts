@@ -1,28 +1,42 @@
 import { IpcMain, dialog } from 'electron'
 import path from 'node:path'
-import { spawn } from 'node:child_process'
+import { spawn, type ChildProcess, exec } from 'node:child_process'
+import process from 'node:process'
+import fs from 'node:fs/promises'
 import log from 'electron-log'
 import { getMainWindow } from '../../bootstrap/window'
 import { ensureBinaries } from '../../lib/binary-manager'
 import { ensureYtDlp } from '../../lib/yt-dlp-manager'
 
 /**
- * Thêm các tham số cookie vào danh sách đối số của yt-dlp.
- * @param args Mảng các đối số sẽ được truyền cho yt-dlp.
- * @param filePath Đường dẫn đến file cookie.
+ * Appends cookie-related arguments to the yt-dlp command.
+ * @param args The array of arguments to be passed to yt-dlp.
+ * @param filePath The path to the cookie file.
  */
 const addCookieArgs = (args: string[], filePath: string): void => {
   log.info(`[Video] Using cookie file at: ${filePath}`)
   args.push('--cookies', filePath)
 }
 
+// Map để lưu trữ các tiến trình download đang hoạt động, với key là URL của video.
+const activeDownloads = new Map<string, ChildProcess>()
+
+// Set để theo dõi các tác vụ đã bị người dùng hủy.
+const canceledJobs = new Set<string>()
+
+/**
+ * Registers IPC handlers for video downloading functionalities.
+ * This module is responsible for interacting with the `yt-dlp` command-line tool
+ * to fetch video information and download videos.
+ * @param ipc The IpcMain instance.
+ */
 export function Video(ipc: IpcMain): void {
   /**
-   * Lấy danh sách các định dạng video và audio có sẵn từ một URL Video.
-   * Trả về một mảng các định dạng đã được xử lý để hiển thị trên giao diện người dùng.
+   * Fetches video metadata from a given URL using yt-dlp.
+   * It returns the raw JSON output from yt-dlp, letting the frontend handle data mapping.
    */
   ipc.handle(
-    'Video:get-formats',
+    'video:get-formats',
     async (
       _,
       videoUrl: string,
@@ -63,7 +77,7 @@ export function Video(ipc: IpcMain): void {
           addCookieArgs(args, options.cookieFilePath)
         }
 
-        const process = spawn(ytdlpPath, args)
+        const process = spawn(ytdlpPath, args, { windowsHide: true })
 
         let stdoutData = ''
         let stderrData = ''
@@ -85,44 +99,9 @@ export function Video(ipc: IpcMain): void {
             if (stdoutData.trim() && (code === 0 || isCookieError)) {
               try {
                 // yt-dlp với --dump-single-json sẽ xuất ra một đối tượng JSON trên mỗi dòng cho playlist.
-                // Chúng ta cần xử lý tất cả các dòng.
+                // Chúng ta chỉ cần parse và trả về dữ liệu thô.
                 const lines = stdoutData.trim().split('\n').filter(Boolean)
-                const results = lines
-                  .map((line) => {
-                    const metadata = JSON.parse(line)
-
-                    if (typeof metadata === 'string' || !metadata) {
-                      log.warn('[Video] Invalid metadata line skipped:', line)
-                      return null
-                    }
-
-                    // Đối với playlist phẳng, chúng ta lấy thông tin cơ bản.
-                    // Đối với video đơn, chúng ta có thể lấy danh sách định dạng đầy đủ.
-                    const formats = (metadata.formats || [])
-                      .filter(
-                        (f: any) =>
-                          (f.resolution || (f.acodec && f.acodec !== 'none')) &&
-                          f.vcodec !== 'none' &&
-                          f.ext !== 'mhtml'
-                      )
-                      .map((f: any) => {
-                        const sizeMB = f.filesize || f.filesize_approx
-                        const sizeText = sizeMB ? `~${(sizeMB / 1024 / 1024).toFixed(1)} MB` : ''
-                        return {
-                          format_id: f.format_id,
-                          label:
-                            `${f.resolution} (${f.ext}) - ${f.format_note || 'Video'} ${sizeText}`.trim()
-                        }
-                      })
-
-                    return {
-                      formats,
-                      thumbnail: metadata.thumbnail || null,
-                      title: metadata.title || 'Unknown Title',
-                      url: metadata.webpage_url || metadata.url
-                    }
-                  })
-                  .filter(Boolean) // Loại bỏ các dòng không hợp lệ
+                const results = lines.map((line) => JSON.parse(line)).filter(Boolean)
 
                 log.info(`[Video] Fetched info for ${results.length} item(s) from URL.`)
                 resolve(results)
@@ -133,7 +112,7 @@ export function Video(ipc: IpcMain): void {
                   'Raw output:',
                   stdoutData
                 )
-                reject(new Error('Failed to parse video metadata.'))
+                reject({ code: 'PARSE_ERROR', message: 'Failed to parse video metadata.' })
               }
             } else {
               // Nếu không có stdout, hoặc lỗi không phải là vấn đề cookie đã biết, hãy từ chối.
@@ -141,32 +120,21 @@ export function Video(ipc: IpcMain): void {
               log.error(`[Video] yt-dlp exited with code ${code}. Stderr: ${stderr}`)
 
               if (stderr.includes('Unsupported URL')) {
-                reject(
-                  new Error(
-                    `URL không được hỗ trợ. Vui lòng đảm bảo bạn đã sao chép đúng đường dẫn trực tiếp của video (ví dụ: https://www.douyin.com/video/...). Các đường dẫn dạng "jingxuan" hoặc "modal" có thể không hoạt động.`
-                  )
-                )
+                reject({ code: 'UNSUPPORTED_URL', message: stderr })
               } else if (stderr.includes('Fresh cookies') && stderr.includes('are needed')) {
-                reject(
-                  new Error(
-                    `Trang web này yêu cầu cookie để tiếp tục. Vui lòng bật tùy chọn "Sử dụng cookie" và cung cấp file cookies.txt hợp lệ. Bạn có thể lấy file này bằng tiện ích mở rộng trình duyệt như "Get cookies.txt (local)".`
-                  )
-                )
+                reject({ code: 'COOKIES_NEEDED', message: stderr })
               } else if (
                 options?.useCookieFile &&
                 stderr.toLowerCase().includes('http error 403')
               ) {
-                reject(
-                  new Error(
-                    `Lấy thông tin thất bại (Lỗi 403: Bị cấm). Cookie bạn cung cấp có thể không hợp lệ hoặc đã hết hạn. Vui lòng thử xuất lại file cookie và thử lại.`
-                  )
-                )
+                reject({ code: 'HTTP_403_FORBIDDEN', message: stderr })
               } else {
-                // Lỗi chung chung, chỉ hiển thị thông báo từ yt-dlp
-                reject(new Error(`Lỗi khi lấy thông tin video: ${stderr}`))
+                // Lỗi chung chung
+                reject({ code: 'FETCH_FAILED', message: stderr })
               }
             }
           })
+
           process.on('error', (err) => {
             log.error('[Video] Failed to spawn yt-dlp process:', err)
             reject(err)
@@ -177,16 +145,22 @@ export function Video(ipc: IpcMain): void {
         // Đặc biệt là các lỗi liên quan đến process spawn (ENOENT).
         log.error(`[Video] Error fetching formats for ${videoUrl}:`, error)
         const errorMessage = error.stderr || error.message || 'Unknown error'
-        throw new Error(`Lỗi khi lấy thông tin video: ${errorMessage}`)
+        // Throw a structured error that the frontend can handle
+        throw { code: 'PROCESS_ERROR', message: errorMessage }
       }
     }
   )
 
   ipc.handle(
-    'Video:download-video',
+    /**
+     * Downloads a video from a URL to a specified path.
+     * It streams progress back to the renderer and resolves with the final file path upon completion.
+     */
+    'video:download-video',
     async (
       _,
       {
+        jobId,
         videoUrl,
         outputPath,
         formatCode,
@@ -195,6 +169,7 @@ export function Video(ipc: IpcMain): void {
         useCookieFile,
         cookieFilePath
       }: {
+        jobId: string
         videoUrl: string
         outputPath: string
         formatCode?: string
@@ -204,6 +179,9 @@ export function Video(ipc: IpcMain): void {
         cookieFilePath?: string
       }
     ) => {
+      // Xóa trạng thái hủy cũ (nếu có) khi bắt đầu một tác vụ mới với cùng jobId
+      canceledJobs.delete(jobId)
+
       const mainWindow = getMainWindow()
       log.info(`[Video] Starting video download from URL: ${videoUrl}`)
       if (!mainWindow) {
@@ -281,7 +259,12 @@ export function Video(ipc: IpcMain): void {
           args.push('--format', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best')
         }
 
-        const subprocess = spawn(ytdlpPath, args)
+        const isWindows = process.platform === 'win32'
+        const subprocess = spawn(ytdlpPath, args, {
+          detached: !isWindows, // Chỉ dùng detached trên non-Windows để kill process group
+          windowsHide: true
+        })
+        activeDownloads.set(jobId, subprocess) // Lưu tiến trình vào map
         log.info('[Video] yt-dlp process started.')
 
         // Regex to parse progress from yt-dlp output
@@ -306,7 +289,7 @@ export function Video(ipc: IpcMain): void {
             const progressMatch = lastMatchText.match(progressRegex) // Re-match to get capture groups
             if (progressMatch && progressMatch[1]) {
               const percent = parseFloat(progressMatch[1])
-              mainWindow.webContents.send('Video:download-progress', {
+              mainWindow.webContents.send('video:download-progress', {
                 percent,
                 key: videoUrl,
                 title: videoTitle // Title might be null initially, but that's ok
@@ -319,7 +302,7 @@ export function Video(ipc: IpcMain): void {
             const titleMatch = text.match(titleRegex)
             if (titleMatch && titleMatch[1]) {
               videoTitle = titleMatch[1].trim()
-              mainWindow.webContents.send('Video:download-started', {
+              mainWindow.webContents.send('video:download-started', {
                 key: videoUrl,
                 title: videoTitle
               })
@@ -343,7 +326,53 @@ export function Video(ipc: IpcMain): void {
           handleDataChunk(text)
         })
 
-        subprocess.on('close', (code) => {
+        subprocess.on('close', (code, signal) => {
+          activeDownloads.delete(jobId) // Xóa tiến trình khỏi map khi nó kết thúc
+
+          // Ưu tiên kiểm tra xem tác vụ có bị người dùng hủy hay không.
+          // Đây là cách đáng tin cậy nhất để xác định việc hủy bỏ, đặc biệt trên Windows.
+          if (canceledJobs.has(jobId)) {
+            canceledJobs.delete(jobId) // Dọn dẹp set
+            log.info(`[Video] Download for ${videoUrl} was canceled by the user. Cleaning up...`)
+
+            // Khi hủy, hãy cố gắng dọn dẹp các file tạm (.part) mà yt-dlp để lại.
+            const fullOutput = stdoutBuffer.join('') + stderrBuffer.join('')
+            const destinationRegexGlobal =
+              /\[(?:Merger|download)\] Merging formats into "([^"]+)"|\[download\] Destination:\s(.+)/g
+            const destinationMatches = [...fullOutput.matchAll(destinationRegexGlobal)]
+
+            const filesToDelete = new Set<string>()
+
+            destinationMatches.forEach((match) => {
+              const filePath = (match[1] || match[2])?.trim()
+              if (filePath) {
+                // Thêm cả file tạm (.part) và file trung gian đã hoàn thành (ví dụ: video.f137.mp4).
+                filesToDelete.add(filePath)
+                filesToDelete.add(`${filePath}.part`)
+              }
+            })
+
+            if (filesToDelete.size > 0) {
+              log.info(`[Video] Cleaning up temporary files:`, [...filesToDelete])
+              // Chạy việc xóa trong nền, không cần đợi. `force: true` để không báo lỗi nếu file không tồn tại.
+              Promise.all([...filesToDelete].map((file) => fs.rm(file, { force: true })))
+            }
+
+            return reject({
+              code: 'DOWNLOAD_CANCELED',
+              message: 'Tác vụ đã bị người dùng dừng lại.'
+            })
+          }
+
+          // Nếu tiến trình bị dừng bởi một tín hiệu (ví dụ: do người dùng bấm nút "Dừng")
+          if (signal) {
+            log.info(`[Video] Download for ${videoUrl} was terminated by signal: ${signal}.`)
+            return reject({
+              code: 'DOWNLOAD_CANCELED',
+              message: 'Tác vụ đã bị người dùng dừng lại.'
+            })
+          }
+
           const fullStderr = stderrBuffer.join('')
           const fullStdout = stdoutBuffer.join('')
           const fullOutput = fullStdout + fullStderr
@@ -406,20 +435,18 @@ export function Video(ipc: IpcMain): void {
           log.error(`[Video] Process exited with code: ${code}. Stderr: ${fullStderr}`)
 
           if (fullStderr.includes('Fresh cookies') && fullStderr.includes('are needed')) {
-            return reject(
-              new Error(
-                `Trang web này yêu cầu cookie để tiếp tục. Vui lòng bật tùy chọn "Sử dụng cookie" và cung cấp file cookies.txt hợp lệ. Bạn có thể lấy file này bằng tiện ích mở rộng trình duyệt như "Get cookies.txt (local)".`
-              )
-            )
+            return reject({
+              code: 'COOKIES_NEEDED',
+              message: fullStderr
+            })
           }
 
           // Thêm check cho lỗi HTTP 403 khi đang dùng cookie
           if (useCookieFile && fullStderr.toLowerCase().includes('http error 403')) {
-            return reject(
-              new Error(
-                `Tải xuống thất bại (Lỗi 403: Bị cấm). Điều này thường xảy ra khi cookie bạn cung cấp không hợp lệ, đã hết hạn, hoặc không có quyền truy cập video này. Vui lòng thử xuất lại file cookie từ trình duyệt và thử lại.`
-              )
-            )
+            return reject({
+              code: 'HTTP_403_FORBIDDEN',
+              message: fullStderr
+            })
           }
 
           const hasCookieError =
@@ -435,26 +462,80 @@ export function Video(ipc: IpcMain): void {
 
           if (hasCookieError && !hasOtherFatalErrors) {
             // Lỗi này xảy ra khi yt-dlp cố gắng tự động tìm cookie từ trình duyệt nhưng thất bại.
-            // Nó không liên quan trực tiếp đến tùy chọn "Sử dụng cookie" bằng file của chúng ta.
-            const helpfulError = new Error(
-              'Tải xuống thất bại. Video có thể bị giới hạn độ tuổi hoặc riêng tư. Nếu không sử dụng file cookie, hãy đảm bảo bạn đã đăng nhập vào trang web trên trình duyệt được hỗ trợ (Chrome, Firefox, v.v.).'
-            )
-            return reject(helpfulError)
+            // Nó thường chỉ ra rằng video yêu cầu đăng nhập (giới hạn độ tuổi, riêng tư).
+            return reject({
+              code: 'AUTH_REQUIRED',
+              message: fullStderr
+            })
           }
 
           // For all other errors, use the stderr content.
           const errorMessage = fullStderr.trim() || `Download failed with exit code: ${code}.`
-          reject(new Error(errorMessage))
+          reject({ code: 'DOWNLOAD_FAILED', message: errorMessage })
         })
 
         subprocess.on('error', (error) => {
+          activeDownloads.delete(jobId) // Xóa tiến trình khỏi map khi có lỗi
           log.error('[Video] Error executing yt-dlp process:', error)
-          reject(new Error(`Lỗi khi thực thi tiến trình tải video: ${error.message}`))
+          reject({ code: 'PROCESS_ERROR', message: error.message })
         })
       })
     }
   )
 
+  /**
+   * Stops a running video download process.
+   */
+  ipc.handle('video:stop-download', async (_, jobId: string) => {
+    const subprocess = activeDownloads.get(jobId)
+    if (subprocess && subprocess.pid) {
+      const pid = subprocess.pid
+      log.info(`[Video] Received request to stop download for job: ${jobId}, PID: ${pid}`)
+
+      // Đánh dấu tác vụ này là đã bị hủy TRƯỚC KHI kill process.
+      // Điều này đảm bảo rằng 'close' event handler sẽ nhận biết được.
+      canceledJobs.add(jobId)
+
+      // The 'close' event on the subprocess will handle cleanup (e.g., removing from activeDownloads).
+      // We just need to issue the kill command.
+      if (process.platform === 'win32') {
+        // On Windows, use taskkill to terminate the process and its children (/T flag).
+        // The /F flag forcefully terminates the process.
+        exec(`taskkill /PID ${pid} /T /F`, { windowsHide: true }, (err) => {
+          if (err) {
+            // It's common to get an error if the process has already finished.
+            // We log it as a warning instead of an error.
+            log.warn(
+              `[Video] taskkill for PID ${pid} failed, process might have already finished:`,
+              err.message
+            )
+          } else {
+            log.info(`[Video] Successfully issued taskkill for process tree of PID ${pid}.`)
+          }
+        })
+      } else {
+        // On macOS/Linux, kill the process group by passing a negative PID.
+        // This requires the child process to be spawned with `detached: true`.
+        try {
+          // A negative PID kills the entire process group.
+          process.kill(-pid, 'SIGKILL') // Using SIGKILL for a more immediate termination.
+          log.info(`[Video] Successfully sent SIGKILL to process group -${pid}.`)
+        } catch (err: any) {
+          // This can fail if the process is already gone (race condition).
+          log.warn(
+            `[Video] process.kill for group -${pid} failed, process might have already finished:`,
+            err.message
+          )
+        }
+      }
+      return { success: true }
+    }
+    log.warn(`[Video] Stop request for non-existent download job: ${jobId}`)
+    return { success: false, message: 'Không tìm thấy tiến trình.' }
+  })
+  /**
+   * Opens a native dialog for the user to select a cookie file.
+   */
   ipc.handle('video:select-cookie-file', async () => {
     const { canceled, filePaths } = await dialog.showOpenDialog({
       title: 'Chọn file cookie',
@@ -468,5 +549,22 @@ export function Video(ipc: IpcMain): void {
       return null
     }
     return filePaths[0]
+  })
+
+  /**
+   * Deletes a file from the filesystem.
+   */
+  ipc.handle('video:delete-file', async (_, filePath: string) => {
+    log.info(`[Video] Received request to delete file: ${filePath}`)
+    try {
+      // Use fs.rm to delete the file. `force: true` prevents an error if the file doesn't exist.
+      await fs.rm(filePath, { force: true })
+      log.info(`[Video] Successfully deleted file: ${filePath}`)
+      return { success: true }
+    } catch (error: any) {
+      log.error(`[Video] Failed to delete file ${filePath}:`, error)
+      // Re-throw a structured error for the frontend
+      throw new Error(`Không thể xóa file: ${error.message}`)
+    }
   })
 }

@@ -88,7 +88,7 @@ async function downloadYtDlp(downloadUrl: string) {
  */
 export async function ensureYtDlp(): Promise<string> {
   if (await fs.pathExists(ytDlpPath)) {
-    log.info(`[YtDlpManager] yt-dlp binary already exists at: ${ytDlpPath}`)
+    log.debug(`[YtDlpManager] yt-dlp binary already exists at: ${ytDlpPath}`)
     return ytDlpPath
   }
 

@@ -1,4 +1,4 @@
-import { ChildProcess, fork } from 'child_process'
+import { ChildProcess, spawn } from 'child_process'
 import { join } from 'node:path'
 import process from 'node:process'
 import fs from 'node:fs'
@@ -33,9 +33,14 @@ export function startMockServer(): void {
   }
 
   try {
-    mockServerProcess = fork(serverPath, [], {
-      silent: true, // Capture stdout/stderr for the logger instead of printing directly to the console.
-      // Truyền tường minh các biến môi trường cho tiến trình con để code rõ ràng hơn.
+    // Chúng ta sử dụng `spawn` thay vì `fork` ở đây để có thể truy cập tùy chọn
+    // `windowsHide`, vốn không có trong định nghĩa kiểu của `fork`. Điều này
+    // ngăn cửa sổ console của mock server xuất hiện trên Windows trong quá trình
+    // phát triển.
+    // Tùy chọn `stdio` sao chép lại hành vi của `fork` với `silent: true`.
+    mockServerProcess = spawn(process.execPath, [serverPath], {
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+      windowsHide: true,
       env: { ...process.env }
     })
 
