@@ -7,6 +7,7 @@ import { Button, Drawer, Progress, Tag, Tooltip } from 'ant-design-vue';
 import DOMPurify from 'dompurify';
 import { storeToRefs } from 'pinia';
 
+import { ipc } from '#/api/ipc';
 import { $t } from '#/locales';
 import { useUpdaterStore } from '#/store/updater';
 
@@ -115,7 +116,7 @@ function handleCancel() {
 
 function openReleasesPage() {
   if (window.electron?.ipcRenderer) {
-    window.electron.ipcRenderer.send(
+    ipc.send(
       'shell:open-external',
       'https://github.com/tuquet/catalyst/releases',
     );
@@ -126,7 +127,7 @@ function handleClearCacheAndRecheck() {
   if (window.electron?.ipcRenderer) {
     // Send a command to the main process to clear the updater cache.
     // The main process should handle the actual file deletion.
-    window.electron.ipcRenderer.send('updater:clear-cache');
+    ipc.send('updater:clear-cache');
   }
   // Reset the store to its initial state.
   updaterStore.$reset();
@@ -154,19 +155,16 @@ onMounted(() => {
 
   // Listen for events from the main process
   listeners.push(
-    window.electron.ipcRenderer.on(
-      'updater:update-available',
-      (_: any, info: UpdateInfo) => updaterStore.handleUpdateAvailable(info),
+    ipc.on('updater:update-available', (_: any, info: UpdateInfo) =>
+      updaterStore.handleUpdateAvailable(info),
     ),
-    window.electron.ipcRenderer.on(
-      'updater:download-progress',
-      (_: any, progress: ProgressInfo) =>
-        updaterStore.handleDownloadProgress(progress),
+    ipc.on('updater:download-progress', (_: any, progress: ProgressInfo) =>
+      updaterStore.handleDownloadProgress(progress),
     ),
-    window.electron.ipcRenderer.on('updater:update-downloaded', () =>
+    ipc.on('updater:update-downloaded', () =>
       updaterStore.handleUpdateDownloaded(),
     ),
-    window.electron.ipcRenderer.on('updater:error', (_: any, err: string) =>
+    ipc.on('updater:error', (_: any, err: string) =>
       updaterStore.handleError(err),
     ),
   );

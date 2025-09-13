@@ -4,6 +4,8 @@ import { preferences } from '@vben/preferences';
 
 import { defineStore } from 'pinia';
 
+import { ipc } from '#/api/ipc';
+
 import { useNotificationStore } from './notification';
 
 // These types are copied from AppUpdater.vue to avoid circular dependencies
@@ -45,11 +47,11 @@ export const useUpdaterStore = defineStore('app-updater', () => {
 
   // Actions
   async function checkForUpdates() {
-    if (updateState.value !== 'idle' || !window.electron?.ipcRenderer) return;
+    if (updateState.value !== 'idle' || !window.electron) return;
 
     try {
       updateState.value = 'checking';
-      await window.electron.ipcRenderer.invoke('updater:check-for-updates');
+      await ipc.invoke('updater:check-for-updates');
 
       // If no 'update-available' event is received after a while,
       // assume no update is available and revert to idle.
@@ -81,7 +83,7 @@ export const useUpdaterStore = defineStore('app-updater', () => {
     downloadProgress.value = progress;
   }
 
-  function handleUpdateDownloaded() {
+  function handleUpdateDownloaded(_info?: UpdateInfo) {
     const notificationStore = useNotificationStore();
     updateState.value = 'downloaded';
     notificationStore.addNotification({
@@ -97,7 +99,7 @@ export const useUpdaterStore = defineStore('app-updater', () => {
   }
 
   function startDownload() {
-    window.electron.ipcRenderer.send('updater:start-download');
+    ipc.send('updater:start-download');
     updateState.value = 'downloading';
   }
 
@@ -107,7 +109,7 @@ export const useUpdaterStore = defineStore('app-updater', () => {
   }
 
   function quitAndInstall() {
-    window.electron.ipcRenderer.send('updater:quit-and-install');
+    ipc.send('updater:quit-and-install');
   }
 
   function $reset() {

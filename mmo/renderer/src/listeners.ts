@@ -3,6 +3,8 @@ import type { ProgressInfo, UpdateInfo } from '#/store/updater';
 
 import { useLoggerStore, useSettingsStore, useUpdaterStore } from '#/store';
 
+import { ipc } from './api/ipc';
+
 /**
  * Thiết lập các listener toàn cục để nhận sự kiện từ tiến trình Main.
  * Hàm này nên được gọi một lần trong giai đoạn khởi tạo của ứng dụng.
@@ -20,47 +22,29 @@ export function setupIpcListeners(): void {
   const settingsStore = useSettingsStore();
 
   // --- Lắng nghe sự kiện Log ---
-  window.electron.ipcRenderer.on(
-    'app-log',
-    (_event: any, logEntry: LogEntry) => {
-      loggerStore.addLog(logEntry);
-    },
-  );
+  ipc.on('app-log', (_event: any, logEntry: LogEntry) => {
+    loggerStore.addLog(logEntry);
+  });
 
   // --- Lắng nghe sự kiện Updater ---
-  window.electron.ipcRenderer.on(
-    'updater:update-available',
-    (_event: any, info: UpdateInfo) => {
-      updaterStore.handleUpdateAvailable(info);
-    },
-  );
+  ipc.on('updater:update-available', (_event: any, info: UpdateInfo) => {
+    updaterStore.handleUpdateAvailable(info);
+  });
 
-  window.electron.ipcRenderer.on(
-    'updater:download-progress',
-    (_event: any, progress: ProgressInfo) => {
-      updaterStore.handleDownloadProgress(progress);
-    },
-  );
+  ipc.on('updater:download-progress', (_event: any, progress: ProgressInfo) => {
+    updaterStore.handleDownloadProgress(progress);
+  });
 
-  window.electron.ipcRenderer.on(
-    'updater:update-downloaded',
-    (_event: any, info: UpdateInfo) => {
-      updaterStore.handleUpdateDownloaded(info);
-    },
-  );
+  ipc.on('updater:update-downloaded', (_event: any, info: UpdateInfo) => {
+    updaterStore.handleUpdateDownloaded(info);
+  });
 
-  window.electron.ipcRenderer.on(
-    'updater:error',
-    (_event: any, err: string) => {
-      updaterStore.handleError(err);
-    },
-  );
+  ipc.on('updater:error', (_event: any, err: string) => {
+    updaterStore.handleError(err);
+  });
 
   // --- Lắng nghe sự kiện Settings ---
-  window.electron.ipcRenderer.on(
-    'settings:key-updated',
-    async (_event: any, key: string) => {
-      await settingsStore.fetchSingleApiKey(key);
-    },
-  );
+  ipc.on('settings:key-updated', async (_event: any, key: string) => {
+    await settingsStore.fetchSingleApiKey(key);
+  });
 }

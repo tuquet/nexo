@@ -22,7 +22,8 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { useBinaryManager } from '#/composables/useBinaryManager';
+import { ipc } from '#/api/ipc';
+import { useBinaryManager } from '#/store/binary-manager';
 
 interface CutJob {
   error?: string;
@@ -56,16 +57,14 @@ const formState = useStorage('video-cutter-form-state', {
 });
 
 async function handleSelectVideo() {
-  const path = await window.electron.ipcRenderer.invoke('dialog:select-file');
+  const path = await ipc.invoke('dialog:select-file');
   if (path) {
     await gridApi.formApi.setValues({ videoPath: path });
   }
 }
 
 async function handleSelectOutput() {
-  const path = await window.electron.ipcRenderer.invoke(
-    'dialog:select-directory',
-  );
+  const path = await ipc.invoke('dialog:select-directory');
   if (path) {
     await gridApi.formApi.setValues({ outputPath: path });
   }
@@ -108,10 +107,7 @@ async function handleSubmit() {
   }
 
   // Check if the output directory already exists before adding the job
-  const exists = await window.electron.ipcRenderer.invoke(
-    'fs:path-exists',
-    outputPath,
-  );
+  const exists = await ipc.invoke('fs:path-exists', outputPath);
   if (exists) {
     message.error(
       $t('page.videoCutter.notifications.outputDirExists', {
@@ -272,7 +268,7 @@ onMounted(() => {
 
 async function stopJob(job: CutJob) {
   // Gửi yêu cầu dừng cắt đến tiến trình main
-  await window.electron.ipcRenderer.invoke('video:stop-cut', job.id);
+  await ipc.invoke('video:stop-cut', job.id);
 }
 
 async function processJob(job: CutJob) {
@@ -287,7 +283,7 @@ async function processJob(job: CutJob) {
 
   updateJob({ status: 'cutting' });
 
-  const unlistenProgress = window.electron.ipcRenderer.on(
+  const unlistenProgress = ipc.on(
     'video-cutter:progress',
     (
       _event: any,
@@ -300,7 +296,7 @@ async function processJob(job: CutJob) {
   );
 
   try {
-    await window.electron.ipcRenderer.invoke('video:cut', {
+    await ipc.invoke('video:cut', {
       jobId: job.id,
       videoPath: job.videoPath,
       outputPath: job.outputPath,
@@ -335,10 +331,7 @@ function removeJob(job: CutJob) {
   const performRemove = async () => {
     if (job.status === 'success') {
       try {
-        await window.electron.ipcRenderer.invoke(
-          'fs:delete-directory',
-          job.outputPath,
-        );
+        await ipc.invoke('fs:delete-directory', job.outputPath);
         message.success($t('page.videoCutter.notifications.directoryDeleted'));
       } catch (error: any) {
         message.error(
@@ -386,7 +379,7 @@ function retryJob(job: CutJob) {
 }
 
 function openFolder(path: string) {
-  window.electron.ipcRenderer.send('shell:open-path', path);
+  ipc.send('shell:open-path', path);
 }
 
 const getStatusColor = (status: CutJob['status']) => {

@@ -49,9 +49,11 @@
     "p-queue": "^8.1.1",
     "pinia": "catalog:",
     "vue": "catalog:",
+    "vue-markdown-render": "^2.3.0",
     "vue-router": "catalog:"
   },
   "devDependencies": {
-    "@types/dompurify": "^3.2.0"
+    "@types/dompurify": "^3.2.0",
+    "@types/markdown-it": "^14.1.2"
   }
 }

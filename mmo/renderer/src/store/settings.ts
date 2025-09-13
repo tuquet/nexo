@@ -5,6 +5,8 @@ import { $t } from '@vben/locales';
 import { message } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
+import { ipc } from '#/api/ipc';
+
 export const useSettingsStore = defineStore('settings', () => {
   const apiKeys = ref({
     openAI: '',
@@ -24,14 +26,8 @@ export const useSettingsStore = defineStore('settings', () => {
     loading.value.gemini = true;
     try {
       const [savedOpenAIKey, savedGeminiKey] = await Promise.all([
-        window.electron.ipcRenderer.invoke(
-          'settings:get',
-          'userApiKeys.openAI',
-        ),
-        window.electron.ipcRenderer.invoke(
-          'settings:get',
-          'userApiKeys.gemini',
-        ),
+        ipc.invoke('settings:get', 'userApiKeys.openAI'),
+        ipc.invoke('settings:get', 'userApiKeys.gemini'),
       ]);
 
       apiKeys.value.openAI = savedOpenAIKey || '';
@@ -49,12 +45,12 @@ export const useSettingsStore = defineStore('settings', () => {
    * Lưu các API key hiện tại từ store vào tiến trình Main.
    */
   function saveApiKeys() {
-    window.electron.ipcRenderer.send('settings:set', {
+    ipc.send('settings:set', {
       key: 'userApiKeys.openAI',
       value: apiKeys.value.openAI,
     });
 
-    window.electron.ipcRenderer.send('settings:set', {
+    ipc.send('settings:set', {
       key: 'userApiKeys.gemini',
       value: apiKeys.value.gemini,
     });
@@ -74,10 +70,7 @@ export const useSettingsStore = defineStore('settings', () => {
     if (!(apiKeyName in apiKeys.value)) return;
 
     try {
-      const savedValue = await window.electron.ipcRenderer.invoke(
-        'settings:get',
-        key,
-      );
+      const savedValue = await ipc.invoke('settings:get', key);
       apiKeys.value[apiKeyName] = savedValue || '';
     } catch (error) {
       console.error(`Failed to fetch updated key ${key}:`, error);

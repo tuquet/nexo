@@ -10,41 +10,66 @@
       "title": "Chưa có API Key"
     },
     "apiProvider": {
+      "help": "Bạn cần cấu hình API Key cho nhà cung cấp đã chọn trong trang Cấu hình để sử dụng tính năng này.",
       "label": "Nhà cung cấp AI",
       "options": {
-        "chatGPT": "OpenAI ChatGPT",
-        "gemini": "Google Gemini"
-      }
+        "chatGPT": "Chat GPT",
+        "gemini": "Gemini"
+      },
+      "placeholder": "Chọn nhà cung cấp API"
     },
     "callToAction": {
+      "help": "Một lời kêu gọi khán giả thực hiện hành động (VD: 'Bình luận ý kiến của bạn'). Thường không cần thiết cho phim ngắn.",
       "label": "Kêu gọi hành động",
       "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
     },
     "cardTitle": "Nhập thông tin để tạo kịch bản",
-    "characterCount": {
-      "label": "Độ dài dự kiến (Ký tự)"
+    "context": {
+      "label": "Bối cảnh",
+      "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
     },
     "description": "Hãy để AI biến ý tưởng thành kịch bản chi tiết, từ mở đầu đến kết thúc, giúp bạn không bao giờ lo cạn nội dung sáng tạo cho video.",
-    "dialogueLevel": {
-      "label": "Mức độ hội thoại",
-      "options": {
-        "high": "Cao",
-        "low": "Thấp",
-        "moderate": "Vừa phải"
-      }
+    "expectedDuration": {
+      "addon": "phút",
+      "label": "Thời lượng đọc dự kiến"
     },
     "generateButton": "Tạo kịch bản",
+    "generateImage": {
+      "help": "Yêu cầu AI tạo một ảnh minh họa tương ứng với kịch bản. Tính năng này có thể yêu cầu nhà cung cấp AI hỗ trợ tạo ảnh (ví dụ: DALL-E của OpenAI).",
+      "label": "Tạo ảnh minh họa"
+    },
     "generatedScript": {
-      "submitted": "Yêu cầu đã được gửi cho chủ đề: \"{topic}\". Vui lòng kiểm tra console để biết chi tiết.",
+      "submitted": "Yêu cầu đã được gửi cho ý tưởng: \"{idea}\". Vui lòng kiểm tra console để biết chi tiết.",
       "title": "Kịch bản đã tạo:"
     },
     "generatingTip": "AI đang suy nghĩ... Vui lòng chờ.",
     "genres": {
+      "help": "Ví dụ: Hành động, Tình cảm, Kinh dị, Viễn tưởng...",
       "label": "Thể loại",
+      "options": {
+        "action": "Hành động",
+        "adventure": "Phiêu lưu",
+        "comedy": "Hài",
+        "detective": "Trinh thám",
+        "drama": "Chính kịch",
+        "horror": "Kinh dị",
+        "psychological": "Tâm lý",
+        "romance": "Lãng mạn",
+        "sciFi": "Khoa học viễn tưởng",
+        "thriller": "Giật gân"
+      },
       "placeholder": "Chọn hoặc nhập thể loại"
     },
+    "getRandomIdea": "Lấy ý tưởng ngẫu nhiên",
+    "idea": {
+      "help": "Bạn có thể nhập ý tưởng bằng bất kỳ ngôn ngữ nào bạn thấy thoải mái (Việt, Anh, ...). AI có khả năng hiểu đa ngôn ngữ.",
+      "label": "Ý tưởng kịch bản",
+      "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
+      "required": "Vui lòng nhập ý tưởng!"
+    },
     "language": {
-      "label": "Ngôn ngữ",
+      "help": "Chọn ngôn ngữ bạn muốn AI sử dụng để viết kịch bản. Đây là ngôn ngữ của sản phẩm cuối cùng, không ảnh hưởng đến ngôn ngữ bạn nhập ý tưởng.",
+      "label": "Ngôn ngữ đầu ra",
       "options": {
         "english": "Tiếng Anh",
         "vietnamese": "Tiếng Việt"
@@ -54,12 +79,20 @@
       "label": "Tên nhân vật chính",
       "placeholder": "VD: 'Alex'"
     },
-    "pointOfView": {
-      "label": "Góc nhìn",
-      "options": {
-        "firstPerson": "Ngôi thứ nhất",
-        "thirdPerson": "Ngôi thứ ba"
-      }
+    "prompt": {
+      "base": "Viết một kịch bản dựa trên ý tưởng sau: \"{idea}\".",
+      "callToAction": "Bao gồm lời kêu gọi hành động: \"{callToAction}\".",
+      "context": "Bối cảnh: {context}.",
+      "duration": "Thời lượng dự kiến: {duration} phút.",
+      "generateImage": "Đồng thời, gợi ý các ý tưởng cho hình ảnh hoặc cảnh quay.",
+      "genres": "Thể loại: {genres}.",
+      "mainCharacter": "Nhân vật chính: {mainCharacter}.",
+      "scriptInfo": "Kịch bản này dành cho một {scriptType} bằng ngôn ngữ {language}.",
+      "targetAudience": "Đối tượng khán giả: {targetAudience}.",
+      "topic": "Chủ đề: {topic}."
+    },
+    "promptPreview": {
+      "title": "Xem trước câu lệnh (Prompt)"
     },
     "resetButton": "Đặt lại Form",
     "resetSuccess": "Form đã được đặt lại về giá trị mặc định.",
@@ -67,8 +100,8 @@
       "label": "Loại kịch bản",
       "options": {
         "podcastScript": "Kịch bản Podcast",
+        "post": "Bài viết",
         "shortFilm": "Phim ngắn",
-        "status": "Trạng thái",
         "vlogOutline": "Dàn ý Vlog"
       }
     },
@@ -83,23 +116,36 @@
       },
       "title": "Phân đoạn {index}"
     },
-    "setting": {
-      "label": "Bối cảnh",
-      "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
-    },
     "targetAudience": {
-      "label": "Đối tượng mục tiêu",
+      "label": "Đối tượng khán giả",
       "placeholder": "VD: 'Lập trình viên mới bắt đầu'"
     },
     "temperature": {
       "help": "Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.",
       "label": "Mức độ sáng tạo"
     },
+    "textLayout": {
+      "help": "Yêu cầu AI sử dụng các tiêu đề (HEADING) để chia bố cục kịch bản. Hữu ích cho phim ngắn, vlog. Có thể tắt đi nếu bạn chỉ cần một đoạn văn bản thuần.",
+      "label": "Phân chia bố cục",
+      "prompt": {
+        "naturalText": "Định dạng: Viết dưới dạng một đoạn văn bản tự nhiên, dễ đọc, chuẩn SEO",
+        "structuredLayout": "Định dạng: Phân chia bố cục kịch bản một cách rõ ràng."
+      }
+    },
     "title": "Viết kịch bản với AI",
     "topic": {
-      "label": "Chủ đề Video / Ý tưởng chính",
-      "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
-      "required": "Vui lòng nhập chủ đề!"
+      "help": "Chọn một chủ đề có sẵn để AI có thể viết nội dung phù hợp hơn.",
+      "label": "Chủ đề",
+      "options": {
+        "friday": "Vui Vẻ và Giải Trí",
+        "monday": "Công việc và Cà Phê",
+        "saturday": "Khám phá",
+        "sunday": "Tự Học",
+        "thursday": "Góc Nhìn và Bài Học",
+        "tuesday": "Thách Thức và Giải Pháp",
+        "wednesday": "Công Cụ và Bí Kíp"
+      },
+      "placeholder": "Chọn một chủ đề để AI bám sát"
     }
   },
   "auth": {
@@ -120,11 +166,21 @@
     }
   },
   "common": {
+    "confirmDelete": {
+      "content": "Bạn có chắc chắn muốn xóa {0} không?",
+      "okText": "Xóa",
+      "title": "Xác nhận xóa"
+    },
     "later": "Để sau",
     "ok": "Đồng ý"
   },
   "configs": {
     "title": "Cấu hình"
+  },
+  "confirmDelete": {
+    "content": "Bạn có chắc chắn muốn xóa?",
+    "okText": "Đồng ý",
+    "title": "Xác nhận xóa"
   },
   "dashboard": {
     "analytics": "Phân tích",

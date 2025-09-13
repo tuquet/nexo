@@ -35,7 +35,8 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ScriptWriter',
         path: '/ai-script-writer',
-        component: () => import('#/views/features/ai-script-writer.vue'),
+        component: () =>
+          import('#/views/features/ai-script-writer/ai-script-writer.vue'),
         meta: {
           icon: 'carbon:pen',
           title: $t('page.aiScriptWriter.title'),

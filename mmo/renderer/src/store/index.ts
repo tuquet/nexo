@@ -1,3 +1,4 @@
+export * from './ai-script-writer';
 export * from './auth';
 export * from './logger';
 export * from './notification';

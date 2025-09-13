@@ -5,6 +5,8 @@ import { $t } from '@vben/locales';
 
 import { notification } from 'ant-design-vue';
 
+import { ipc } from '#/api/ipc';
+
 interface BinaryStatusPayload {
   args?: Record<string, any>;
   key: string;
@@ -45,7 +47,7 @@ export function useBinaryManager() {
       return;
     }
 
-    window.electron.ipcRenderer.on(
+    ipc.on(
       'binary-manager:status',
       (_event: any, payload: BinaryStatusPayload) => {
         binaryManagerState.status = payload.status;
@@ -83,10 +85,7 @@ export function useBinaryManager() {
     if (!window.electron?.ipcRenderer) return;
 
     try {
-      await window.electron.ipcRenderer.invoke(
-        'binary-manager:ensure',
-        requiredKeys,
-      );
+      await ipc.invoke('binary-manager:ensure', requiredKeys);
     } catch (error) {
       console.error('Failed to invoke binary verification:', error);
       notification.error({

@@ -8,6 +8,8 @@ import { message } from 'ant-design-vue';
 import { nanoid } from 'nanoid';
 import PQueue from 'p-queue';
 
+import { ipc } from '#/api/ipc';
+
 interface YtDlpRawMetadata {
   thumbnail?: string;
   title: string;
@@ -115,7 +117,7 @@ export function useVideoDownloadManager(
     job.progress = 0;
 
     try {
-      const unlistenProgress = window.electron.ipcRenderer.on(
+      const unlistenProgress = ipc.on(
         'video:download-progress',
         (_event: any, { key, percent }: DownloadProgressPayload) => {
           if (job.url === key) {
@@ -125,18 +127,15 @@ export function useVideoDownloadManager(
         },
       );
 
-      const completePayload = (await window.electron.ipcRenderer.invoke(
-        'video:download-video',
-        {
-          jobId: job.id,
-          videoUrl: job.url,
-          outputPath: job.outputPath,
-          isAudioOnly: job.isAudioOnly,
-          downloadPlaylist: job.downloadPlaylist,
-          useCookieFile: job.useCookieFile,
-          cookieFilePath: job.cookieFilePath,
-        },
-      )) as DownloadCompletePayload;
+      const completePayload = (await ipc.invoke('video:download-video', {
+        jobId: job.id,
+        videoUrl: job.url,
+        outputPath: job.outputPath,
+        isAudioOnly: job.isAudioOnly,
+        downloadPlaylist: job.downloadPlaylist,
+        useCookieFile: job.useCookieFile,
+        cookieFilePath: job.cookieFilePath,
+      })) as DownloadCompletePayload;
 
       unlistenProgress();
 
@@ -188,11 +187,9 @@ export function useVideoDownloadManager(
     try {
       const fetchPromises = jobsToFetch.map(async (job) => {
         try {
-          const videoInfos = (await window.electron.ipcRenderer.invoke(
-            'video:get-formats',
-            job.url,
-            { downloadPlaylist: job.downloadPlaylist },
-          )) as YtDlpRawMetadata[];
+          const videoInfos = (await ipc.invoke('video:get-formats', job.url, {
+            downloadPlaylist: job.downloadPlaylist,
+          })) as YtDlpRawMetadata[];
 
           const index = downloadQueue.value.findIndex((j) => j.id === job.id);
           if (index !== -1) {

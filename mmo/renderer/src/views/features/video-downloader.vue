@@ -5,7 +5,7 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 import type {
   DownloadJob,
   DownloadSettings,
-} from '#/composables/useVideoDownloadManager';
+} from '#/store/video-download-manager';
 
 import { h, onMounted } from 'vue';
 
@@ -25,8 +25,9 @@ import {
 } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { useBinaryManager } from '#/composables/useBinaryManager';
-import { useVideoDownloadManager } from '#/composables/useVideoDownloadManager';
+import { ipc } from '#/api/ipc';
+import { useBinaryManager } from '#/store/binary-manager';
+import { useVideoDownloadManager } from '#/store/video-download-manager';
 
 const {
   binaryManagerState,
@@ -226,18 +227,14 @@ onMounted(() => {
 });
 
 async function handleSelectOutput() {
-  const path = await window.electron.ipcRenderer.invoke(
-    'dialog:select-directory',
-  );
+  const path = await ipc.invoke('dialog:select-directory');
   if (path) {
     await gridApi.formApi.setValues({ outputPath: path });
   }
 }
 
 async function handleSelectCookieFile() {
-  const path = await window.electron.ipcRenderer.invoke(
-    'video:select-cookie-file',
-  );
+  const path = await ipc.invoke('video:select-cookie-file');
   if (path) {
     await gridApi.formApi.setValues({ cookieFilePath: path });
   }
@@ -260,7 +257,7 @@ async function handleSubmit() {
 
 async function stopJob(job: DownloadJob) {
   // Gửi yêu cầu dừng download đến tiến trình main
-  await window.electron.ipcRenderer.invoke('video:stop-download', job.id);
+  await ipc.invoke('video:stop-download', job.id);
 }
 
 async function handleRemoveJob(job: DownloadJob) {
@@ -268,10 +265,7 @@ async function handleRemoveJob(job: DownloadJob) {
     // Nếu có file đã tải, thì xóa file trước
     if (job.filePath) {
       try {
-        await window.electron.ipcRenderer.invoke(
-          'video:delete-file',
-          job.filePath,
-        );
+        await ipc.invoke('video:delete-file', job.filePath);
         message.success($t('page.videoDownloader.notifications.fileDeleted'));
       } catch (error: any) {
         message.error(
@@ -327,11 +321,11 @@ const getStatusColor = (status: DownloadJob['status']) => {
 };
 
 const openFilePath = (filePath: string) => {
-  window.electron.ipcRenderer.send('shell:open-path', filePath);
+  ipc.send('shell:open-path', filePath);
 };
 
 const showItemInFolder = (filePath: string) => {
-  window.electron.ipcRenderer.send('shell:show-item-in-folder', filePath);
+  ipc.send('shell:show-item-in-folder', filePath);
 };
 </script>
 

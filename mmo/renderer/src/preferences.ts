@@ -59,7 +59,7 @@ export const overridesPreferences = defineOverridesPreferences({
     colorWarning: 'hsl(42 84% 61%)',
   },
   tabbar: {
-    enable: false,
+    enable: true,
     middleClickToClose: true,
   },
 });
