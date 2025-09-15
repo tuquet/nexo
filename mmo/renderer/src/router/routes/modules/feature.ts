@@ -35,13 +35,32 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'ScriptWriter',
         path: '/ai-script-writer',
-        component: () =>
-          import('#/views/features/ai-script-writer/ai-script-writer.vue'),
         meta: {
           icon: 'carbon:pen',
           title: $t('page.aiScriptWriter.title'),
-          keepAlive: true,
         },
+        children: [
+          {
+            name: 'AIGeneratedScriptList',
+            path: '',
+            component: () =>
+              import('#/views/features/ai-script-writer/ai-script-writer.vue'),
+            meta: {
+              title: $t('page.aiScriptWriter.title'),
+              keepAlive: true,
+            },
+          },
+          {
+            name: 'AIGeneratedScriptDetail',
+            path: ':id',
+            component: () =>
+              import('#/views/features/ai-script-writer/detail.vue'),
+            meta: {
+              title: $t('page.aiScriptWriter.detail.title'),
+              hideMenu: true,
+            },
+          },
+        ],
       },
     ],
   },

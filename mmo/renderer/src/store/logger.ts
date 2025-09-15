@@ -43,6 +43,11 @@ export const useLoggerStore = defineStore('logger', () => {
   const logViewerVisible = ref(false);
 
   /**
+   * Trạng thái cho biết có log mới chưa được đọc hay không.
+   */
+  const hasUnreadLogs = ref(false);
+
+  /**
    * Mảng chứa tất cả các mục log.
    */
   const logs = ref<LogEntry[]>([]);
@@ -66,16 +71,27 @@ export const useLoggerStore = defineStore('logger', () => {
    * @param visible - (Tùy chọn) Trạng thái `true` để mở, `false` để đóng. Nếu bỏ qua, trạng thái sẽ được đảo ngược.
    */
   function toggleLogViewer(visible?: boolean) {
-    logViewerVisible.value =
+    const newVisibility =
       typeof visible === 'boolean' ? visible : !logViewerVisible.value;
+    logViewerVisible.value = newVisibility;
+
+    // Nếu mở viewer, đánh dấu là đã đọc
+    if (newVisibility) {
+      hasUnreadLogs.value = false;
+    }
   }
 
   function addLog(logEntry: LogEntry) {
     logs.value.push(logEntry);
+    // Khi có log mới và viewer đang đóng, đánh dấu là chưa đọc
+    if (!logViewerVisible.value) {
+      hasUnreadLogs.value = true;
+    }
   }
 
   function clearLogs() {
     logs.value = [];
+    hasUnreadLogs.value = false;
   }
 
   /**
@@ -90,6 +106,7 @@ export const useLoggerStore = defineStore('logger', () => {
     logs.value = [];
     logViewerVisible.value = false;
     selectedLevels.value = [...ALL_LOG_LEVELS];
+    hasUnreadLogs.value = false;
   }
 
   return {
@@ -102,5 +119,6 @@ export const useLoggerStore = defineStore('logger', () => {
     addLog,
     clearLogs,
     $reset,
+    hasUnreadLogs,
   };
 });

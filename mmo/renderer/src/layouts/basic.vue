@@ -155,7 +155,7 @@ whenever(toggleLoggerShortcut!, () => {
     </template>
     <template #header-right-52-terminal>
       <Tooltip :title="`${$t('page.logViewer.cardTitle')} (Alt+V)`">
-        <Badge dot :offset="[-5, 5]">
+        <Badge :dot="loggerStore.hasUnreadLogs" :offset="[-5, 5]">
           <Button
             type="text"
             shape="circle"

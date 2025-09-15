@@ -52,9 +52,14 @@ const defaultFormState = {
   segmentDuration: 5,
 };
 
-const formState = useStorage('video-cutter-form-state', {
-  ...defaultFormState,
-});
+const formState = useStorage(
+  'video-cutter-form-state',
+  defaultFormState,
+  undefined,
+  {
+    mergeDefaults: true,
+  },
+);
 
 async function handleSelectVideo() {
   const path = await ipc.invoke('dialog:select-file');
@@ -223,33 +228,7 @@ const formOptions: VbenFormProps = {
 const gridOptions: VxeGridProps<CutJob> = {
   autoResize: true,
   border: true,
-  columns: [
-    {
-      field: 'video',
-      slots: { default: 'video' },
-      title: $t('page.videoCutter.table.video'),
-    },
-    {
-      field: 'outputPath',
-      title: $t('page.videoCutter.table.outputPath'),
-      slots: { default: 'outputPath' },
-      minWidth: 150,
-    },
-    {
-      field: 'status',
-      slots: { default: 'status' },
-      title: $t('page.videoCutter.table.status'),
-      width: 150,
-      align: 'center',
-    },
-    {
-      field: 'action',
-      slots: { default: 'action' },
-      title: $t('page.videoCutter.table.action'),
-      width: 200,
-      align: 'center',
-    },
-  ],
+  columns: [],
   data: [],
   height: 'auto',
   pagerConfig: { enabled: false },

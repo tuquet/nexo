@@ -1,6 +1,6 @@
 {
   "name": "@mmo/electron",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "An Electron application with Vue and TypeScript",
   "homepage": "https://electron-vite.org",
   "author": "example.com",
@@ -27,8 +27,8 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
-    "axios": "^1.11.0",
     "electron-devtools-installer": "^4.0.0",
+    "axios": "^1.11.0",
     "electron-log": "^5.4.3",
     "electron-store": "^10.1.0",
     "electron-updater": "^6.3.9",

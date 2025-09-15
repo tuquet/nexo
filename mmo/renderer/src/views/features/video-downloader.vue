@@ -48,8 +48,10 @@ const defaultFormState = {
 
 const formState = useStorage<typeof defaultFormState>(
   'youtube-downloader-form-state',
+  defaultFormState,
+  undefined,
   {
-    ...defaultFormState,
+    mergeDefaults: true,
   },
 );
 

@@ -13,8 +13,8 @@
       "help": "Bạn cần cấu hình API Key cho nhà cung cấp đã chọn trong trang Cấu hình để sử dụng tính năng này.",
       "label": "Nhà cung cấp AI",
       "options": {
-        "chatGPT": "Chat GPT",
-        "gemini": "Gemini"
+        "chatGPT": "OpenAI ChatGPT",
+        "gemini": "Google Gemini"
       },
       "placeholder": "Chọn nhà cung cấp API"
     },
@@ -23,6 +23,23 @@
       "label": "Kêu gọi hành động",
       "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
     },
+    "detail": {
+      "description": "Xem lại chi tiết kịch bản đã tạo và các thông số được sử dụng.",
+      "fullScriptText": "Văn bản kịch bản đầy đủ",
+      "imageSuggestions": "Gợi ý hình ảnh",
+      "logline": "Tóm tắt (Logline)",
+      "notFound": "Không tìm thấy công việc với ID được cung cấp.",
+      "parametersTitle": "Thông số đã sử dụng",
+      "rawPromptTitle": "Câu lệnh (Prompt) gốc",
+      "sceneAction": "Hành động",
+      "sceneDialogue": "Hội thoại",
+      "sceneSetting": "Bối cảnh",
+      "scriptContentTitle": "Nội dung kịch bản",
+      "scriptTitle": "Tiêu đề",
+      "title": "Chi tiết kịch bản",
+      "viewingJob": "Chi tiết công việc"
+    },
+    "formParamsModalTitle": "Chi tiết tham số đã dùng",
     "cardTitle": "Nhập thông tin để tạo kịch bản",
     "context": {
       "label": "Bối cảnh",
@@ -31,7 +48,7 @@
     "description": "Hãy để AI biến ý tưởng thành kịch bản chi tiết, từ mở đầu đến kết thúc, giúp bạn không bao giờ lo cạn nội dung sáng tạo cho video.",
     "expectedDuration": {
       "addon": "phút",
-      "label": "Thời lượng đọc dự kiến"
+      "label": "Thời lượng dự kiến"
     },
     "generateButton": "Tạo kịch bản",
     "generateImage": {
@@ -40,7 +57,8 @@
     },
     "generatedScript": {
       "submitted": "Yêu cầu đã được gửi cho ý tưởng: \"{idea}\". Vui lòng kiểm tra console để biết chi tiết.",
-      "title": "Kịch bản đã tạo:"
+      "title": "Kịch bản đã tạo:",
+      "viewButton": "Xem kịch bản đã tạo"
     },
     "generatingTip": "AI đang suy nghĩ... Vui lòng chờ.",
     "genres": {
@@ -67,6 +85,10 @@
       "placeholder": "VD: 'Một bộ phim ngắn về một con robot lần đầu tiên khám phá ra âm nhạc.'",
       "required": "Vui lòng nhập ý tưởng!"
     },
+    "jsonOutput": {
+      "help": "Yêu cầu AI trả về kết quả dưới dạng một đối tượng JSON. Nếu tắt, AI sẽ trả về văn bản thuần túy.",
+      "label": "Định dạng JSON"
+    },
     "language": {
       "help": "Chọn ngôn ngữ bạn muốn AI sử dụng để viết kịch bản. Đây là ngôn ngữ của sản phẩm cuối cùng, không ảnh hưởng đến ngôn ngữ bạn nhập ý tưởng.",
       "label": "Ngôn ngữ đầu ra",
@@ -83,11 +105,12 @@
       "base": "Viết một kịch bản dựa trên ý tưởng sau: \"{idea}\".",
       "callToAction": "Bao gồm lời kêu gọi hành động: \"{callToAction}\".",
       "context": "Bối cảnh: {context}.",
-      "duration": "Thời lượng dự kiến: {duration} phút.",
+      "duration": "Thời lượng dự kiến: {duration} phút. QUAN TRỌNG: Hãy viết một kịch bản thật chi tiết và có độ dài phù hợp. Một kịch bản tiêu chuẩn có khoảng 250 từ mỗi phút. Hãy đảm bảo kịch bản có nhiều phân cảnh, hành động và hội thoại để đạt được thời lượng yêu cầu.",
       "generateImage": "Đồng thời, gợi ý các ý tưởng cho hình ảnh hoặc cảnh quay.",
       "genres": "Thể loại: {genres}.",
       "mainCharacter": "Nhân vật chính: {mainCharacter}.",
       "scriptInfo": "Kịch bản này dành cho một {scriptType} bằng ngôn ngữ {language}.",
+      "jsonOutputInstruction": "QUAN TRỌNG: Trả lời bằng một đối tượng JSON duy nhất, không có bất kỳ văn bản giải thích nào trước hoặc sau. JSON phải tuân theo schema sau: {schema}",
       "targetAudience": "Đối tượng khán giả: {targetAudience}.",
       "topic": "Chủ đề: {topic}."
     },
@@ -115,6 +138,20 @@
         "required": "Vui lòng nhập tên phân đoạn"
       },
       "title": "Phân đoạn {index}"
+    },
+    "status": {
+      "failed": "Thất bại",
+      "generating": "Đang tạo...",
+      "pending": "Đang chờ",
+      "success": "Thành công"
+    },
+    "submit": "Tạo",
+    "table": {
+      "action": "Hành động",
+      "createdAt": "Ngày tạo",
+      "formParams": "Tham số",
+      "rawPrompt": "Prompt Gốc",
+      "status": "Trạng thái"
     },
     "targetAudience": {
       "label": "Đối tượng khán giả",
@@ -171,8 +208,11 @@
       "okText": "Xóa",
       "title": "Xác nhận xóa"
     },
+    "copy": "Sao chép",
+    "copySuccess": "Đã sao chép thành công!",
     "later": "Để sau",
-    "ok": "Đồng ý"
+    "ok": "Đồng ý",
+    "view": "Xem"
   },
   "configs": {
     "title": "Cấu hình"

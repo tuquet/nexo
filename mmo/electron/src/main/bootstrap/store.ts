@@ -7,7 +7,6 @@ import Store from 'electron-store'
 interface StorageSchema {
   userApiKeys: {
     openAI?: string
-    google?: string
     gemini?: string
   }
   // Thêm các cài đặt khác ở đây, ví dụ:

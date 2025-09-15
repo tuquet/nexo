@@ -49,7 +49,9 @@ export function startMockServer(): void {
     })
 
     mockServerProcess.stdout?.on('data', (data) => {
-      log.info(`[Mock Server] stdout: ${data.toString().trim()}`)
+      if (data.toString().trim()) {
+        log.info(`[Mock Server] stdout: ${data.toString().trim()}`)
+      }
     })
 
     mockServerProcess.stderr?.on('data', (data) => {
