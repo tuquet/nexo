@@ -9,14 +9,10 @@ export const defaultFormState = {
   scriptType: ['shortFilm'] as string[],
   language: ['vietnamese'] as string[],
   genres: [] as string[],
-  expectedDuration: 5,
+  expectedDuration: 200,
   mainCharacter: [] as string[],
   context: '',
   targetAudience: [] as string[],
-  callToAction: '',
-  textLayout: true,
-  jsonOutput: true,
-  generateImage: false,
   advancedSwitch: false,
   temperature: 0.3,
 };
@@ -26,6 +22,7 @@ export type ScriptJob = typeof defaultFormState & {
   error?: string;
   id: string;
   rawPrompt?: string;
+  rawResponse?: any;
   scriptContent?: string;
   status: 'failed' | 'generating' | 'pending' | 'success';
   structuredContent?: AiScriptResponse;
@@ -82,7 +79,8 @@ export interface ImageSuggestion {
  */
 export interface AiScriptResponse {
   /**
-   * Kịch bản dưới dạng văn bản thuần túy (dùng khi không yêu cầu cấu trúc).
+   * Văn bản đầy đủ của kịch bản, đặc biệt cho các loại như bài viết, dàn ý.
+   * Được định dạng bằng markdown.
    */
   full_script_text?: string;
   /**
@@ -94,7 +92,7 @@ export interface AiScriptResponse {
    */
   logline: string;
   /**
-   * Kịch bản được chia thành các phân cảnh (dùng khi yêu cầu cấu trúc).
+   * Kịch bản được chia thành các phân cảnh (dùng khi yêu cầu cấu trúc cho phim).
    */
   scenes?: ScriptScene[];
   /**
@@ -103,34 +101,31 @@ export interface AiScriptResponse {
   title: string;
 }
 
-const schemaForPromptObject = {
-  title: 'string',
-  logline: 'string',
+export const schemaForPromptObject = {
+  _instructions: '重要：剧本用 `scenes`，文章用 `full_script_text`，二选一。',
+  title: 'string (标题)',
+  logline: 'string (简短摘要/meta描述)',
   scenes: [
     {
-      title: 'string',
-      setting: 'string',
-      action: 'string',
+      title: 'string (例: "场景1：发现")',
+      setting: 'string (例: "内. 实验室 - 夜晚")',
+      action: 'string (场景动作/事件)',
       dialogue: [
         {
-          character: 'string',
-          line: 'string',
+          character: 'string (角色名)',
+          line: 'string (对话)',
         },
       ],
     },
   ],
+  full_script_text: 'string (仅正文，不含标题)',
   image_suggestions: [
     {
-      scene_reference: 'string',
-      description: 'string',
+      scene_reference: 'string (e.g., "SCENE 1")',
+      description: 'string (AI绘图的详细提示)',
     },
   ],
-  full_script_text: 'string',
 };
-
-export const jsonResponseSchemaForPrompt = JSON.stringify(
-  schemaForPromptObject,
-);
 
 export const getApiProviderOptions = () =>
   ref([
@@ -145,13 +140,13 @@ export const getApiProviderOptions = () =>
   ]);
 
 export const defaultTopicOptionKeys = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday',
+  'workAndCoffee',
+  'challengesAndSolutions',
+  'toolsAndTips',
+  'perspectivesAndLessons',
+  'funAndEntertainment',
+  'discovery',
+  'selfLearning',
 ];
 
 export const defaultGenresOptionKeys = [

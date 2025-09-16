@@ -6,7 +6,7 @@ import { computed } from 'vue';
 
 import { $t } from '#/locales';
 
-import { jsonResponseSchemaForPrompt } from './ai-script-writer.data';
+import { schemaForPromptObject } from './ai-script-writer.data';
 
 export function useAiPrompt(formState: Ref<AiScriptWriteForm>) {
   const constructedPrompt = computed(() => {
@@ -20,11 +20,7 @@ export function useAiPrompt(formState: Ref<AiScriptWriteForm>) {
       mainCharacter,
       context,
       targetAudience,
-      callToAction,
       expectedDuration,
-      generateImage,
-      jsonOutput,
-      textLayout,
     } = state;
 
     if (!idea) {
@@ -69,11 +65,6 @@ export function useAiPrompt(formState: Ref<AiScriptWriteForm>) {
         }),
       );
     }
-    if (callToAction) {
-      promptParts.push(
-        $t('page.aiScriptWriter.prompt.callToAction', { callToAction }),
-      );
-    }
     if (expectedDuration) {
       promptParts.push(
         $t('page.aiScriptWriter.prompt.duration', {
@@ -81,25 +72,13 @@ export function useAiPrompt(formState: Ref<AiScriptWriteForm>) {
         }),
       );
     }
-    if (generateImage) {
-      promptParts.push($t('page.aiScriptWriter.prompt.generateImage'));
-    }
-    if (textLayout) {
-      promptParts.push(
-        $t('page.aiScriptWriter.textLayout.prompt.structuredLayout'),
-      );
-    } else {
-      promptParts.push($t('page.aiScriptWriter.textLayout.prompt.naturalText'));
-    }
-
-    if (jsonOutput) {
-      // Add the JSON instruction at the end
-      promptParts.push(
-        $t('page.aiScriptWriter.prompt.jsonOutputInstruction', {
-          schema: jsonResponseSchemaForPrompt,
-        }),
-      );
-    }
+    const jsonOutputContent = $t(
+      'page.aiScriptWriter.prompt.jsonOutputInstruction',
+      {
+        schema: JSON.stringify(schemaForPromptObject),
+      },
+    );
+    promptParts.push(jsonOutputContent);
 
     return promptParts.filter(Boolean).join(' ');
   });

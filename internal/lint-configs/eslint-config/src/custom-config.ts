@@ -178,6 +178,7 @@ const customConfig: Linter.Config[] = [
     files: ['mmo/renderer/**/**'],
     rules: {
       'vue/no-v-html': 'off',
+      'vue/html-closing-bracket-newline': 'off',
     },
   },
 ];

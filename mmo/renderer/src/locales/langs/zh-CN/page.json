@@ -16,10 +16,6 @@
         "gemini": "Google双子座"
       }
     },
-    "callToAction": {
-      "label": "呼吁采取行动",
-      "placeholder": "示例：“单击“喜欢”并订阅频道！”"
-    },
     "cardTitle": "输入信息创建脚本",
     "characterCount": {
       "label": "预期长度（字符）"

@@ -38,6 +38,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'carbon:pen',
           title: $t('page.aiScriptWriter.title'),
+          hideChildrenInMenu: true,
         },
         children: [
           {

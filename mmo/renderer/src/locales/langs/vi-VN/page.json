@@ -18,43 +18,41 @@
       },
       "placeholder": "Chọn nhà cung cấp API"
     },
-    "callToAction": {
-      "help": "Một lời kêu gọi khán giả thực hiện hành động (VD: 'Bình luận ý kiến của bạn'). Thường không cần thiết cho phim ngắn.",
-      "label": "Kêu gọi hành động",
-      "placeholder": "VD: 'Hãy nhấn Like và Đăng ký kênh!'"
-    },
-    "detail": {
-      "description": "Xem lại chi tiết kịch bản đã tạo và các thông số được sử dụng.",
-      "fullScriptText": "Văn bản kịch bản đầy đủ",
-      "imageSuggestions": "Gợi ý hình ảnh",
-      "logline": "Tóm tắt (Logline)",
-      "notFound": "Không tìm thấy công việc với ID được cung cấp.",
-      "parametersTitle": "Thông số đã sử dụng",
-      "rawPromptTitle": "Câu lệnh (Prompt) gốc",
-      "sceneAction": "Hành động",
-      "sceneDialogue": "Hội thoại",
-      "sceneSetting": "Bối cảnh",
-      "scriptContentTitle": "Nội dung kịch bản",
-      "scriptTitle": "Tiêu đề",
-      "title": "Chi tiết kịch bản",
-      "viewingJob": "Chi tiết công việc"
-    },
-    "formParamsModalTitle": "Chi tiết tham số đã dùng",
     "cardTitle": "Nhập thông tin để tạo kịch bản",
     "context": {
       "label": "Bối cảnh",
       "placeholder": "VD: 'Một con hẻm nhỏ, ẩm ướt trong một thành phố tương lai'"
     },
     "description": "Hãy để AI biến ý tưởng thành kịch bản chi tiết, từ mở đầu đến kết thúc, giúp bạn không bao giờ lo cạn nội dung sáng tạo cho video.",
+    "detail": {
+      "description": "Xem lại chi tiết kịch bản đã tạo và các thông số được sử dụng.",
+      "fullScriptText": "Nội dung kịch bản đầy đủ",
+      "imageSuggestions": "Gợi ý hình ảnh",
+      "logline": "Tóm tắt (Logline)",
+      "notFound": "Không tìm thấy công việc với ID được cung cấp.",
+      "parametersTitle": "Thông số đã sử dụng",
+      "rawPromptTitle": "Câu lệnh (Prompt) gốc",
+      "rawResponseTitle": "Phản hồi (Response) gốc",
+      "sceneAction": "Hành động",
+      "sceneDialogue": "Hội thoại",
+      "sceneSetting": "Bối cảnh",
+      "scriptContentTitle": "Nội dung kịch bản",
+      "scriptTitle": "Tiêu đề",
+      "title": "Chi tiết kịch bản",
+      "usageMetadata": {
+        "completionTokens": "Token đầu ra (Completion)",
+        "promptTokens": "Token đầu vào (Prompt)",
+        "title": "Thống kê Token",
+        "totalTokens": "Tổng số Token"
+      },
+      "viewingJob": "Chi tiết công việc"
+    },
     "expectedDuration": {
-      "addon": "phút",
-      "label": "Thời lượng dự kiến"
+      "addon": "ký tự",
+      "label": "Thời lượng"
     },
+    "formParamsModalTitle": "Chi tiết tham số đã dùng",
     "generateButton": "Tạo kịch bản",
-    "generateImage": {
-      "help": "Yêu cầu AI tạo một ảnh minh họa tương ứng với kịch bản. Tính năng này có thể yêu cầu nhà cung cấp AI hỗ trợ tạo ảnh (ví dụ: DALL-E của OpenAI).",
-      "label": "Tạo ảnh minh họa"
-    },
     "generatedScript": {
       "submitted": "Yêu cầu đã được gửi cho ý tưởng: \"{idea}\". Vui lòng kiểm tra console để biết chi tiết.",
       "title": "Kịch bản đã tạo:",
@@ -98,20 +96,18 @@
       }
     },
     "mainCharacter": {
-      "label": "Tên nhân vật chính",
+      "label": "Nhân vật",
       "placeholder": "VD: 'Alex'"
     },
     "prompt": {
-      "base": "Viết một kịch bản dựa trên ý tưởng sau: \"{idea}\".",
-      "callToAction": "Bao gồm lời kêu gọi hành động: \"{callToAction}\".",
-      "context": "Bối cảnh: {context}.",
-      "duration": "Thời lượng dự kiến: {duration} phút. QUAN TRỌNG: Hãy viết một kịch bản thật chi tiết và có độ dài phù hợp. Một kịch bản tiêu chuẩn có khoảng 250 từ mỗi phút. Hãy đảm bảo kịch bản có nhiều phân cảnh, hành động và hội thoại để đạt được thời lượng yêu cầu.",
-      "generateImage": "Đồng thời, gợi ý các ý tưởng cho hình ảnh hoặc cảnh quay.",
+      "base": "Kịch bản cho ý tưởng: \"{idea}\".",
+      "context": "Bối cảnh: {context}",
+      "duration": "Thời lượng: {duration} ký tự.",
       "genres": "Thể loại: {genres}.",
+      "jsonOutputInstruction": "QUAN TRỌNG: Chỉ trả về JSON. {schema}",
       "mainCharacter": "Nhân vật chính: {mainCharacter}.",
-      "scriptInfo": "Kịch bản này dành cho một {scriptType} bằng ngôn ngữ {language}.",
-      "jsonOutputInstruction": "QUAN TRỌNG: Trả lời bằng một đối tượng JSON duy nhất, không có bất kỳ văn bản giải thích nào trước hoặc sau. JSON phải tuân theo schema sau: {schema}",
-      "targetAudience": "Đối tượng khán giả: {targetAudience}.",
+      "scriptInfo": "Loại: {scriptType}. Ngôn ngữ: {language}.",
+      "targetAudience": "Khán giả: {targetAudience}.",
       "topic": "Chủ đề: {topic}."
     },
     "promptPreview": {
@@ -151,7 +147,8 @@
       "createdAt": "Ngày tạo",
       "formParams": "Tham số",
       "rawPrompt": "Prompt Gốc",
-      "status": "Trạng thái"
+      "status": "Trạng thái",
+      "totalTokens": "Tokens"
     },
     "targetAudience": {
       "label": "Đối tượng khán giả",
@@ -161,26 +158,18 @@
       "help": "Giá trị cao hơn sẽ tạo ra kết quả ngẫu nhiên và sáng tạo hơn.",
       "label": "Mức độ sáng tạo"
     },
-    "textLayout": {
-      "help": "Yêu cầu AI sử dụng các tiêu đề (HEADING) để chia bố cục kịch bản. Hữu ích cho phim ngắn, vlog. Có thể tắt đi nếu bạn chỉ cần một đoạn văn bản thuần.",
-      "label": "Phân chia bố cục",
-      "prompt": {
-        "naturalText": "Định dạng: Viết dưới dạng một đoạn văn bản tự nhiên, dễ đọc, chuẩn SEO",
-        "structuredLayout": "Định dạng: Phân chia bố cục kịch bản một cách rõ ràng."
-      }
-    },
     "title": "Viết kịch bản với AI",
     "topic": {
       "help": "Chọn một chủ đề có sẵn để AI có thể viết nội dung phù hợp hơn.",
       "label": "Chủ đề",
       "options": {
-        "friday": "Vui Vẻ và Giải Trí",
-        "monday": "Công việc và Cà Phê",
-        "saturday": "Khám phá",
-        "sunday": "Tự Học",
-        "thursday": "Góc Nhìn và Bài Học",
-        "tuesday": "Thách Thức và Giải Pháp",
-        "wednesday": "Công Cụ và Bí Kíp"
+        "challengesAndSolutions": "Thách Thức và Giải Pháp",
+        "discovery": "Khám phá",
+        "funAndEntertainment": "Vui Vẻ và Giải Trí",
+        "perspectivesAndLessons": "Góc Nhìn và Bài Học",
+        "selfLearning": "Tự Học",
+        "toolsAndTips": "Công Cụ và Bí Kíp",
+        "workAndCoffee": "Công việc và Cà Phê"
       },
       "placeholder": "Chọn một chủ đề để AI bám sát"
     }

@@ -19,9 +19,18 @@ import {
   FileTextOutlined,
   RedoOutlined,
   SendOutlined,
+  ToolOutlined,
 } from '@ant-design/icons-vue';
 import { until, useClipboard, useStorage } from '@vueuse/core';
-import { Alert, Button, message, Modal, Tag, Tooltip } from 'ant-design-vue';
+import {
+  Alert,
+  Button,
+  ButtonGroup,
+  message,
+  Modal,
+  Tag,
+  Tooltip,
+} from 'ant-design-vue';
 import { storeToRefs } from 'pinia';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -173,7 +182,6 @@ function createFormSchema() {
       component: 'Select',
       fieldName: 'topic',
       label: $t('page.aiScriptWriter.topic.label'),
-      formItemClass: 'lg:col-span-2',
       componentProps: {
         class: 'w-full',
         allowClear: true,
@@ -213,9 +221,9 @@ function createFormSchema() {
       label: $t('page.aiScriptWriter.expectedDuration.label'),
       componentProps: {
         class: 'w-full',
-        min: 0.5,
-        max: 60,
-        step: 0.5,
+        min: 50,
+        max: 1000,
+        step: 10,
         addonAfter: $t('page.aiScriptWriter.expectedDuration.addon'),
       },
     },
@@ -252,42 +260,6 @@ function createFormSchema() {
       },
     },
     {
-      component: 'Input',
-      fieldName: 'callToAction',
-      label: $t('page.aiScriptWriter.callToAction.label'),
-      componentProps: {
-        placeholder: $t('page.aiScriptWriter.callToAction.placeholder'),
-      },
-      help: $t('page.aiScriptWriter.callToAction.help'),
-    },
-    {
-      component: 'Switch',
-      fieldName: 'generateImage',
-      label: $t('page.aiScriptWriter.generateImage.label'),
-      help: $t('page.aiScriptWriter.generateImage.help'),
-      componentProps: {
-        class: 'w-auto',
-      },
-    },
-    {
-      component: 'Switch',
-      fieldName: 'textLayout',
-      label: $t('page.aiScriptWriter.textLayout.label'),
-      help: $t('page.aiScriptWriter.textLayout.help'),
-      componentProps: {
-        class: 'w-auto',
-      },
-    },
-    {
-      component: 'Switch',
-      fieldName: 'jsonOutput',
-      label: $t('page.aiScriptWriter.jsonOutput.label'),
-      help: $t('page.aiScriptWriter.jsonOutput.help'),
-      componentProps: {
-        class: 'w-auto',
-      },
-    },
-    {
       component: 'InputNumber',
       fieldName: 'temperature',
       label: $t('page.aiScriptWriter.temperature.label'),
@@ -306,19 +278,6 @@ const gridOptions: VxeGridProps<ScriptJob> = {
   border: true,
   columns: [
     {
-      field: 'idea',
-      title: $t('page.aiScriptWriter.idea.label'),
-      minWidth: 200,
-      showOverflow: 'tooltip',
-      slots: { default: 'idea' },
-    },
-    {
-      title: $t('page.aiScriptWriter.table.formParams'),
-      width: 100,
-      align: 'center',
-      slots: { default: 'formParams' },
-    },
-    {
       field: 'rawPrompt',
       title: $t('page.aiScriptWriter.table.rawPrompt'),
       minWidth: 250,
@@ -327,17 +286,20 @@ const gridOptions: VxeGridProps<ScriptJob> = {
     {
       field: 'status',
       title: $t('page.aiScriptWriter.table.status'),
-      width: 120,
       slots: { default: 'status' },
+    },
+    {
+      title: $t('page.aiScriptWriter.table.totalTokens'),
+      align: 'center',
+      slots: { default: 'tokens' },
     },
     {
       field: 'createdAt',
       title: $t('page.aiScriptWriter.table.createdAt'),
-      width: 180,
+      formatter: ({ cellValue }) => new Date(cellValue).toLocaleString(),
     },
     {
       title: $t('page.aiScriptWriter.table.action'),
-      width: 150,
       slots: { default: 'action' },
       fixed: 'right',
       align: 'center',
@@ -410,9 +372,14 @@ async function processJob(job: ScriptJob): Promise<void> {
     await db.scriptJobs.update(job.id, {
       status: 'failed',
       error: result.error,
+      rawResponse: result.rawResponse,
     });
     if (row) {
-      Object.assign(row, { status: 'failed', error: result.error });
+      Object.assign(row, {
+        status: 'failed',
+        error: result.error,
+        rawResponse: result.rawResponse,
+      });
     }
   } else {
     let scriptTextForDisplay = result.content;
@@ -424,8 +391,29 @@ async function processJob(job: ScriptJob): Promise<void> {
       const match = result.content.match(jsonRegex);
 
       if (match) {
-        const jsonString = match[1] ?? match[2];
-        structuredData = JSON.parse(jsonString || '');
+        const jsonString = (match[1] ?? (match[2] || '')).trim();
+        try {
+          structuredData = JSON.parse(jsonString);
+        } catch (error) {
+          if (error instanceof SyntaxError) {
+            console.warn(
+              'JSON.parse failed. Attempting to parse as a more lenient JS object.',
+              error,
+            );
+            // The AI might produce a JS object with comments, trailing commas,
+            // and unquoted/single-quoted keys. Using the Function constructor is a
+            // more lenient way to parse this.
+            const cleanedString = jsonString.replaceAll(
+              /\/\*[\s\S]*?\*\/|\/\/.*/g,
+              '',
+            );
+            // eslint-disable-next-line no-new-func
+            structuredData = new Function(`return ${cleanedString}`)();
+          } else {
+            // Re-throw other errors to be caught by the outer catch
+            throw error;
+          }
+        }
 
         // Ưu tiên full_script_text, fallback sang stringify toàn bộ JSON
         scriptTextForDisplay =
@@ -439,6 +427,8 @@ async function processJob(job: ScriptJob): Promise<void> {
       console.error(
         'Failed to parse JSON from AI response. Using raw content.',
         error,
+        'Raw content:',
+        result.content,
       );
       structuredData = undefined;
     }
@@ -447,12 +437,14 @@ async function processJob(job: ScriptJob): Promise<void> {
       status: 'success',
       scriptContent: scriptTextForDisplay,
       structuredContent: structuredData, // structuredData can be undefined here
+      rawResponse: result.rawResponse,
     });
     if (row) {
       Object.assign(row, {
         status: 'success',
         scriptContent: scriptTextForDisplay,
         structuredContent: structuredData,
+        rawResponse: result.rawResponse,
       });
     }
     message.success(
@@ -474,7 +466,7 @@ async function handleSubmit(values: Record<string, any>): Promise<void> {
     id: `script-${Date.now()}`,
     status: 'pending',
     rawPrompt: constructedPrompt.value,
-    createdAt: new Date().toLocaleString(),
+    createdAt: new Date().toISOString(),
   };
   await db.scriptJobs.add(newJob);
   await gridApi.grid?.insert(newJob);
@@ -490,15 +482,77 @@ function handleReset() {
   gridApi.formApi.setValues(formState.value);
 }
 
+function getUsageInfo(
+  job: ScriptJob,
+): null | { completion: number; prompt: number; total: number } {
+  if (!job?.rawResponse) {
+    return null;
+  }
+  const raw = job.rawResponse as any;
+
+  // Gemini
+  if (raw.usageMetadata) {
+    return {
+      prompt: raw.usageMetadata.promptTokenCount,
+      completion: raw.usageMetadata.candidatesTokenCount,
+      total: raw.usageMetadata.totalTokenCount,
+    };
+  }
+
+  // OpenAI
+  if (raw.usage) {
+    return {
+      prompt: raw.usage.prompt_tokens,
+      completion: raw.usage.completion_tokens,
+      total: raw.usage.total_tokens,
+    };
+  }
+
+  return null;
+}
+
+async function handleFixCreatedAt() {
+  try {
+    const jobsToUpdate: ScriptJob[] = [];
+    const allJobs = await db.scriptJobs.toArray();
+    let fixedCount = 0;
+
+    for (const job of allJobs) {
+      // Heuristic check: ISO strings (e.g., "2023-10-27T07:00:00.000Z") contain 'T' and 'Z'.
+      // Old toLocaleString() values (e.g., "10/27/2023, 2:00:00 PM") do not.
+      if (typeof job.createdAt === 'string' && !job.createdAt.includes('T')) {
+        const parsedDate = new Date(job.createdAt);
+        // Ensure the parsed date is valid before converting
+        if (!Number.isNaN(parsedDate.getTime())) {
+          job.createdAt = parsedDate.toISOString();
+          jobsToUpdate.push(job);
+          fixedCount++;
+        }
+      }
+    }
+
+    if (fixedCount > 0) {
+      await db.scriptJobs.bulkPut(jobsToUpdate);
+      await loadJobHistory(); // Reload the grid
+      message.success(`Đã sửa định dạng ngày cho ${fixedCount} công việc.`);
+    } else {
+      message.info('Không có công việc nào cần sửa định dạng ngày.');
+    }
+  } catch (error) {
+    console.error('Failed to fix createdAt dates:', error);
+    message.error('Đã xảy ra lỗi khi sửa định dạng ngày.');
+  }
+}
+
 async function handleCopyPrompt() {
   await copyPrompt();
   message.success($t('page.common.copySuccess'));
 }
 
 async function handleGetRandomIdea() {
-  const randomIdea = await getRandomIdea();
-  if (randomIdea) {
-    gridApi.formApi.setValues({ idea: randomIdea });
+  const randomIdeaObject = await getRandomIdea();
+  if (randomIdeaObject) {
+    await gridApi.formApi.setValues(randomIdeaObject);
   }
 }
 
@@ -512,11 +566,6 @@ function viewScript(job: ScriptJob) {
     ),
     width: '80%',
   });
-}
-
-function showFormParams(job: ScriptJob) {
-  currentJobForParams.value = job;
-  isFormParamsModalVisible.value = true;
 }
 
 function goToDetails(job: ScriptJob) {
@@ -574,9 +623,19 @@ onMounted(() => {
     :auto-content-height="true"
   >
     <template #extra>
-      <Button type="primary" @click="isPromptModalVisible = true">
-        {{ $t('page.aiScriptWriter.promptPreview.title') }}
-      </Button>
+      <ButtonGroup>
+        <Button @click="isPromptModalVisible = true">
+          {{ $t('page.aiScriptWriter.promptPreview.title') }}
+        </Button>
+        <Tooltip
+          title="Sửa các bản ghi có định dạng ngày tạo cũ (toLocaleString) sang ISO string để sắp xếp đúng."
+        >
+          <Button @click="handleFixCreatedAt" type="dashed">
+            <template #icon><ToolOutlined /></template>
+            Sửa ngày tạo
+          </Button>
+        </Tooltip>
+      </ButtonGroup>
       <Modal v-model:open="isPromptModalVisible" width="80%" :footer="null">
         <template #title>
           <div class="flex items-center justify-between">
@@ -607,21 +666,6 @@ onMounted(() => {
       </pre>
     </Modal>
     <Grid>
-      <template #idea="{ row }">
-        <Tooltip placement="topLeft">
-          <template #title>
-            <pre class="max-h-60 overflow-y-auto whitespace-pre-wrap">{{
-              row.rawPrompt
-            }}</pre>
-          </template>
-          <span>{{ row.idea }}</span>
-        </Tooltip>
-      </template>
-      <template #formParams="{ row }">
-        <Button type="link" size="small" @click="showFormParams(row)">
-          {{ $t('page.common.view') }}
-        </Button>
-      </template>
       <template #status="{ row: record }">
         <div v-if="record.status === 'failed' && record.error">
           <Alert
@@ -634,6 +678,30 @@ onMounted(() => {
         <Tag v-else :color="getStatusColor(record.status)">
           {{ $t(`page.aiScriptWriter.status.${record.status}`) }}
         </Tag>
+      </template>
+      <template #tokens="{ row }">
+        <div>
+          <div v-for="(usageInfo, index) in [getUsageInfo(row)]" :key="index">
+            <div v-if="usageInfo">
+              <Tooltip>
+                <template #title>
+                  {{
+                    $t('page.aiScriptWriter.detail.usageMetadata.promptTokens')
+                  }}:
+                  {{ usageInfo.prompt }}
+                  <br />
+                  {{
+                    $t(
+                      'page.aiScriptWriter.detail.usageMetadata.completionTokens',
+                    )
+                  }}: {{ usageInfo.completion }}
+                </template>
+                <span>{{ usageInfo.total }}</span>
+              </Tooltip>
+            </div>
+            <span v-else>-</span>
+          </div>
+        </div>
       </template>
       <template #action="{ row: record }">
         <div class="flex flex-wrap items-center justify-center gap-2">

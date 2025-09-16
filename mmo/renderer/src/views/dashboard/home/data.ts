@@ -8,6 +8,13 @@ interface Feature {
 
 export const features: Feature[] = [
   {
+    key: 'aiScriptWriter',
+    icon: 'https://cdn-icons-gif.flaticon.com/17905/17905021.gif',
+    action: () => {
+      router.push('/ai-script-writer');
+    },
+  },
+  {
     key: 'videoCutter',
     icon: 'https://cdn-icons-gif.flaticon.com/12749/12749758.gif',
     action: () => {
@@ -19,13 +26,6 @@ export const features: Feature[] = [
     icon: 'https://cdn-icons-gif.flaticon.com/18559/18559564.gif',
     action: () => {
       router.push('/Video-downloader');
-    },
-  },
-  {
-    key: 'aiScriptWriter',
-    icon: 'https://cdn-icons-gif.flaticon.com/17905/17905021.gif',
-    action: () => {
-      router.push('/ai-script-writer');
     },
   },
 ];

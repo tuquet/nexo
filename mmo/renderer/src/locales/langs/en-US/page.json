@@ -16,10 +16,6 @@
         "gemini": "Google Gemini"
       }
     },
-    "callToAction": {
-      "label": "Call for action",
-      "placeholder": "Example: 'Click like and subscribe to the channel!'"
-    },
     "cardTitle": "Enter information to create scripts",
     "characterCount": {
       "label": "Expected length (characters)"
