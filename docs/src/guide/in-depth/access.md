@@ -138,7 +138,7 @@ const dashboardMenus = [
         path: '/workspace',
         component: '/dashboard/workspace/index',
         meta: {
-          title: 'page.dashboard.workspace',
+          title: 'page.dashboard.workspace.title',
         },
       },
     ],

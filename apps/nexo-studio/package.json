@@ -43,6 +43,8 @@
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "dexie": "^4.2.0",
+    "nanoid": "^5.1.5",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"

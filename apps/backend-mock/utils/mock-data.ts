@@ -73,7 +73,7 @@ const dashboardMenus = [
         path: '/workspace',
         component: '/dashboard/workspace/index',
         meta: {
-          title: 'page.dashboard.workspace',
+          title: 'page.dashboard.workspace.title',
         },
       },
     ],
@@ -195,7 +195,7 @@ export const MOCK_MENU_LIST = [
     component: '/dashboard/workspace/index',
     meta: {
       icon: 'carbon:workspace',
-      title: 'page.dashboard.workspace',
+      title: 'page.dashboard.workspace.title',
       affixTab: true,
       order: 0,
     },
