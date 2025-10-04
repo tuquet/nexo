@@ -25,6 +25,9 @@
       "quickNav": "Quick Navigation",
       "todo": "To-Do List",
       "visitsSource": "Visits Source"
+    },
+    "project": {
+      "title": "Project"
     }
   }
 }

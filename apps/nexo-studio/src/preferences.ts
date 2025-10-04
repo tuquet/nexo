@@ -33,7 +33,7 @@ export const overridesPreferences = defineOverridesPreferences({
     companyName: 'tfsoftware',
     companySiteLink: 'https://tfsoftware.vn',
     date: '2025',
-    enable: true,
+    enable: false,
     icp: '',
     icpLink: '',
     settingShow: true,

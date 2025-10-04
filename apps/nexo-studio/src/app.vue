@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 
 import { useAntdDesignTokens } from '@vben/hooks';
 import { preferences, usePreferences } from '@vben/preferences';
 
 import { App, ConfigProvider, theme } from 'ant-design-vue';
 
+import { seedInitialData } from '#/lib/db/seed';
 import { antdLocale } from '#/locales';
+
+import { db } from './lib/db';
 
 defineOptions({ name: 'App' });
 
@@ -27,6 +30,17 @@ const tokenTheme = computed(() => {
     algorithm,
     token: tokens,
   };
+});
+
+const isForceReset = true;
+
+onMounted(async () => {
+  if (isForceReset) {
+    console.warn(
+      'In Development, seeding indexDB initial data with forceReset=true',
+    );
+    await seedInitialData(db, { forceReset: isForceReset });
+  }
 });
 </script>
 

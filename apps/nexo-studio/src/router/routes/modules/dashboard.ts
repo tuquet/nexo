@@ -8,29 +8,31 @@ const routes: RouteRecordRaw[] = [
       icon: 'lucide:layout-dashboard',
       order: -1,
       title: $t('page.dashboard.title'),
+      hideInMenu: true,
     },
     name: 'Dashboard',
     path: '/dashboard',
     children: [
       {
-        name: 'Analytics',
-        path: '/analytics',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
-        meta: {
-          affixTab: true,
-          icon: 'lucide:area-chart',
-          title: $t('page.dashboard.analytics'),
-        },
-      },
-      {
         name: 'Workspace',
         path: '/workspace',
         component: () => import('#/views/dashboard/workspace/index.vue'),
         meta: {
+          affixTab: true,
           icon: 'carbon:workspace',
           title: $t('page.dashboard.workspace.title'),
+          hideInMenu: true,
         },
       },
+      // {
+      //   name: 'Analytics',
+      //   path: '/analytics',
+      //   component: () => import('#/views/dashboard/analytics/index.vue'),
+      //   meta: {
+      //     icon: 'lucide:area-chart',
+      //     title: $t('page.dashboard.analytics'),
+      //   },
+      // },
     ],
   },
 ];

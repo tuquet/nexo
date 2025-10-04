@@ -677,6 +677,9 @@ importers:
       '@vueuse/core':
         specifier: 'catalog:'
         version: 13.9.0(vue@3.5.22(typescript@5.9.3))
+      '@vueuse/rxjs':
+        specifier: ^13.9.0
+        version: 13.9.0(rxjs@7.8.2)(vue@3.5.22(typescript@5.9.3))
       ant-design-vue:
         specifier: 'catalog:'
         version: 4.2.6(vue@3.5.22(typescript@5.9.3))
@@ -692,6 +695,9 @@ importers:
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
       vue:
         specifier: ^3.5.17
         version: 3.5.22(typescript@5.9.3)

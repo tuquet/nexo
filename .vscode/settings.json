@@ -142,7 +142,15 @@
     "node_modules": true,
     "CHANGELOG.md": true,
     "**/pnpm-lock.yaml": true,
-    "**/yarn.lock": true
+    "**/yarn.lock": true,
+    "mmo/**": true,
+
+    // Tắt tìm kiếm trong các ứng dụng cụ thể
+    "apps/web-antd/**": true,
+    "apps/web-ele/**": true,
+    "apps/web-naive/**": true,
+    "apps/backend-mock/**": false,
+    "playground/**": false
   },
 
   "debug.onTaskErrors": "debugAnyway",
@@ -200,6 +208,7 @@
     "packages/locales/src/langs",
     // "playground/src/locales/langs",
     // "apps/*/src/locales/langs"
+    "apps/nexo-studio/src/locales/langs",
     "mmo/renderer/src/locales/langs"
   ],
   "i18n-ally.pathMatcher": "{locale}/{namespace}.{ext}",

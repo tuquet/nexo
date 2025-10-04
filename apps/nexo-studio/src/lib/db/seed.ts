@@ -1,15 +1,25 @@
+import type { QuickNav, Todo, Trend } from './base-schema';
 import type { NexoStudioDexie } from './index';
-import type { Group, Project, QuickNav, Todo, Trend } from './schema';
+import type { Group, Project } from './project-schema';
+import type {
+  Format,
+  LengthOption,
+  OutputRequirement,
+  PromptTemplate,
+  ScriptType,
+  Style,
+  Topic,
+} from './prompt-schema';
 
 import { nanoid } from 'nanoid';
 
-const groupsData: Omit<Group, 'color'>[] = [
-  { id: nanoid(), name: 'Ẩm thực & Nấu ăn' },
-  { id: nanoid(), name: 'Mẹo vặt cuộc sống' },
-  { id: nanoid(), name: 'Kể chuyện' },
-  { id: nanoid(), name: 'Du lịch' },
-  { id: nanoid(), name: 'Hài hước' },
-  { id: nanoid(), name: 'Tự làm & Thủ công' },
+const groupsData: Group[] = [
+  { id: nanoid(), name: 'Ẩm thực & Nấu ăn', color: '#FFB300' },
+  { id: nanoid(), name: 'Mẹo vặt cuộc sống', color: '#00BFAE' },
+  { id: nanoid(), name: 'Kể chuyện', color: '#FF7043' },
+  { id: nanoid(), name: 'Du lịch', color: '#42A5F5' },
+  { id: nanoid(), name: 'Hài hước', color: '#AB47BC' },
+  { id: nanoid(), name: 'Tự làm & Thủ công', color: '#8D6E63' },
 ];
 
 function getGroupId(name: string): string {
@@ -17,6 +27,7 @@ function getGroupId(name: string): string {
 }
 
 const projectItemsData: Omit<Project, 'id'>[] = [
+  // Changed type to Omit<Project, 'id'>[]
   {
     color: '#FF0000',
     content:
@@ -26,6 +37,7 @@ const projectItemsData: Omit<Project, 'id'>[] = [
     group: '',
     icon: 'ion:logo-youtube',
     title: 'Bạn đã nấu mì Ý SAI cách cả đời rồi!',
+    status: 'completed',
     url: 'https://youtube.com',
   },
   {
@@ -37,6 +49,7 @@ const projectItemsData: Omit<Project, 'id'>[] = [
     group: '',
     icon: 'ic:baseline-tiktok',
     title: 'Mẹo học tập 5 giây này sẽ thay đổi cách bạn học',
+    status: 'in-progress',
     url: 'https://tiktok.com',
   },
   {
@@ -48,6 +61,7 @@ const projectItemsData: Omit<Project, 'id'>[] = [
     group: '',
     icon: 'ion:logo-facebook',
     title: 'Người đàn ông trồng cả một khu rừng ở sân sau nhà',
+    status: 'in-progress',
     url: 'https://facebook.com',
   },
   {
@@ -59,6 +73,7 @@ const projectItemsData: Omit<Project, 'id'>[] = [
     group: '',
     icon: 'ion:logo-youtube',
     title: '3 địa điểm ở Bali bạn CHƯA BAO GIỜ nghe tới',
+    status: 'planning',
     url: 'https://youtube.com',
   },
   {
@@ -70,6 +85,7 @@ const projectItemsData: Omit<Project, 'id'>[] = [
     group: '',
     icon: 'ic:baseline-tiktok',
     title: 'Thói quen buổi sáng của tôi... nhưng tôi đã ngủ quên',
+    status: 'on-hold',
     url: 'https://tiktok.com',
   },
   {
@@ -80,6 +96,7 @@ const projectItemsData: Omit<Project, 'id'>[] = [
     group: '',
     icon: 'ion:logo-facebook',
     title: 'Làm kệ sách này với giá dưới 500k',
+    status: 'completed',
     url: 'https://facebook.com',
   },
 ];
@@ -213,6 +230,156 @@ const trendItemsData: Omit<Trend, 'id'>[] = [
   },
 ];
 
+// --- Dữ liệu cho Prompt Video Maker ---
+
+const scriptTypesData: ScriptType[] = [
+  {
+    id: 'short-form',
+    name: 'Short-form',
+    description: '30-90 giây (TikTok, Reels, Shorts)',
+  },
+  {
+    id: 'long-form',
+    name: 'Long-form',
+    description: '3 phút trở lên (YouTube, Podcast)',
+  },
+  {
+    id: 'hybrid',
+    name: 'Hybrid',
+    description: 'Có thể cắt nhỏ thành nhiều clip',
+  },
+];
+
+const lengthOptionsData: LengthOption[] = [
+  {
+    id: 'very-short',
+    label: 'Siêu ngắn (~30s)',
+    characters: [500, 700],
+    duration: [0.5, 0.75],
+  },
+  {
+    id: 'short',
+    label: 'Ngắn (1-2 phút)',
+    characters: [1000, 1500],
+    duration: [1, 2],
+  },
+  {
+    id: 'medium',
+    label: 'Vừa (3-5 phút)',
+    characters: [2500, 3500],
+    duration: [3, 5],
+  },
+  {
+    id: 'long',
+    label: 'Dài (8-12 phút)',
+    characters: [5000, 7000],
+    duration: [8, 12],
+  },
+  {
+    id: 'very-long',
+    label: 'Rất dài (15-30 phút)',
+    characters: [10_000, 20_000],
+    duration: [15, 30],
+  },
+];
+
+const topicsData: Topic[] = [
+  { id: 'entertainment', name: 'Giải trí', category: 'general' },
+  { id: 'education', name: 'Giáo dục', category: 'general' },
+  { id: 'spiritual', name: 'Phật pháp', category: 'lifestyle' },
+  { id: 'business', name: 'Kinh doanh', category: 'professional' },
+  { id: 'inspiration', name: 'Truyền cảm hứng', category: 'lifestyle' },
+];
+
+const stylesData: Style[] = [
+  { id: 'funny', name: 'Hài hước', description: 'Vui vẻ, dí dỏm, gây cười' },
+  {
+    id: 'expert',
+    name: 'Chuyên gia',
+    description: 'Cung cấp thông tin sâu, đáng tin cậy',
+  },
+  {
+    id: 'storytelling',
+    name: 'Kể chuyện',
+    description: 'Dẫn dắt bằng một câu chuyện lôi cuốn',
+  },
+  {
+    id: 'inspirational',
+    name: 'Truyền cảm hứng',
+    description: 'Tạo động lực, khơi dậy cảm xúc tích cực',
+  },
+  {
+    id: 'casual',
+    name: 'Thân mật',
+    description: 'Gần gũi, như đang trò chuyện với bạn bè',
+  },
+];
+
+const formatsData: Format[] = [
+  {
+    id: 'monologue',
+    name: 'Độc thoại (Monologue)',
+    description: 'Một người nói trực tiếp',
+  },
+  {
+    id: 'dialogue',
+    name: 'Đối thoại (Dialogue)',
+    description: 'Hai hoặc nhiều người trò chuyện',
+  },
+  {
+    id: 'narration',
+    name: 'Tường thuật (Narration)',
+    description: 'Giọng đọc dẫn chuyện trên nền hình ảnh',
+  },
+  {
+    id: 'mix-visual',
+    name: 'Hỗn hợp (Mix-visual)',
+    description: 'Kết hợp nhiều hình thức, chú trọng gợi ý hình ảnh',
+  },
+];
+
+const outputRequirementsData: OutputRequirement[] = [
+  {
+    id: 'prose',
+    name: 'Văn xuôi liền mạch',
+    rules: ['Viết dưới dạng văn xuôi, không gạch đầu dòng.'],
+  },
+  {
+    id: 'dialogue-script',
+    name: 'Kịch bản thoại',
+    rules: ['Trình bày rõ ràng tên nhân vật và lời thoại.'],
+  },
+  {
+    id: 'scene-based',
+    name: 'Phân cảnh chi tiết',
+    rules: [
+      'Chia kịch bản thành các cảnh (SCENE), mô tả bối cảnh (INT./EXT.), hành động và thoại.',
+    ],
+  },
+  {
+    id: 'summary',
+    name: 'Chỉ tóm tắt ý chính',
+    rules: ['Chỉ liệt kê các ý chính, không cần viết chi tiết.'],
+  },
+];
+
+const promptTemplatesData: PromptTemplate[] = [
+  {
+    id: 'basic-video-script',
+    name: 'Prompt Video Chuẩn',
+    structure:
+      'Tạo kịch bản video dạng {scriptType}, độ dài {length}, chủ đề {topic}, phong cách {style}, hình thức {format}. Yêu cầu đầu ra: {outputRequirement}.',
+    placeholders: [
+      'scriptType',
+      'length',
+      'topic',
+      'style',
+      'format',
+      'outputRequirement',
+    ],
+  },
+];
+
 /**
  * Kiểm tra và chèn dữ liệu mẫu nếu DB trống.
  * @param db - The Dexie database instance.
@@ -231,6 +398,14 @@ export async function seedInitialData(
       db.quickNavs.clear(),
       db.todos.clear(),
       db.trends.clear(),
+      // Xóa dữ liệu bảng mới
+      db.scriptTypes.clear(),
+      db.lengthOptions.clear(),
+      db.topics.clear(),
+      db.styles.clear(),
+      db.formats.clear(),
+      db.outputRequirements.clear(),
+      db.promptTemplates.clear(),
     ]);
   }
 
@@ -243,6 +418,7 @@ export async function seedInitialData(
   // Seed các bảng khác nếu chúng trống
   const projectsCount = await db.projects.count();
   if (projectsCount === 0) {
+    // Removed the explicit `id: nanoid()` mapping as `++id` in schema handles it.
     await db.projects.bulkAdd(projectItemsData);
   }
 
@@ -254,4 +430,17 @@ export async function seedInitialData(
 
   const trendsCount = await db.trends.count();
   if (trendsCount === 0) await db.trends.bulkAdd(trendItemsData);
+
+  // Seed dữ liệu cho Prompt Video Maker
+  if ((await db.scriptTypes.count()) === 0)
+    await db.scriptTypes.bulkAdd(scriptTypesData);
+  if ((await db.lengthOptions.count()) === 0)
+    await db.lengthOptions.bulkAdd(lengthOptionsData);
+  if ((await db.topics.count()) === 0) await db.topics.bulkAdd(topicsData);
+  if ((await db.styles.count()) === 0) await db.styles.bulkAdd(stylesData);
+  if ((await db.formats.count()) === 0) await db.formats.bulkAdd(formatsData);
+  if ((await db.outputRequirements.count()) === 0)
+    await db.outputRequirements.bulkAdd(outputRequirementsData);
+  if ((await db.promptTemplates.count()) === 0)
+    await db.promptTemplates.bulkAdd(promptTemplatesData);
 }

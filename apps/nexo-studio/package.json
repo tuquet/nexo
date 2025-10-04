@@ -41,11 +41,13 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
+    "@vueuse/rxjs": "^13.9.0",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
     "dexie": "^4.2.0",
     "nanoid": "^5.1.5",
     "pinia": "catalog:",
+    "rxjs": "^7.8.2",
     "vue": "catalog:",
     "vue-router": "catalog:"
   }

@@ -6,6 +6,8 @@ import type {
   WorkbenchTrendItem,
 } from '@vben/common-ui';
 
+import type { Project } from '#/lib/db/base-schema';
+
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -20,10 +22,10 @@ import {
 import { $t } from '@vben/locales';
 import { preferences } from '@vben/preferences';
 import { useUserStore } from '@vben/stores';
-import { openWindow } from '@vben/utils';
+
+import { message } from 'ant-design-vue';
 
 import { db } from '#/lib/db';
-import { seedInitialData } from '#/lib/db/seed';
 
 import AnalyticsVisitsSource from '../analytics/analytics-visits-source.vue';
 
@@ -35,9 +37,6 @@ const todoItems = ref<WorkbenchTodoItem[]>([]);
 const trendItems = ref<WorkbenchTrendItem[]>([]);
 
 onMounted(async () => {
-  // Khởi tạo dữ liệu mẫu nếu cần
-  await seedInitialData(db, { forceReset: true });
-
   // Cập nhật state của component
   const [projectsFromDb, groupsFromDb, quickNavs, todos, trends] =
     await Promise.all([
@@ -67,17 +66,15 @@ const router = useRouter();
 
 // 这是一个示例方法，实际项目中需要根据实际情况进行调整
 // This is a sample method, adjust according to the actual project requirements
-function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
-  if (nav.url?.startsWith('http')) {
-    openWindow(nav.url);
-    return;
-  }
-  if (nav.url?.startsWith('/')) {
-    router.push(nav.url).catch((error) => {
-      console.error('Navigation failed:', error);
-    });
+function navTo(nav: Project) {
+  if (nav.groupId) {
+    router
+      .push({ name: 'ProjectView', params: { id: nav.groupId! } })
+      .catch((error) => {
+        console.error('Navigation failed:', error);
+      });
   } else {
-    console.warn(`Unknown URL for navigation item: ${nav.title} -> ${nav.url}`);
+    message.error('Navigation failed:');
   }
 }
 </script>
@@ -103,7 +100,7 @@ function navTo(nav: WorkbenchProjectItem | WorkbenchQuickNavItem) {
       <div class="mr-4 w-full lg:w-3/5">
         <WorkbenchProject
           :items="projectItems"
-          :title="$t('page.dashboard.workspace.project')"
+          :title="$t('page.project.title')"
           @click="navTo"
         />
         <WorkbenchTrends
