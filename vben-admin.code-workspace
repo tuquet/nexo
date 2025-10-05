@@ -5,8 +5,20 @@
       "path": "apps/backend-mock",
     },
     {
-      "name": "@tuquet/nexo-studio",
-      "path": "apps/nexo-studio",
+      "name": "@web/catalyst",
+      "path": "apps/catalyst",
+    },
+    {
+      "name": "@native/catalyst",
+      "path": "apps/catalyst-native",
+    },
+    {
+      "name": "@web/nexo",
+      "path": "apps/nexo",
+    },
+    {
+      "name": "@native/nexo",
+      "path": "apps/nexo-native",
     },
     {
       "name": "@vben/web-antd",
@@ -51,14 +63,6 @@
     {
       "name": "@vben/vite-config",
       "path": "internal/vite-config",
-    },
-    {
-      "name": "@mmo/electron",
-      "path": "mmo/electron",
-    },
-    {
-      "name": "@mmo/renderer",
-      "path": "mmo/renderer",
     },
     {
       "name": "@vben-core/design",

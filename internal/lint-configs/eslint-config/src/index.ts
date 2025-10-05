@@ -31,9 +31,9 @@ type FlatConfigPromise =
 
 async function defineConfig(config: FlatConfig[] = []) {
   const configs: FlatConfigPromise[] = [
+    ignores(),
     vue(),
     javascript(),
-    ignores(),
     prettier(),
     typescript(),
     jsonc(),

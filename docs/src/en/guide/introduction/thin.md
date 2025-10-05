@@ -8,7 +8,7 @@ First, identify the version of the `UI` component library you need, and then del
 
 ```bash
 apps/web-ele
-apps/web-native
+apps/web-naive
 
 ```
 

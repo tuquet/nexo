@@ -1,0 +1,4 @@
+provider: github
+owner: tuquet
+repo: catalyst
+updaterCacheDirName: catalyst-updater

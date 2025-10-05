@@ -45,24 +45,16 @@
     "typecheck": {
       "outputs": []
     },
-    "@mmo/electron#build:unpack": {
-      "dependsOn": ["@mmo/electron#build", "@vben/backend-mock#build"],
+    "@native/catalyst#build:unpack": {
+      "dependsOn": ["@native/catalyst#build", "@vben/backend-mock#build"],
       "outputs": ["dist/**", "release/**"]
     },
-    "@mmo/electron#build:win": {
-      "dependsOn": ["@mmo/electron#build", "@vben/backend-mock#build"],
+    "@native/catalyst#build:win": {
+      "dependsOn": ["@native/catalyst#build", "@vben/backend-mock#build"],
       "outputs": ["dist/**", "release/**"]
     },
-    "@mmo/electron#build:mac": {
-      "dependsOn": ["@mmo/electron#build", "@vben/backend-mock#build"],
-      "outputs": ["dist/**", "release/**"]
-    },
-    "@mmo/electron#build:linux": {
-      "dependsOn": ["@mmo/electron#build", "@vben/backend-mock#build"],
-      "outputs": ["dist/**", "release/**"]
-    },
-    "@mmo/electron#build": {
-      "dependsOn": ["^build", "@mmo/renderer#build"],
+    "@native/catalyst#build": {
+      "dependsOn": ["^build", "@web/catalyst#build"],
       "outputs": ["out/**"]
     }
   }
