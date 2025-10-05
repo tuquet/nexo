@@ -1,4 +1,4 @@
-import type { Table } from 'dexie';
+// Removed invalid import of Table from 'dexie'
 
 import type { QuickNav, Todo, Trend } from './base-schema';
 import type { NexoStudioDexie } from './index';
@@ -15,6 +15,11 @@ import type {
 } from './prompt-schema';
 
 import { nanoid } from 'nanoid';
+
+interface SeedableTable<T> {
+  count(): Promise<number>;
+  bulkAdd(data: T[]): Promise<any>;
+}
 
 const groupsData: Group[] = [
   { id: nanoid(), name: 'Ẩm thực & Nấu ăn', color: '#FFB300' },
@@ -412,12 +417,7 @@ const promptHubsData: (Omit<PromptHub, 'id'> & { tags: string[] })[] = [
   },
 ];
 
-/**
- * Hàm trợ giúp để seed dữ liệu cho một bảng nếu bảng đó trống.
- * @param table - Đối tượng bảng Dexie.
- * @param data - Mảng dữ liệu cần seed.
- */
-async function seedTableIfEmpty<T>(table: Table<T>, data: T[]) {
+async function seedTableIfEmpty<T>(table: SeedableTable<T>, data: T[]) {
   const count = await table.count();
   if (count === 0) {
     await table.bulkAdd(data as any[]);
@@ -443,7 +443,7 @@ async function findOrCreateTags(
       return existingTag?.id ?? (await db.tags.add({ name }));
     }),
   );
-  return tagIds.map((id) => id as number);
+  return tagIds.map((id: any) => id as number);
 }
 
 /**
