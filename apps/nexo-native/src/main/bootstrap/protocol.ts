@@ -1,6 +1,6 @@
 import { app } from 'electron';
 
-import { APP_NAME, APP_OAUTH_PROTOCAL_KEY } from '../config';
+import { APP_NAME, APP_OAUTH_PROTOCOL_KEY } from '../config';
 import { getMainWindow } from './window';
 
 export function setupProtocol(): void {
@@ -14,6 +14,6 @@ export function handleProtocolUrl(url: string): void {
     const queryParams = Object.fromEntries(parsedUrl.searchParams.entries());
     if (window.isMinimized()) window.restore();
     window.focus();
-    window.webContents.send(APP_OAUTH_PROTOCAL_KEY, queryParams);
+    window.webContents.send(APP_OAUTH_PROTOCOL_KEY, queryParams);
   }
 }

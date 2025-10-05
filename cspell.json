@@ -3,6 +3,10 @@
   "version": "0.2",
   "language": "en,en-US",
   "allowCompoundWords": true,
+  "ignoreRegExpList": [
+    "//.*[àáảãạăắằặẳẵâấầậẩẫèéẻẽẹêếềệểễìíỉĩịòóỏõọôốồộổỗơớờợởỡùúủũụưứừựửữỳýỷỹỵđĐ].*",
+    "/\\*.*[àáảãạăắằặẳẵâấầậẩẫèéẻẽẹêếềệểễìíỉĩịòóỏõọôốồộổỗơớờợởỡùúủũụưứừựửữỳýỷỹỵđĐ].*\\*/"
+  ],
   "words": [
     "acmr",
     "antd",
@@ -52,7 +56,22 @@
     "vitepress",
     "vnode",
     "vueuse",
-    "yxxx"
+    "yxxx",
+    "ffbinaries",
+    "ffprobe",
+    "ytdlp",
+    "noprint",
+    "nokey",
+    "asar",
+    "uncategorized",
+    "tabler",
+    "organisation",
+    "chatcmpl",
+    "tfsoftware",
+    "dexie",
+    "Dexie",
+    "Katsuhiro",
+    "Otomo"
   ],
   "ignorePaths": [
     "**/node_modules/**",

@@ -11,7 +11,7 @@ export const APP_GITHUB_RELEASES_URL = read(
   'https://api.github.com/repos/tuquet/nexo/releases',
 );
 
-export const APP_OAUTH_PROTOCAL_KEY = read(
+export const APP_OAUTH_PROTOCOL_KEY = read(
   'MAIN_VITE_OAUTH_PROTOCOL_KEY',
   'oauth-singin-events',
 );

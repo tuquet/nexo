@@ -1,12 +1,15 @@
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { is } from '@electron-toolkit/utils';
-import icon from '@resources/icon.png?asset';
-import { BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import log from 'electron-log';
 
 import { APP_DEV_RENDERER_URL } from '../config';
 import { createWindow, waitForServerUp } from '../helpers';
+
+// Get icon path from resources directory
+const icon = path.join(app.getAppPath(), '..', 'resources', 'icon.png');
 
 let mainWindow: BrowserWindow | null = null;
 

@@ -1,11 +1,7 @@
 <script setup lang="ts">
-// TODO: Define ProjectStatus interface in base-schema
-// import type { ProjectStatus } from '#/lib/db/base-schema';
+import type { ProjectStatus } from '#/lib/db/project-schema';
 
 import DynamicSelect from '#/components/common/DynamicSelect.vue';
-
-// TODO: Replace with proper ProjectStatus type
-type ProjectStatus = 'completed' | 'in-progress' | 'on-hold' | 'planning';
 
 const model = defineModel<ProjectStatus | undefined>();
 
@@ -14,6 +10,7 @@ const STATUS_OPTIONS: { label: string; value: ProjectStatus }[] = [
   { label: 'Đang thực hiện', value: 'in-progress' },
   { label: 'Tạm dừng', value: 'on-hold' },
   { label: 'Hoàn thành', value: 'completed' },
+  { label: 'Đã hủy', value: 'cancelled' },
 ];
 </script>
 
