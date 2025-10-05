@@ -509,7 +509,36 @@ npm version major  # 1.0.0 -> 2.0.0
 
 ### Troubleshooting GitHub Actions
 
-#### 1. Build fails on specific OS:
+#### 1. Lỗi "Install dependencies canceled"
+
+**Nguyên nhân phổ biến:**
+- Ubuntu runner hết disk space
+- Network timeout
+- Corrupted pnpm-lock.yaml
+- Dependencies conflict
+
+**Debug steps:**
+```bash
+# 1. Test local trước khi push
+./scripts/test-build.sh         # Linux/macOS
+.\scripts\test-build.ps1        # Windows
+
+# 2. Clean test
+.\scripts\test-build.ps1 -Clean
+
+# 3. Skip lint nếu cần
+.\scripts\test-build.ps1 -SkipLint
+```
+
+**File cần kiểm tra khi gặp lỗi:**
+1. `pnpm-lock.yaml` - Có thể bị corrupt
+2. `package.json` (root) - Dependencies chính  
+3. `apps/nexo-web/package.json` - Web dependencies
+4. `apps/nexo-native/package.json` - Native dependencies
+5. `.github/workflows/nexo-test.yml` - Workflow config
+6. `turbo.json` - Build dependencies
+
+#### 2. Build fails on specific OS:
 
 ```yaml
 # Tạm thời skip OS bị lỗi

@@ -23,10 +23,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false  # Không cancel các job khác khi 1 job fail
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-
-    steps:
+        os: [windows-latest, macos-latest, ubuntu-latest]    steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -53,11 +52,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Debug environment
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "Working directory: $(pwd)"
+          echo "Free disk space:"
+          df -h || echo "df command not available"
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          echo "Installing dependencies with pnpm..."
+          pnpm install --frozen-lockfile --reporter=append-only
+        timeout-minutes: 15
 
       - name: Type check and lint
         run: pnpm run check
+
+      - name: Build internal packages
+        run: pnpm run build
 
       - name: Build Nexo Web application
         run: |

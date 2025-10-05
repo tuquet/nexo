@@ -16,6 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false  # Không cancel các job khác khi 1 job fail
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
 
@@ -51,6 +52,9 @@ jobs:
 
       - name: Type check and lint
         run: pnpm run check
+
+      - name: Build internal packages
+        run: pnpm run build
 
       - name: Build Nexo Web application
         run: |
