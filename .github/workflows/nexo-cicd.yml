@@ -13,9 +13,11 @@ on:
       - 'package.json'
       - '.github/workflows/**'
 
-  # Push to main - test trên Windows
+  # Push to main và release tags
   push:
     branches: [main]
+    tags:
+      - 'v*'
     paths:
       - 'apps/nexo-native/**'
       - 'apps/nexo-web/**'
@@ -24,11 +26,6 @@ on:
       - 'pnpm-lock.yaml'
       - 'package.json'
       - '.github/workflows/**'
-
-  # Release tags - build và release trên tất cả OS
-  push:
-    tags:
-      - 'v*'
 
   # Manual trigger
   workflow_dispatch:
