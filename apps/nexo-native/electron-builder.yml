@@ -1,5 +1,5 @@
-appId: vn.tfsoftware.catalyst
-productName: Catalyst
+appId: vn.tfsoftware.nexo
+productName: NexoStudio
 directories:
   buildResources: build
 files:
@@ -10,7 +10,7 @@ extraResources:
   - from: resources/
     to: .
 win:
-  executableName: Catalyst
+  executableName: NexoStudio
 nsis:
   artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -39,7 +39,7 @@ npmRebuild: false
 publish:
   provider: github
   owner: tuquet
-  repo: catalyst
+  repo: nexo
   releaseType: prerelease
   vPrefixedTagName: true
 electronDownload:

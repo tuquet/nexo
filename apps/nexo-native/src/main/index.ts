@@ -16,7 +16,13 @@ import { setupIpcHandlers } from './ipc';
 const DATABASE_PATH = path.join(APP_PATH, process.env.VITE_DATABASE_NAME || '');
 
 // Fixing the issue with the env variable
-process.env = { ...process.env, ...import.meta.env };
+// Convert all import.meta.env values to strings before merging
+process.env = {
+  ...process.env,
+  ...Object.fromEntries(
+    Object.entries(import.meta.env).map(([key, value]) => [key, String(value)]),
+  ),
+};
 process.env.VITE_DATABASE_NAME = DATABASE_PATH;
 
 void (async () => {

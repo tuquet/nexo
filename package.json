@@ -26,6 +26,8 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 turbo build",
+    "build:nexo": "turbo run build:unpack --filter=@nexo/native",
+    "build:catalyst": "turbo run build:unpack --filter=@catalyst/native",
     "build:analyze": "turbo build:analyze",
     "build:antd": "pnpm run build --filter=@vben/web-antd",
     "build:docker": "./scripts/deploy/build-local-docker-image.sh",

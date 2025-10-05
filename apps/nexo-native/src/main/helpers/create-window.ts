@@ -6,22 +6,27 @@ import {
 } from 'electron';
 import Store from 'electron-store';
 
+interface WindowState {
+  'window-state'?: Rectangle;
+}
+
 export const createWindow = (
   windowName: string,
   options: BrowserWindowConstructorOptions,
 ): BrowserWindow => {
   const key = 'window-state';
   const name = `window-state-${windowName}`;
-  const store = new Store<Rectangle>({ name });
+  const store = new Store<WindowState>({ name });
   const defaultSize = {
     width: options.width || 800,
     height: options.height || 600,
   };
-  let state = {};
+  let state: Partial<Rectangle> = {};
 
-  const restore = () => store.get(key, defaultSize);
+  const restore = (): Partial<Rectangle> =>
+    (store as any).get(key) || defaultSize;
 
-  const getCurrentPosition = () => {
+  const getCurrentPosition = (): Rectangle => {
     const position = win.getPosition();
     const size = win.getSize();
     return {
@@ -32,7 +37,10 @@ export const createWindow = (
     };
   };
 
-  const windowWithinBounds = (windowState, bounds) => {
+  const windowWithinBounds = (
+    windowState: Rectangle,
+    bounds: Rectangle,
+  ): boolean => {
     return (
       windowState.x >= bounds.x &&
       windowState.y >= bounds.y &&
@@ -41,31 +49,33 @@ export const createWindow = (
     );
   };
 
-  const resetToDefaults = () => {
+  const resetToDefaults = (): Rectangle => {
     const bounds = screen.getPrimaryDisplay().bounds;
-    return Object.assign({}, defaultSize, {
+    return {
+      ...defaultSize,
       x: (bounds.width - defaultSize.width) / 2,
       y: (bounds.height - defaultSize.height) / 2,
-    });
+    };
   };
 
-  const ensureVisibleOnSomeDisplay = (windowState) => {
+  const ensureVisibleOnSomeDisplay = (
+    windowState: Partial<Rectangle>,
+  ): Rectangle => {
+    const fullState = windowState as Rectangle;
     const visible = screen.getAllDisplays().some((display) => {
-      return windowWithinBounds(windowState, display.bounds);
+      return windowWithinBounds(fullState, display.bounds);
     });
     if (!visible) {
-      // Window is partially or fully not visible now.
-      // Reset it to safe defaults.
       return resetToDefaults();
     }
-    return windowState;
+    return fullState;
   };
 
-  const saveState = () => {
+  const saveState = (): void => {
     if (!win.isMinimized() && !win.isMaximized()) {
       Object.assign(state, getCurrentPosition());
     }
-    store.set(key, state);
+    (store as any).set(key, state);
   };
 
   state = ensureVisibleOnSomeDisplay(restore());

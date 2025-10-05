@@ -42,7 +42,7 @@
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^22.16.5",
-    "@vitejs/plugin-vue": "^6.0.0",
+    "@vitejs/plugin-vue": "^6.0.1",
     "cross-env": "catalog:",
     "dotenv": "catalog:",
     "dotenv-cli": "^10.0.0",

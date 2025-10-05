@@ -19,7 +19,7 @@ export const createWindow = (
   };
   let state = {};
 
-  const restore = () => store.get(key, defaultSize);
+  const restore = () => (store as any).get(key, defaultSize);
 
   const getCurrentPosition = () => {
     const position = win.getPosition();
@@ -65,7 +65,7 @@ export const createWindow = (
     if (!win.isMinimized() && !win.isMaximized()) {
       Object.assign(state, getCurrentPosition());
     }
-    store.set(key, state);
+    (store as any).set(key, state);
   };
 
   state = ensureVisibleOnSomeDisplay(restore());

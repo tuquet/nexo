@@ -23,6 +23,10 @@
         ".vitepress/dist/**"
       ]
     },
+    "build:native": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
     "preview": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
@@ -45,17 +49,31 @@
     "typecheck": {
       "outputs": []
     },
-    "@native/catalyst#build:unpack": {
-      "dependsOn": ["@native/catalyst#build", "@vben/backend-mock#build"],
-      "outputs": ["dist/**", "release/**"]
-    },
-    "@native/catalyst#build:win": {
-      "dependsOn": ["@native/catalyst#build", "@vben/backend-mock#build"],
-      "outputs": ["dist/**", "release/**"]
-    },
-    "@native/catalyst#build": {
-      "dependsOn": ["^build", "@web/catalyst#build"],
+    // Catalyst Native
+    "@catalyst/native#build": {
+      "dependsOn": ["^build", "@catalyst/web#build:native"],
       "outputs": ["out/**"]
+    },
+    "@catalyst/native#build:unpack": {
+      "dependsOn": ["@catalyst/native#build", "@catalyst/web#build:native"],
+      "outputs": ["dist/**", "release/**"]
+    },
+    "@catalyst/native#build:win": {
+      "dependsOn": ["@catalyst/native#build"],
+      "outputs": ["dist/**", "release/**"]
+    },
+    // Nexo Native
+    "@nexo/native#build": {
+      "dependsOn": ["^build", "@nexo/web#build:native"],
+      "outputs": ["out/**"]
+    },
+    "@nexo/native#build:unpack": {
+      "dependsOn": ["@nexo/native#build", "@nexo/web#build:native"],
+      "outputs": ["dist/**", "release/**"]
+    },
+    "@nexo/native#build:win": {
+      "dependsOn": ["@nexo/native#build"],
+      "outputs": ["dist/**", "release/**"]
     }
   }
 }

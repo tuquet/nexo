@@ -3,72 +3,169 @@ import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import process from 'node:process';
 
-const args = process.argv.slice(2);
-const rendererMode = args.includes('--renderer');
+// ========== Configuration ==========
+const CONFIG = {
+  RENDERER_FOLDER: 'catalyst-web', // thư mục project web (nguồn)
+  RENDERER_DEST_FOLDER: 'renderer', // thư mục đích mong muốn trong out
+  DIST_FOLDER: 'dist',
+  UNPACKED_FOLDER: 'win-unpacked',
+  OUT_FOLDER: 'out',
+};
+
+// ========== Utilities ==========
 
 /**
- * Opens the dist folder in the file explorer.
+ * Executes a shell command and returns a Promise.
+ * @param {string} command - The command to execute.
+ * @returns {Promise<void>}
  */
-function openDistFolder() {
-  const distPath = resolve(process.cwd(), 'dist', 'win-unpacked');
-  if (existsSync(distPath)) {
-    console.warn(`Opening directory "${distPath}"...`);
-    let openCommand = 'xdg-open';
-    if (process.platform === 'win32') {
-      openCommand = 'start ""';
-    } else if (process.platform === 'darwin') {
-      openCommand = 'open';
-    }
-    exec(`${openCommand} "${distPath}"`, (err) => {
+function executeCommand(command) {
+  return new Promise((resolve, reject) => {
+    exec(command, { windowsHide: true }, (err) => {
       if (err) {
-        console.error(`Error opening directory: ${err}`);
-        throw new Error(`Error opening directory: ${err}`);
+        reject(err);
       } else {
-        console.warn('Successfully opened.');
+        resolve();
       }
     });
-  }
+  });
 }
 
-function rendererScript() {
-  const currentDir = process.cwd();
-  const outRendererPath = join(currentDir, 'out', 'renderer');
-  const sourcePath = resolve(currentDir, '..', 'renderer', 'dist');
-  const destinationPath = join(currentDir, 'out', 'renderer');
+/**
+ * Gets the appropriate file explorer command for the current platform.
+ * @returns {string}
+ */
+function getOpenCommand() {
+  if (process.platform === 'win32') return 'explorer';
+  if (process.platform === 'darwin') return 'open';
+  return 'xdg-open';
+}
 
-  if (!existsSync(sourcePath)) {
-    console.error(
-      `Error: Source directory "${sourcePath}" does not exist. Aborting postbuild script.`,
-    );
-    throw new Error(`Source directory "${sourcePath}" does not exist.`);
-  }
-
-  if (existsSync(outRendererPath)) {
-    console.warn(`Deleting directory "${outRendererPath}"...`);
-    rmSync(outRendererPath, { recursive: true, force: true });
+/**
+ * Safely removes a directory if it exists.
+ * @param {string} dirPath - Path to the directory.
+ * @param {string} description - Description for logging.
+ */
+function removeDirectoryIfExists(dirPath, description) {
+  if (existsSync(dirPath)) {
+    console.warn(`Deleting ${description}: "${dirPath}"...`);
+    rmSync(dirPath, { recursive: true, force: true });
     console.warn('Deletion successful.');
   } else {
-    console.warn(
-      `Directory "${outRendererPath}" does not exist. Skipping deletion.`,
-    );
+    console.warn(`${description} does not exist. Skipping deletion.`);
+  }
+}
+
+/**
+ * Ensures a directory exists, creating it if necessary.
+ * @param {string} dirPath - Path to the directory.
+ */
+function ensureDirectoryExists(dirPath) {
+  if (!existsSync(dirPath)) {
+    mkdirSync(dirPath, { recursive: true });
+  }
+}
+
+/**
+ * Validates that a source path exists.
+ * @param {string} sourcePath - Path to validate.
+ * @throws {Error} If the path does not exist.
+ */
+function validateSourcePath(sourcePath) {
+  if (!existsSync(sourcePath)) {
+    const errorMsg = `Source directory "${sourcePath}" does not exist.`;
+    console.error(`Error: ${errorMsg} Aborting script.`);
+    throw new Error(errorMsg);
+  }
+}
+
+// ========== Main Functions ==========
+
+/**
+ * Opens the dist folder in the system's file explorer.
+ * @returns {Promise<void>}
+ */
+async function openDistFolder() {
+  const cwd = process.cwd();
+  const candidates = [
+    resolve(cwd, CONFIG.DIST_FOLDER, CONFIG.UNPACKED_FOLDER), // dist/win-unpacked
+    resolve(cwd, CONFIG.OUT_FOLDER, CONFIG.UNPACKED_FOLDER), // out/win-unpacked
+    resolve(cwd, CONFIG.DIST_FOLDER), // dist
+    resolve(cwd, CONFIG.OUT_FOLDER), // out
+  ];
+
+  const target = candidates.find((p) => existsSync(p));
+  if (!target) {
+    console.warn('Không tìm thấy thư mục output (dist/out). Bỏ qua mở.');
+    return;
   }
 
-  if (!existsSync(destinationPath)) {
-    mkdirSync(destinationPath, { recursive: true });
-  }
+  console.warn(`Opening: "${target}"`);
+  const openCmd = getOpenCommand();
 
-  console.warn(`Copying from "${sourcePath}" to "${destinationPath}"...`);
+  try {
+    await executeCommand(`${openCmd} "${target}"`);
+    console.warn('Opened.');
+  } catch (error) {
+    console.error('Open failed:', error.message);
+  }
+}
+
+/**
+ * Copies the renderer build output to the native app's out folder.
+ * @param {string} rendererFolder - Name of the renderer folder.
+ */
+function copyRendererOutput(rendererFolder, destFolder) {
+  const currentDir = process.cwd();
+
+  // Nguồn: ../nexo-web/dist
+  const sourcePath = resolve(
+    currentDir,
+    '..',
+    rendererFolder,
+    CONFIG.DIST_FOLDER,
+  );
+
+  // Đích: out/renderer (không phải out/nexo-web nữa)
+  const destinationPath = join(currentDir, CONFIG.OUT_FOLDER, destFolder);
+
+  console.warn(`[Renderer] Replace to ${destFolder}...`);
+
+  validateSourcePath(sourcePath);
+
+  // XÓA TRƯỚC
+  removeDirectoryIfExists(destinationPath, 'Destination directory');
+
+  // Tạo lại
+  ensureDirectoryExists(destinationPath);
+
+  // Copy NỘI DUNG dist vào thẳng destination (không thêm lớp dist)
+  console.warn(`Copying content of "${sourcePath}" -> "${destinationPath}"...`);
   cpSync(sourcePath, destinationPath, { recursive: true });
   console.warn('Copy successful.');
-  console.warn('Postbuild script completed.');
+  console.warn('Renderer step done.');
 }
 
-try {
-  if (rendererMode) {
-    rendererScript();
+// ========== Entry Point ==========
+
+/**
+ * Main build script execution.
+ */
+async function main() {
+  try {
+    const args = process.argv.slice(2);
+    const rendererMode = args.includes('--renderer');
+
+    if (rendererMode) {
+      copyRendererOutput(CONFIG.RENDERER_FOLDER, CONFIG.RENDERER_DEST_FOLDER);
+    }
+
+    await openDistFolder();
+  } catch (error) {
+    console.error('An error occurred during script execution:', error);
+    throw error;
   }
-  openDistFolder();
-} catch (error) {
-  console.error('An error occurred during script execution:', error);
-  throw error;
 }
+
+// Run the script
+main();
