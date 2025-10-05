@@ -478,10 +478,10 @@ catalogs:
       specifier: 2.2.10
       version: 2.2.10
     vxe-pc-ui:
-      specifier: ^4.7.12
+      specifier: ^4.9.29
       version: 4.9.41
     vxe-table:
-      specifier: ^4.14.4
+      specifier: ^4.16.11
       version: 4.16.20
     watermark-js-plus:
       specifier: ^1.6.2
