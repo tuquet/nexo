@@ -1,4 +1,4 @@
 provider: github
 owner: tuquet
-repo: catalyst
-updaterCacheDirName: catalyst-updater
+repo: nexo
+updaterCacheDirName: nexo-updater

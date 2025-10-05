@@ -5,14 +5,6 @@
       "path": "apps/backend-mock",
     },
     {
-      "name": "@catalyst/native",
-      "path": "apps/catalyst-native",
-    },
-    {
-      "name": "@catalyst/web",
-      "path": "apps/catalyst-web",
-    },
-    {
       "name": "@nexo/native",
       "path": "apps/nexo-native",
     },

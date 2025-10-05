@@ -8,7 +8,7 @@ Khi ứng dụng khởi động, file `main.ts` (ở thư mục `src/main`) sẽ
 
 1.  **`setupLogger()`**: Cấu hình `electron-log` để ghi lại các hoạt động của tiến trình Main vào file, đồng thời thiết lập trình xử lý cho các lỗi nghiêm trọng (fatal errors).
 2.  **`setupAppEvents()`**: Đăng ký tất cả các trình xử lý sự kiện vòng đời của Electron (`app.on(...)`), chẳng hạn như `whenReady`, `activate`, `window-all-closed`, và xử lý các trường hợp mở ứng dụng lần thứ hai.
-3.  **`setupProtocol()`**: Đăng ký custom protocol của ứng dụng (ví dụ: `catalyst://`) để cho phép mở ứng dụng từ các liên kết bên ngoài (deep linking).
+3.  **`setupProtocol()`**: Đăng ký custom protocol của ứng dụng (ví dụ: `nexo://`) để cho phép mở ứng dụng từ các liên kết bên ngoài (deep linking).
 4.  **`setupIpcHandlers()`**: Khởi tạo và đăng ký tất cả các IPC handler từ thư mục `ipc`, sẵn sàng cho việc giao tiếp với tiến trình Renderer.
 5.  **`setupMainWindow()`**: Sau khi ứng dụng đã sẵn sàng (`app.whenReady`), hàm này sẽ được gọi để tạo và hiển thị cửa sổ chính của ứng dụng.
 6.  **`startMockServer()`** (chỉ trong môi trường dev): Khởi động một server giả lập để cung cấp dữ liệu cho việc phát triển.
@@ -23,7 +23,7 @@ Khi ứng dụng khởi động, file `main.ts` (ở thư mục `src/main`) sẽ
 
 - **`config.ts`**: Nơi tập trung các cấu hình của ứng dụng, chẳng hạn như thông tin repo GitHub, các khóa API, hoặc các cờ tính năng (feature flags).
 
-- **`protocol.ts`**: Quản lý việc đăng ký và xử lý custom URL scheme (ví dụ: `catalyst://`), cho phép ứng dụng phản hồi các yêu cầu từ trình duyệt hoặc hệ điều hành.
+- **`protocol.ts`**: Quản lý việc đăng ký và xử lý custom URL scheme (ví dụ: `nexo://`), cho phép ứng dụng phản hồi các yêu cầu từ trình duyệt hoặc hệ điều hành.
 
 - **`path.ts`**: Một module tập trung, định nghĩa và xuất ra các đường dẫn thư mục quan trọng mà ứng dụng sử dụng, chẳng hạn như thư mục dữ liệu người dùng (`userData`).
 

@@ -3,7 +3,7 @@ import * as http from 'node:http';
 import log from 'electron-log';
 
 export async function waitForServerUp(url: string) {
-  log.info(`[Bootstrap] waiting for web server catalyst to be up at ${url}`);
+  log.info(`[Bootstrap] waiting for web server to be up at ${url}`);
   while (true) {
     const isUp = await isHostUp(url);
     if (isUp) break;

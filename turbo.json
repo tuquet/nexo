@@ -49,19 +49,6 @@
     "typecheck": {
       "outputs": []
     },
-    // Catalyst Native
-    "@catalyst/native#build": {
-      "dependsOn": ["^build", "@catalyst/web#build:native"],
-      "outputs": ["out/**"]
-    },
-    "@catalyst/native#build:unpack": {
-      "dependsOn": ["@catalyst/native#build", "@catalyst/web#build:native"],
-      "outputs": ["dist/**", "release/**"]
-    },
-    "@catalyst/native#build:win": {
-      "dependsOn": ["@catalyst/native#build"],
-      "outputs": ["dist/**", "release/**"]
-    },
     // Nexo Native
     "@nexo/native#build": {
       "dependsOn": ["^build", "@nexo/web#build:native"],

@@ -16,7 +16,7 @@ export async function setupAppEvents(): Promise<void> {
 
   await app.whenReady();
 
-  electronApp.setAppUserModelId('vn.tfsoftware.catalyst');
+  electronApp.setAppUserModelId('vn.tfsoftware.nexo');
 
   app.on('open-url', (event, url) => {
     event.preventDefault();
@@ -45,7 +45,7 @@ export async function setupAppEvents(): Promise<void> {
     if (window) {
       if (window.isMinimized()) window.restore();
       window.focus();
-      const url = argv.find((arg) => arg.startsWith('catalyst://'));
+      const url = argv.find((arg) => arg.startsWith('nexo://'));
       if (url) handleProtocolUrl(url);
     }
   });
