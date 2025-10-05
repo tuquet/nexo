@@ -1,0 +1,221 @@
+name: Nexo CI/CD Pipeline
+
+on:
+  # Pull Request - chỉ test trên Windows
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/nexo-native/**'
+      - 'apps/nexo-web/**'
+      - 'packages/**'
+      - 'internal/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - '.github/workflows/**'
+
+  # Push to main - test trên Windows
+  push:
+    branches: [main]
+    paths:
+      - 'apps/nexo-native/**'
+      - 'apps/nexo-web/**'
+      - 'packages/**'
+      - 'internal/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - '.github/workflows/**'
+
+  # Release tags - build và release trên tất cả OS
+  push:
+    tags:
+      - 'v*'
+
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - 'test'
+          - 'release'
+      version:
+        description: 'Version to release (e.g., v1.0.0) - only for release mode'
+        required: false
+        default: 'v1.0.0'
+
+jobs:
+  # Job 1: Test và build (cho PR, push, manual test)
+  test-build:
+    runs-on: ${{ matrix.os }}
+    if: ${{ !startsWith(github.ref, 'refs/tags/v') && (github.event.inputs.mode != 'release' || github.event.inputs.mode == '' || github.event.inputs.mode == 'test') }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Chỉ test trên Windows cho PR/push để tiết kiệm resources
+        os: [windows-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.14.0'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Debug environment
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "PNPM version: $(pnpm --version)"
+          echo "Working directory: $(pwd)"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies with pnpm..."
+          pnpm install --frozen-lockfile --reporter=append-only
+        timeout-minutes: 15
+
+      - name: Type check and build validation
+        run: pnpm run check:type
+
+      - name: Build internal packages
+        run: pnpm run build
+
+      - name: Build Nexo Web application
+        run: |
+          cd apps/nexo-web
+          pnpm run build:native
+
+      - name: Build Nexo Native application
+        run: |
+          cd apps/nexo-native
+          pnpm run build
+        env:
+          AUTO_OPEN: '0'
+
+      - name: Test build artifacts
+        run: |
+          cd apps/nexo-native
+          pnpm run build:unpack
+        env:
+          AUTO_OPEN: '0'
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexo-test-build-${{ matrix.os }}-${{ github.run_number }}
+          path: |
+            apps/nexo-native/dist/
+            apps/nexo-web/dist/
+          retention-days: 7
+
+  # Job 2: Release build (cho tag releases và manual release)
+  release-build:
+    runs-on: ${{ matrix.os }}
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.event.inputs.mode == 'release' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.14.0'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check and lint
+        run: pnpm run check:type
+
+      - name: Build internal packages
+        run: pnpm run build
+
+      - name: Build Nexo Web application
+        run: |
+          cd apps/nexo-web
+          pnpm run build:native
+
+      - name: Build Nexo Native application
+        run: |
+          cd apps/nexo-native
+          pnpm run build
+        env:
+          AUTO_OPEN: '0'
+
+      - name: Build and publish (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd apps/nexo-native
+          pnpm run publish:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          cd apps/nexo-native
+          pnpm run build:mac
+          pnpm run publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd apps/nexo-native
+          pnpm run build:linux
+          pnpm run publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
