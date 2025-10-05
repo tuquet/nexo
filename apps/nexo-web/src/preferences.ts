@@ -8,7 +8,7 @@ import { defineOverridesPreferences } from '@vben/preferences';
 export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
-    layout: 'header-nav',
+    layout: 'sidebar-nav',
     locale: 'vi-VN',
     name: import.meta.env.VITE_APP_TITLE,
     authPageLayout: 'panel-center',
@@ -18,10 +18,14 @@ export const overridesPreferences = defineOverridesPreferences({
     defaultAvatar: 'https://cdn-icons-png.flaticon.com/128/3906/3906577.png',
     enableCheckUpdates: false,
   },
+  breadcrumb: {
+    showHome: true,
+  },
   sidebar: {
-    collapsed: true,
-    collapsedButton: false,
-    fixedButton: false,
+    collapsed: false,
+    collapsedButton: true,
+    fixedButton: true,
+    expandOnHover: true,
   },
   logo: {
     enable: true,
@@ -30,23 +34,24 @@ export const overridesPreferences = defineOverridesPreferences({
     fit: 'cover',
   },
   copyright: {
-    companyName: 'tfsoftware',
-    companySiteLink: 'https://tfsoftware.vn',
+    companyName: 'Nexo Studio',
+    companySiteLink: 'https://www.facebook.com/quet.jr',
     date: '2025',
-    enable: false,
+    enable: true,
     icp: '',
     icpLink: '',
     settingShow: true,
   },
   widget: {
-    fullscreen: false,
+    fullscreen: true,
     themeToggle: true,
-    lockScreen: false,
-    notification: false,
+    lockScreen: true,
+    notification: true,
     globalSearch: true,
   },
   footer: {
     enable: true,
+    fixed: true,
   },
   theme: {
     radius: '0.5',
@@ -61,5 +66,9 @@ export const overridesPreferences = defineOverridesPreferences({
   tabbar: {
     enable: true,
     middleClickToClose: true,
+    styleType: 'brisk',
+  },
+  navigation: {
+    styleType: 'plain',
   },
 });
