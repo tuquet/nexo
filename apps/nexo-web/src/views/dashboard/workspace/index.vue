@@ -6,7 +6,8 @@ import type {
   WorkbenchTrendItem,
 } from '@vben/common-ui';
 
-import type { Project } from '#/lib/db/base-schema';
+// TODO: Define Project interface in base-schema
+// import type { Project } from '#/lib/db/base-schema';
 
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -66,7 +67,8 @@ const router = useRouter();
 
 // 这是一个示例方法，实际项目中需要根据实际情况进行调整
 // This is a sample method, adjust according to the actual project requirements
-function navTo(nav: Project) {
+function navTo(nav: any) {
+  // TODO: Use proper Project type
   if (nav.groupId) {
     router
       .push({ name: 'ProjectView', params: { id: nav.groupId! } })

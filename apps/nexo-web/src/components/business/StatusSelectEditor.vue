@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import type { ProjectStatus } from '#/lib/db/base-schema';
+// TODO: Define ProjectStatus interface in base-schema
+// import type { ProjectStatus } from '#/lib/db/base-schema';
 
 import DynamicSelect from '#/components/common/DynamicSelect.vue';
+
+// TODO: Replace with proper ProjectStatus type
+type ProjectStatus = 'completed' | 'in-progress' | 'on-hold' | 'planning';
 
 const model = defineModel<ProjectStatus | undefined>();
 

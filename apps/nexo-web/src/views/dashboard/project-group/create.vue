@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { Group } from '#/lib/db/base-schema';
+// TODO: Define Group interface in base-schema
+// import type { Group } from '#/lib/db/base-schema';
 
 import { useRouter } from 'vue-router';
 
@@ -36,7 +37,7 @@ const [CreateGroupForm] = useVbenForm({
 });
 
 async function onSubmit(values: Record<string, any>) {
-  await db.groups.add(values as Group);
+  await db.groups.add(values as any); // TODO: Use proper Group type
   message.success('Tạo nhóm dự án thành công!');
   router.push({ name: 'ProjectList' }); // Hoặc chuyển hướng đến trang quản lý nhóm
 }
