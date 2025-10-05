@@ -5,8 +5,8 @@ const routes: RouteRecordRaw[] = [
     path: '/prompt-hub',
     name: 'PromptHub',
     meta: {
-      icon: 'carbon:pen',
-      order: 3,
+      icon: 'carbon:code',
+      order: 0,
       title: 'Prompt Hub',
     },
     redirect: '/prompt-hub',
@@ -16,6 +16,7 @@ const routes: RouteRecordRaw[] = [
         name: 'PromptHubList',
         component: () => import('#/views/dashboard/prompt-hub/index.vue'),
         meta: {
+          icon: 'carbon:data-table',
           title: 'Danh sách Prompt',
         },
       },
@@ -24,6 +25,7 @@ const routes: RouteRecordRaw[] = [
         name: 'PromptHubCreate',
         component: () => import('#/views/dashboard/prompt-hub/create.vue'),
         meta: {
+          icon: 'carbon:add-comment',
           title: 'Tạo mới Prompt',
         },
       },
@@ -33,7 +35,9 @@ const routes: RouteRecordRaw[] = [
         // TODO: Tạo component cho trang sửa, có thể tái sử dụng create-manually.vue
         component: () => import('#/views/dashboard/prompt-hub/edit.vue'),
         meta: {
+          icon: 'carbon:edit',
           title: 'Chỉnh sửa Prompt',
+          hideInMenu: true,
         },
       },
     ],
