@@ -5,7 +5,7 @@ import { $t } from '#/locales';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'lucide:layout-dashboard',
+      icon: 'carbon:dashboard',
       order: -1,
       title: $t('page.dashboard.title'),
       hideInMenu: true,
@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
       //   path: '/analytics',
       //   component: () => import('#/views/dashboard/analytics/index.vue'),
       //   meta: {
-      //     icon: 'lucide:area-chart',
+      //     icon: 'carbon:analytics',
       //     title: $t('page.dashboard.analytics'),
       //   },
       // },

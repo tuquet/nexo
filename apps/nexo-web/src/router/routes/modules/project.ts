@@ -5,7 +5,7 @@ import { $t } from '#/locales';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'carbon:folder',
+      icon: 'carbon:folder-open',
       order: 1,
       title: $t('page.project.title'),
     },
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('#/views/dashboard/project/index.vue'),
         meta: {
-          icon: 'carbon:list',
+          icon: 'carbon:list-boxes',
           title: $t('page.project.list'),
           hideInMenu: true,
         },
@@ -27,7 +27,7 @@ const routes: RouteRecordRaw[] = [
         path: ':id/view',
         component: () => import('#/views/dashboard/project/view.vue'),
         meta: {
-          icon: 'carbon:view',
+          icon: 'carbon:view-filled',
           title: $t('page.project.view'),
           hideInMenu: true,
         },
@@ -38,7 +38,7 @@ const routes: RouteRecordRaw[] = [
         path: 'create',
         component: () => import('#/views/dashboard/project/create.vue'),
         meta: {
-          icon: 'carbon:add',
+          icon: 'carbon:add-filled',
           title: $t('page.project.create'),
           hideInMenu: true,
         },
@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
     name: 'ProjectGroup',
     path: '/project-group',
     meta: {
-      icon: 'carbon:folder',
+      icon: 'carbon:folder-details',
       order: 2,
       title: $t('page.project.group.title'),
     },
@@ -59,7 +59,7 @@ const routes: RouteRecordRaw[] = [
         path: '',
         component: () => import('#/views/dashboard/project-group/index.vue'),
         meta: {
-          icon: 'carbon:list',
+          icon: 'carbon:list-checked',
           title: $t('page.project.group.list'),
           hideInMenu: true,
         },
@@ -69,7 +69,7 @@ const routes: RouteRecordRaw[] = [
         path: ':id/view',
         component: () => import('#/views/dashboard/project-group/view.vue'),
         meta: {
-          icon: 'carbon:view',
+          icon: 'carbon:group-objects',
           title: $t('page.project.group.view'),
           hideInMenu: true,
         },
@@ -79,7 +79,7 @@ const routes: RouteRecordRaw[] = [
         path: 'group/create',
         component: () => import('#/views/dashboard/project-group/create.vue'),
         meta: {
-          icon: 'carbon:add-alt',
+          icon: 'carbon:new-tab',
           title: $t('page.project.group.create'),
           hideInMenu: true,
         },
