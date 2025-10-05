@@ -1,16 +1,17 @@
-import { fileURLToPath } from 'url'
-import { is } from '@electron-toolkit/utils'
-import { BrowserWindow, shell } from 'electron'
-import log from 'electron-log'
+import { fileURLToPath } from 'node:url';
 
-import icon from '@resources/icon.png?asset'
-import { createWindow, waitForServerUp } from '../helpers'
-import { APP_DEV_RENDERER_URL } from '../config'
+import { is } from '@electron-toolkit/utils';
+import icon from '@resources/icon.png?asset';
+import { BrowserWindow, shell } from 'electron';
+import log from 'electron-log';
 
-let mainWindow: BrowserWindow | null = null
+import { APP_DEV_RENDERER_URL } from '../config';
+import { createWindow, waitForServerUp } from '../helpers';
+
+let mainWindow: BrowserWindow | null = null;
 
 export function getMainWindow(): BrowserWindow | null {
-  return mainWindow
+  return mainWindow;
 }
 
 export async function setupMainWindow(): Promise<BrowserWindow> {
@@ -22,33 +23,35 @@ export async function setupMainWindow(): Promise<BrowserWindow> {
       preload: fileURLToPath(new URL('../preload/index.mjs', import.meta.url)),
       sandbox: false,
       nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
+      contextIsolation: false,
+    },
+  });
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow?.show()
+    mainWindow?.show();
     // if (is.dev) {
     //   mainWindow?.webContents.openDevTools()
     // }
-  })
+  });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    void shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+    void shell.openExternal(details.url);
+    return { action: 'deny' };
+  });
 
   // process.env.ELECTRON_RENDERER_URL
   if (is.dev && APP_DEV_RENDERER_URL) {
-    await waitForServerUp(APP_DEV_RENDERER_URL)
-    await mainWindow.loadURL(APP_DEV_RENDERER_URL)
+    await waitForServerUp(APP_DEV_RENDERER_URL);
+    await mainWindow.loadURL(APP_DEV_RENDERER_URL);
   } else {
     mainWindow
-      .loadFile(fileURLToPath(new URL('../renderer/index.html', import.meta.url)))
+      .loadFile(
+        fileURLToPath(new URL('../renderer/index.html', import.meta.url)),
+      )
       .catch((error) => {
-        log.error('Failed to load file:', error)
-      })
+        log.error('Failed to load file:', error);
+      });
   }
 
-  return mainWindow
+  return mainWindow;
 }

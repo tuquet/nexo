@@ -22,14 +22,14 @@ Thực hiện theo các bước đơn giản sau:
 
     ```typescript
     // Ví dụ trong file my-feature.ts
-    import { IpcMain } from 'electron'
+    import { IpcMain } from 'electron';
 
     export function myFeature(ipc: IpcMain): void {
       ipc.handle('my-feature:do-something', async (_event, arg1, arg2) => {
         // ... thực hiện tác vụ bất đồng bộ
-        const result = await doSomething(arg1, arg2)
-        return result
-      })
+        const result = await doSomething(arg1, arg2);
+        return result;
+      });
     }
     ```
 
@@ -37,7 +37,7 @@ Thực hiện theo các bước đơn giản sau:
 
     ```typescript
     // trong file ipc/modules/index.ts
-    export * from './my-feature'
+    export * from './my-feature';
     // ... các export khác
     ```
 

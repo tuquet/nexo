@@ -13,7 +13,8 @@ body {
 code {
   padding: 3px 5px;
   font-family:
-    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
   font-size: 85%;
   font-weight: 600;
   background-color: var(--color-background-mute);

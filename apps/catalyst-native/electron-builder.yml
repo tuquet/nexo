@@ -37,10 +37,10 @@ appImage:
   artifactName: ${productName}-${version}.${ext}
 npmRebuild: false
 publish:
-    provider: github
-    owner: tuquet
-    repo: catalyst
-    releaseType: prerelease
-    vPrefixedTagName: true
+  provider: github
+  owner: tuquet
+  repo: catalyst
+  releaseType: prerelease
+  vPrefixedTagName: true
 electronDownload:
   mirror: https://npmmirror.com/mirrors/electron/

@@ -1,5 +1,5 @@
-import { IpcMain, shell } from 'electron'
-import log from 'electron-log'
+import { IpcMain, shell } from 'electron';
+import log from 'electron-log';
 
 export function shellModule(ipc: IpcMain): void {
   /**
@@ -7,28 +7,28 @@ export function shellModule(ipc: IpcMain): void {
    * Nếu là file, nó sẽ được chọn.
    */
   ipc.on('shell:open-path', (_, path: string) => {
-    log.info(`[Shell] Opening path: ${path}`)
+    log.info(`[Shell] Opening path: ${path}`);
     // shell.openPath trả về một promise với thông báo lỗi nếu thất bại
-    shell.openPath(path).catch((err) => {
-      log.error(`[Shell] Failed to open path ${path}:`, err)
-    })
-  })
+    shell.openPath(path).catch((error) => {
+      log.error(`[Shell] Failed to open path ${path}:`, error);
+    });
+  });
 
   /**
    * Mở một URL trong trình duyệt mặc định của hệ thống.
    */
   ipc.on('shell:open-external', (_, url: string) => {
-    log.info(`[Shell] Opening external URL: ${url}`)
-    shell.openExternal(url).catch((err) => {
-      log.error(`[Shell] Failed to open external URL ${url}:`, err)
-    })
-  })
+    log.info(`[Shell] Opening external URL: ${url}`);
+    shell.openExternal(url).catch((error) => {
+      log.error(`[Shell] Failed to open external URL ${url}:`, error);
+    });
+  });
 
   /**
    * Hiển thị một file trong trình quản lý file của hệ thống.
    */
   ipc.on('shell:show-item-in-folder', (_, fullPath: string) => {
-    log.info(`[Shell] Showing item in folder: ${fullPath}`)
-    shell.showItemInFolder(fullPath)
-  })
+    log.info(`[Shell] Showing item in folder: ${fullPath}`);
+    shell.showItemInFolder(fullPath);
+  });
 }

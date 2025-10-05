@@ -5,20 +5,20 @@
       "path": "apps/backend-mock",
     },
     {
-      "name": "@web/catalyst",
-      "path": "apps/catalyst",
-    },
-    {
-      "name": "@native/catalyst",
+      "name": "@catalyst/native",
       "path": "apps/catalyst-native",
     },
     {
-      "name": "@web/nexo",
-      "path": "apps/nexo",
+      "name": "@catalyst/web",
+      "path": "apps/catalyst-web",
     },
     {
-      "name": "@native/nexo",
+      "name": "@nexo/native",
       "path": "apps/nexo-native",
+    },
+    {
+      "name": "@nexo/web",
+      "path": "apps/nexo-web",
     },
     {
       "name": "@vben/web-antd",

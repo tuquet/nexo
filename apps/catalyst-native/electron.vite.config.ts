@@ -1,9 +1,10 @@
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
-import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
-import dotenv from 'dotenv'
+import { resolve } from 'node:path';
 
-dotenv.config()
+import vue from '@vitejs/plugin-vue';
+import dotenv from 'dotenv';
+import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+
+dotenv.config();
 
 export default defineConfig({
   main: {
@@ -11,32 +12,32 @@ export default defineConfig({
     build: {
       rollupOptions: {
         output: {
-          format: 'es'
-        }
-      }
+          format: 'es',
+        },
+      },
     },
     resolve: {
       alias: {
-        '@resources': resolve('resources/')
-      }
-    }
+        '@resources': resolve('resources/'),
+      },
+    },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
     build: {
       rollupOptions: {
         output: {
-          format: 'es'
-        }
-      }
-    }
+          format: 'es',
+        },
+      },
+    },
   },
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
-      }
+        '@renderer': resolve('src/renderer/src'),
+      },
     },
-    plugins: [vue()]
-  }
-})
+    plugins: [vue()],
+  },
+});

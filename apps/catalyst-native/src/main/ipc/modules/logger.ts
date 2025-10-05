@@ -1,6 +1,9 @@
-import type { IpcMain } from 'electron'
-import log, { type LogMessage, type Transport } from 'electron-log'
-import { getMainWindow } from '../../bootstrap/window'
+import type { IpcMain } from 'electron';
+import type { LogMessage, Transport } from 'electron-log';
+
+import log from 'electron-log';
+
+import { getMainWindow } from '../../bootstrap/window';
 
 /**
  * Định dạng dữ liệu log thành một chuỗi duy nhất.
@@ -11,14 +14,14 @@ function formatLogData(data: any[]): string {
       if (typeof item === 'object' && item !== null) {
         try {
           // Chuyển đổi object thành chuỗi JSON để dễ đọc
-          return JSON.stringify(item, null, 2)
+          return JSON.stringify(item, null, 2);
         } catch {
-          return item.toString()
+          return item.toString();
         }
       }
-      return String(item)
+      return String(item);
     })
-    .join(' ')
+    .join(' ');
 }
 
 /**
@@ -28,30 +31,29 @@ function formatLogData(data: any[]): string {
 function configureRendererTransport(): void {
   // Transport tùy chỉnh để gửi log đến tiến trình renderer
   const rendererTransport: any | Transport = (msg: LogMessage) => {
-    const mainWindow = getMainWindow()
+    const mainWindow = getMainWindow();
     // Chỉ gửi khi cửa sổ chính tồn tại và chưa bị hủy
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('app-log', {
         level: msg.level,
         message: formatLogData(msg.data),
-        date: msg.date
-      })
+        date: msg.date,
+      });
     }
-  }
+  };
 
   // Gán transport tùy chỉnh. Mọi log (info, warn, error, v.v.) sẽ được xử lý bởi transport này,
   // song song với các transport mặc định (ghi ra file, console).
-  log.transports.renderer = rendererTransport
+  log.transports.renderer = rendererTransport;
 
-  log.info('[Logger] Transport to renderer has been configured.')
+  log.info('[Logger] Transport to renderer has been configured.');
 }
 
-let isTransportConfigured = false
+let isTransportConfigured = false;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function logger(_ipc: IpcMain): void {
   if (!isTransportConfigured) {
-    configureRendererTransport()
-    isTransportConfigured = true
+    configureRendererTransport();
+    isTransportConfigured = true;
   }
 }
