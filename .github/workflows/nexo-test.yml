@@ -1,0 +1,85 @@
+name: Nexo Build and Test
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/nexo-native/**'
+      - 'packages/**'
+      - 'internal/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/nexo-native/**'
+      - 'packages/**'
+      - 'internal/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+
+jobs:
+  test-build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.14.0'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check and lint
+        run: pnpm run check
+
+      - name: Build Nexo Web application
+        run: |
+          cd apps/nexo-web
+          pnpm run build:native
+
+      - name: Build Nexo Native application
+        run: |
+          cd apps/nexo-native
+          pnpm run build
+        env:
+          AUTO_OPEN: '0'
+
+      - name: Test build (unpack only)
+        run: |
+          cd apps/nexo-native
+          pnpm run build:unpack
+
+      - name: Upload build artifacts
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexo-build-${{ matrix.os }}
+          path: apps/nexo-native/dist/
+          retention-days: 7
