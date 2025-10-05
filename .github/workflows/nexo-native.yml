@@ -1,7 +1,7 @@
-name: Nexo CI/CD Pipeline
+name: Nexo Native App Build and Release
 
 on:
-  # Pull Request - chỉ test trên Windows
+  # Pull Request - test native app trên Windows
   pull_request:
     branches: [main]
     paths:
@@ -13,7 +13,7 @@ on:
       - 'package.json'
       - '.github/workflows/**'
 
-  # Push to main và release tags
+  # Push to main và release tags - build native app
   push:
     branches: [main]
     tags:
@@ -27,11 +27,11 @@ on:
       - 'package.json'
       - '.github/workflows/**'
 
-  # Manual trigger
+  # Manual trigger cho native app
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Run mode'
+        description: 'Native app build mode'
         required: true
         default: 'test'
         type: choice
@@ -44,15 +44,15 @@ on:
         default: 'v1.0.0'
 
 jobs:
-  # Job 1: Test và build (cho PR, push, manual test)
-  test-build:
+  # Job 1: Test và build native app (cho PR, push, manual test)
+  test-build-native:
     runs-on: ${{ matrix.os }}
     if: ${{ !startsWith(github.ref, 'refs/tags/v') && (github.event.inputs.mode != 'release' || github.event.inputs.mode == '' || github.event.inputs.mode == 'test') }}
 
     strategy:
       fail-fast: false
       matrix:
-        # Chỉ test trên Windows cho PR/push để tiết kiệm resources
+        # Test native app trên Windows (primary target platform)
         os: [windows-latest]
 
     steps:
@@ -127,20 +127,21 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nexo-test-build-${{ matrix.os }}-${{ github.run_number }}
+          name: nexo-native-build-${{ matrix.os }}-${{ github.run_number }}
           path: |
             apps/nexo-native/dist/
             apps/nexo-web/dist/
           retention-days: 7
 
-  # Job 2: Release build (cho tag releases và manual release)
-  release-build:
+  # Job 2: Release native app (cho tag releases và manual release)
+  release-build-native:
     runs-on: ${{ matrix.os }}
     if: ${{ startsWith(github.ref, 'refs/tags/v') || github.event.inputs.mode == 'release' }}
 
     strategy:
       fail-fast: false
       matrix:
+        # Build native app cho tất cả platforms khi release
         os: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:

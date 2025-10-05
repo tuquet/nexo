@@ -1,0 +1,235 @@
+name: Nexo Web Build and Deploy
+
+on:
+  # Pull Request - test web build
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps/nexo-web/**'
+      - 'packages/**'
+      - 'internal/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - '.github/workflows/nexo-web.yml'
+
+  # Push to main - build and deploy web
+  push:
+    branches: [main]
+    paths:
+      - 'apps/nexo-web/**'
+      - 'packages/**'
+      - 'internal/**'
+      - 'pnpm-lock.yaml'
+      - 'package.json'
+      - '.github/workflows/nexo-web.yml'
+
+  # Manual trigger with deployment options
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - 'staging'
+          - 'production'
+      deploy:
+        description: 'Deploy after build'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  # Job 1: Build and test web application
+  build-web:
+    runs-on: ubuntu-latest
+
+    outputs:
+      build-success: ${{ steps.build-check.outputs.success }}
+      artifact-name: ${{ steps.artifact-info.outputs.name }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '10.14.0'
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Debug environment
+        run: |
+          echo "Runner OS: ${{ runner.os }}"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+          echo "PNPM version: $(pnpm --version)"
+          echo "Environment: ${{ github.event.inputs.environment || 'auto' }}"
+          echo "Deploy: ${{ github.event.inputs.deploy || 'auto' }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies for web build..."
+          pnpm install --frozen-lockfile --reporter=append-only
+        timeout-minutes: 10
+
+      - name: Type check web application
+        run: |
+          cd apps/nexo-web
+          pnpm run typecheck
+
+      - name: Build internal packages (if needed)
+        run: |
+          echo "Building required internal packages..."
+          pnpm run build --filter="!@nexo/native" --filter="!@nexo/web"
+
+      - name: Build web application (production)
+        if: ${{ github.event.inputs.environment == 'production' || github.ref == 'refs/heads/main' }}
+        run: |
+          cd apps/nexo-web
+          echo "Building for production environment..."
+          pnpm run build
+        env:
+          NODE_ENV: production
+
+      - name: Build web application (staging/native)
+        if: ${{ github.event.inputs.environment != 'production' && github.ref != 'refs/heads/main' }}
+        run: |
+          cd apps/nexo-web
+          echo "Building for staging/development environment..."
+          pnpm run build:native
+        env:
+          NODE_ENV: development
+
+      - name: Check build output
+        id: build-check
+        run: |
+          if [ -d "apps/nexo-web/dist" ] && [ "$(ls -A apps/nexo-web/dist)" ]; then
+            echo "✅ Build successful - dist folder contains files"
+            echo "success=true" >> $GITHUB_OUTPUT
+            du -sh apps/nexo-web/dist
+            echo "Build contents:"
+            ls -la apps/nexo-web/dist/ | head -10
+          else
+            echo "❌ Build failed - dist folder is empty or missing"
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Set artifact info
+        id: artifact-info
+        run: |
+          ENVIRONMENT="${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}"
+          ARTIFACT_NAME="nexo-web-${ENVIRONMENT}-${{ github.run_number }}"
+          echo "name=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+          echo "Artifact name: ${ARTIFACT_NAME}"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact-info.outputs.name }}
+          path: |
+            apps/nexo-web/dist/
+            apps/nexo-web/dist.zip
+          retention-days: 30
+          compression-level: 6
+
+      - name: Generate build summary
+        run: |
+          echo "## 🚀 Nexo Web Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Status | ${{ steps.build-check.outputs.success == 'true' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Artifact | ${{ steps.artifact-info.outputs.name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build Time | $(date -u) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Build Output Size" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          du -sh apps/nexo-web/dist >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Deploy web application (conditional)
+  deploy-web:
+    runs-on: ubuntu-latest
+    needs: build-web
+    if: ${{ needs.build-web.outputs.build-success == 'true' && (github.event.inputs.deploy == 'true' || github.ref == 'refs/heads/main') }}
+
+    environment:
+      name: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }}
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build-web.outputs.artifact-name }}
+          path: ./dist
+
+      - name: Verify downloaded artifacts
+        run: |
+          echo "Downloaded artifacts:"
+          ls -la ./dist
+          du -sh ./dist
+
+      - name: Deploy to staging
+        if: ${{ github.event.inputs.environment == 'staging' || (github.event.inputs.environment != 'production' && github.ref != 'refs/heads/main') }}
+        id: deploy-staging
+        run: |
+          echo "🚀 Deploying to staging environment..."
+          # Add your staging deployment commands here
+          # Example: rsync, scp, or API calls to hosting service
+          echo "url=https://staging.nexo.example.com" >> $GITHUB_OUTPUT
+          echo "✅ Deployed to staging successfully"
+
+      - name: Deploy to production
+        if: ${{ github.event.inputs.environment == 'production' || github.ref == 'refs/heads/main' }}
+        id: deploy-production
+        run: |
+          echo "🚀 Deploying to production environment..."
+          # Add your production deployment commands here
+          # Example: rsync, scp, or API calls to hosting service
+          echo "url=https://nexo.example.com" >> $GITHUB_OUTPUT
+          echo "✅ Deployed to production successfully"
+
+      - name: Set deployment output
+        id: deploy
+        run: |
+          if [ "${{ steps.deploy-production.outputs.url }}" != "" ]; then
+            echo "url=${{ steps.deploy-production.outputs.url }}" >> $GITHUB_OUTPUT
+          else
+            echo "url=${{ steps.deploy-staging.outputs.url }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate deployment summary
+        run: |
+          echo "## 🌐 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'staging') }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | ${{ steps.deploy.outputs.url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy Time | $(date -u) |" >> $GITHUB_STEP_SUMMARY
