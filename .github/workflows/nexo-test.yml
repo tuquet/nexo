@@ -25,7 +25,9 @@ jobs:
     strategy:
       fail-fast: false  # Không cancel các job khác khi 1 job fail
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]    steps:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
