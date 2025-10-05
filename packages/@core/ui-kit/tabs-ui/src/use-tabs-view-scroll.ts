@@ -8,7 +8,18 @@ import { useDebounceFn } from '@vueuse/core';
 
 type DomElement = Element | null | undefined;
 
-export function useTabsViewScroll(props: TabsProps) {
+interface TabsViewScrollReturn {
+  handleScrollAt: (direction: 'left' | 'right') => void;
+  handleWheel: (event: WheelEvent) => void;
+  initScrollbar: () => void;
+  scrollbarRef: import('vue').Ref<InstanceType<typeof VbenScrollbar> | null>;
+  scrollDirection: (direction: 'left' | 'right') => void;
+  scrollIsAtLeft: import('vue').Ref<boolean>;
+  scrollIsAtRight: import('vue').Ref<boolean>;
+  showScrollButton: import('vue').Ref<boolean>;
+}
+
+export function useTabsViewScroll(props: TabsProps): TabsViewScrollReturn {
   let resizeObserver: null | ResizeObserver = null;
   let mutationObserver: MutationObserver | null = null;
   let tabItemCount = 0;
