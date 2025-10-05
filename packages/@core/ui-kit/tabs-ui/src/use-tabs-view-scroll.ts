@@ -9,7 +9,12 @@ import { useDebounceFn } from '@vueuse/core';
 type DomElement = Element | null | undefined;
 
 interface TabsViewScrollReturn {
-  handleScrollAt: (direction: 'left' | 'right') => void;
+  handleScrollAt: (scrollPosition: {
+    bottom: boolean;
+    left: boolean;
+    right: boolean;
+    top: boolean;
+  }) => void;
   handleWheel: (event: WheelEvent) => void;
   initScrollbar: () => void;
   scrollbarRef: import('vue').Ref<InstanceType<typeof VbenScrollbar> | null>;
@@ -148,10 +153,18 @@ export function useTabsViewScroll(props: TabsProps): TabsViewScrollReturn {
       scrollViewportEl.value.scrollWidth > scrollbarWidth;
   }
 
-  const handleScrollAt = useDebounceFn(({ left, right }) => {
-    scrollIsAtLeft.value = left;
-    scrollIsAtRight.value = right;
-  }, 100);
+  const handleScrollAt = useDebounceFn(
+    (scrollPosition: {
+      bottom: boolean;
+      left: boolean;
+      right: boolean;
+      top: boolean;
+    }) => {
+      scrollIsAtLeft.value = scrollPosition.left;
+      scrollIsAtRight.value = scrollPosition.right;
+    },
+    100,
+  );
 
   function handleWheel({ deltaY }: WheelEvent) {
     scrollViewportEl.value?.scrollBy({
