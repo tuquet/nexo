@@ -8,7 +8,6 @@ import type {
 
 // TODO: Define Project interface in base-schema
 // import type { Project } from '#/lib/db/base-schema';
-
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
