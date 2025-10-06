@@ -29,8 +29,7 @@ export const overridesPreferences = defineOverridesPreferences({
   },
   logo: {
     enable: true,
-    source:
-      'https://unpkg.com/@tfsoft/static-source@1.0.0/static/logo-square.png',
+    source: 'https://unpkg.com/@tfsoft/static-source@1.0.4/static/logo.png',
     fit: 'cover',
   },
   copyright: {
@@ -57,11 +56,8 @@ export const overridesPreferences = defineOverridesPreferences({
     radius: '0.5',
     semiDarkHeader: true,
     mode: 'auto',
-    builtinType: 'custom',
-    colorDestructive: 'hsl(348 100% 61%)',
-    colorPrimary: 'hsl(153 71% 40%)',
-    colorSuccess: 'hsla(166, 100%, 38%, 1.00)',
-    colorWarning: 'hsl(42 84% 61%)',
+    builtinType: 'default',
+    colorPrimary: 'hsl(212 100% 45%)',
   },
   tabbar: {
     enable: true,
