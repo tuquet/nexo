@@ -8,7 +8,7 @@ import { defineOverridesPreferences } from '@vben/preferences';
 export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
-    layout: 'sidebar-nav',
+    layout: 'header-sidebar-nav',
     locale: 'vi-VN',
     name: import.meta.env.VITE_APP_TITLE,
     authPageLayout: 'panel-center',
@@ -22,13 +22,13 @@ export const overridesPreferences = defineOverridesPreferences({
     showHome: true,
   },
   sidebar: {
-    collapsed: false,
+    collapsed: true,
     collapsedButton: true,
     fixedButton: true,
     expandOnHover: true,
   },
   logo: {
-    enable: true,
+    enable: false,
     source: 'https://unpkg.com/@tfsoft/static-source@1.0.4/static/logo.png',
     fit: 'cover',
   },
