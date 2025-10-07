@@ -7,6 +7,7 @@
 - **TypeScript**: ✅ Compilation thành công  
 - **Unused Dependencies**: ✅ Đã xóa axios, fs-extra khỏi nexo-native
 - **Environment Variables**: ✅ Đã giải quyết warnings về VITE_SUPABASE_* 
+- **Lockfile Sync**: ✅ Đã sync pnpm-lock.yaml với package.json changes
 
 ### ⚠️ Cần Theo Dõi (Warnings - Không Fail Build)
 - **Circular Dependencies**: ~2300 warnings (chủ yếu từ build output)
@@ -295,7 +296,36 @@ function quality-summary() {
 
 ---
 
-## 📚 Resources & Documentation
+## � Lockfile Management
+
+### Vấn Đề Lockfile Sync
+Khi xóa dependencies từ package.json, cần update lockfile:
+
+#### Lỗi CI/CD
+```bash
+ERR_PNPM_OUTDATED_LOCKFILE Cannot install with "frozen-lockfile" 
+because pnpm-lock.yaml is not up to date with package.json
+
+* 3 dependencies were removed: axios@^1.11.0, fs-extra@^11.3.1, @types/fs-extra@^11.0.4
+```
+
+#### ✅ Giải Pháp
+```bash
+# Update lockfile sau khi thay đổi dependencies
+pnpm install
+
+# Test frozen lockfile (như CI/CD)
+pnpm install --frozen-lockfile
+```
+
+#### Best Practices
+1. **Sau khi remove dependencies**: Luôn chạy `pnpm install`
+2. **Trước khi commit**: Test với `pnpm install --frozen-lockfile`
+3. **CI/CD ready**: Đảm bảo lockfile sync với package.json
+
+---
+
+## �📚 Resources & Documentation
 
 ### Project Files
 - `cspell.json` - Spell checking configuration với Vietnamese support
@@ -303,12 +333,14 @@ function quality-summary() {
 - `ENV_VARS_RESOLUTION.md` - Environment variables setup và troubleshooting
 - `CSPELL_RESOLUTION_SUMMARY.md` - Chi tiết quá trình giải quyết cspell issues
 - `.env` - Root environment variables với default values
+- `pnpm-lock.yaml` - Dependency lockfile (auto-generated, commit required)
 
 ### External Links
 - [CSpell Configuration](https://cspell.org/configuration/)
 - [TypeScript Configuration](https://www.typescriptlang.org/tsconfig)
 - [PNPM Workspace](https://pnpm.io/workspaces)
 - [Vite Environment Variables](https://vitejs.dev/guide/env-and-mode.html)
+- [PNPM Lockfile](https://pnpm.io/pnpm-lock)
 
 ---
 
@@ -319,4 +351,6 @@ function quality-summary() {
 - ✅ Created root `.env` file with defaults
 - ✅ Updated documentation với environment setup guide
 - ✅ Tested package builds - no more VITE_SUPABASE_* warnings
+- ✅ Fixed pnpm lockfile sync issue (removed dependencies)
+- ✅ CI/CD ready - frozen lockfile passes
 - 📋 Next: Address build compatibility warnings (jiti, node modules)
