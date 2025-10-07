@@ -104,6 +104,7 @@
   "emailConfirmationRequired": "Cần xác nhận email",
   "emailConfirmationDescription": "Bạn sẽ nhận được email xác nhận sau khi đăng ký. Vui lòng kiểm tra hộp thư đến và nhấp vào liên kết xác nhận để kích hoạt tài khoản.",
   "operationFailed": "Thao tác thất bại",
+  "error": "Lỗi",
   "errorOccurred": "Đã có lỗi xảy ra",
   "emailSent": "Email đã được gửi!",
   "checkEmailForInstructions": "Kiểm tra email để biết hướng dẫn đặt lại mật khẩu",

@@ -68,11 +68,24 @@ function handleSupabaseError(error: unknown) {
         duration: 10,
       });
     } else {
-      // Generic error fallback
+      // Try to get translation for common error messages
+      let description = error.message;
+
+      // Check for common Supabase error messages that might not be wrapped in SupabaseAuthError
+      if (error.message === 'Invalid login credentials') {
+        description = $t('authentication.errors.invalid_login_credentials');
+      } else if (error.message?.includes('Email not confirmed')) {
+        description = $t('authentication.errors.email_not_confirmed');
+      } else if (error.message?.includes('User already registered')) {
+        description = $t('authentication.errors.user_already_registered');
+      } else {
+        // Use fallback description for unknown errors
+        description = $t('authentication.unexpectedErrorDescription');
+      }
+
       notification.error({
         message: $t('authentication.unexpectedError'),
-        description:
-          error.message || $t('authentication.unexpectedErrorDescription'),
+        description,
         duration: 5,
       });
     }
