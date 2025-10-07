@@ -76,6 +76,13 @@ export class SupabaseAuthService {
   }
 
   /**
+   * Get Supabase client if available
+   */
+  getClient() {
+    return supabase;
+  }
+
+  /**
    * Get current session with retry logic
    */
   async getSession(): Promise<null | Session> {
@@ -108,11 +115,30 @@ export class SupabaseAuthService {
   }
 
   /**
+   * Check if Supabase client is available
+   */
+  isAvailable(): boolean {
+    return supabase !== null;
+  }
+
+  /**
    * Listen for auth state changes
    */
   onAuthStateChange(
     callback: (session: null | Session, user: null | User) => void,
   ) {
+    if (!supabase) {
+      // If Supabase is not available, call callback with null values and return a no-op unsubscribe
+      console.warn(
+        'Supabase client not available. Auth state change listener disabled.',
+      );
+      callback(null, null);
+      return {
+        data: { subscription: { unsubscribe: () => {} } },
+        error: null,
+      };
+    }
+
     const client = this.ensureClient();
     return client.auth.onAuthStateChange((_event, session) => {
       callback((session as Session) || null, (session?.user as User) || null);
@@ -329,7 +355,7 @@ export class SupabaseAuthService {
   }
 
   /**
-   * Check if Supabase client is available
+   * Check if Supabase client is available and throw if not
    */
   private ensureClient() {
     if (!supabase) {

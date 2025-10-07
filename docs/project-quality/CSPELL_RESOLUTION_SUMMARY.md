@@ -1,6 +1,7 @@
 # Tóm Tắt Giải Quyết Vấn Đề CSpell
 
 ## Vấn Đề Ban Đầu
+
 Lệnh `pnpm check` báo lỗi với hơn 893 lỗi từ cspell (spell checker) chủ yếu là các từ tiếng Việt trong code và comments.
 
 ## Giải Pháp Thực Hiện
@@ -8,6 +9,7 @@ Lệnh `pnpm check` báo lỗi với hơn 893 lỗi từ cspell (spell checker) 
 ### 1. Cập Nhật Cấu Hình cspell.json
 
 #### Thêm Hỗ Trợ Tiếng Việt
+
 ```json
 {
   "language": "en,en-US,vi"
@@ -15,7 +17,9 @@ Lệnh `pnpm check` báo lỗi với hơn 893 lỗi từ cspell (spell checker) 
 ```
 
 #### Cải Thiện Regex Patterns
+
 Thêm pattern để bỏ qua từ tiếng Việt:
+
 ```json
 "ignoreRegExpList": [
   "//.*[àáảãạăắằặẳẵâấầậẩẫèéẻẽẹêếềệểễìíỉĩịòóỏõọôốồộổỗơớờợởỡùúủũụưứừựửữỳýỷỹỵđĐ].*",
@@ -25,7 +29,9 @@ Thêm pattern để bỏ qua từ tiếng Việt:
 ```
 
 #### Thêm Từ Điển Tiếng Việt
+
 Thêm các từ tiếng Việt thường dùng vào dictionary:
+
 ```json
 "words": [
   // ... existing words
@@ -39,11 +45,12 @@ Thêm các từ tiếng Việt thường dùng vào dictionary:
 ```
 
 #### Loại Trừ Các File Có Nhiều Tiếng Việt
+
 ```json
 "ignorePaths": [
   // ... existing paths
   "**/seed.ts",
-  "**/README.md", 
+  "**/README.md",
   "**/README.vi-VN.md",
   "apps/nexo-native/src/main/ipc/**",
   "apps/nexo-web/src/components/business/README.md",
@@ -52,7 +59,9 @@ Thêm các từ tiếng Việt thường dùng vào dictionary:
 ```
 
 ### 2. Cập Nhật Script Check
+
 Sửa đổi script trong package.json để loại trừ các file có nhiều tiếng Việt:
+
 ```json
 "check:cspell": "cspell lint \"**/*.ts\" \"!**/seed.ts\" \"!apps/nexo-native/src/main/ipc/**\" \"!apps/nexo-web/src/lib/db/**\" \"!apps/nexo-web/src/components/business/**\" \"!README.md\" \"!README.vi-VN.md\" \".changeset/*.md\" --no-progress"
 ```
@@ -60,22 +69,27 @@ Sửa đổi script trong package.json để loại trừ các file có nhiều 
 ## Kết Quả
 
 ### Trước Khi Sửa
+
 ```
 CSpell: Files checked: 548, Issues found: 893 in 21 files.
 ```
 
 ### Sau Khi Sửa
+
 ```
 CSpell: Files checked: 507, Issues found: 0 in 0 files.
 ```
 
 ### Trạng Thái Tổng Thể
+
 ```
 pnpm check
 ```
+
 Tất cả các check đã pass:
+
 - ✅ check:circular (có warnings về circular dependencies nhưng không fail)
-- ✅ check:dep (có warnings về unused dependencies nhưng không fail)  
+- ✅ check:dep (có warnings về unused dependencies nhưng không fail)
 - ✅ check:type (pass hoàn toàn)
 - ✅ check:cspell (pass hoàn toàn)
 

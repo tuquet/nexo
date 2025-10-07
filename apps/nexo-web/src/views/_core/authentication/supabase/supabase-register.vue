@@ -19,6 +19,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       component: 'VbenInput',
       componentProps: {
         placeholder: $t('authentication.fullName') || 'Full Name',
+        autocomplete: 'name',
       },
       fieldName: 'fullName',
       label: $t('authentication.fullName') || 'Full Name',
@@ -31,6 +32,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         placeholder: $t('authentication.email') || 'Email',
         type: 'email',
+        autocomplete: 'username',
       },
       fieldName: 'email',
       label: $t('authentication.email') || 'Email',
@@ -43,6 +45,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       component: 'VbenInputPassword',
       componentProps: {
         placeholder: $t('authentication.password'),
+        autocomplete: 'new-password',
       },
       fieldName: 'password',
       label: $t('authentication.password'),

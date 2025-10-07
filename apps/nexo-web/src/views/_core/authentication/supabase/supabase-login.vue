@@ -161,7 +161,8 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         placeholder: $t('authentication.email') || 'Enter your email',
         type: 'email',
-        autocomplete: 'email',
+        // Use 'username' for login mode to improve password manager compatibility
+        autocomplete: mode.value === 'login' ? 'username' : 'email',
       },
       fieldName: 'email',
       label: $t('authentication.email'),

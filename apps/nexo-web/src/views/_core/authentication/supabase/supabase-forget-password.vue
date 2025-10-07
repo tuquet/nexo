@@ -21,6 +21,7 @@ const formSchema = computed((): VbenFormSchema[] => {
       componentProps: {
         placeholder: $t('authentication.email') || 'Email',
         type: 'email',
+        autocomplete: 'username',
       },
       fieldName: 'email',
       label: $t('authentication.email') || 'Email',
