@@ -13,8 +13,8 @@ import { Alert, Button, notification } from 'ant-design-vue';
 import { SupabaseAuthError } from '#/lib/supabase/auth';
 import { useSupabaseAuthStore } from '#/store/auth-supabase';
 import {
-  extractRateLimitSeconds,
   formatRateLimitMessage,
+  getTranslatedErrorMessage,
 } from '#/utils/supabase-errors';
 
 import MagicLinkLogin from './magic-link-login.vue';
@@ -33,7 +33,10 @@ const hasShownLoginSuccess = ref(false); // Prevent duplicate login notification
  * Handle Supabase authentication errors with i18n support
  */
 function handleSupabaseError(error: unknown) {
-  console.error('Full error details:', error);
+  // Only log in development
+  if (import.meta.env.DEV) {
+    console.error('Full error details:', error);
+  }
 
   if (error instanceof SupabaseAuthError) {
     let description = $t(error.i18nKey);
@@ -49,30 +52,14 @@ function handleSupabaseError(error: unknown) {
       duration: error.rateLimitSeconds ? 10 : 5, // Longer duration for rate limits
     });
   } else if (error instanceof Error) {
-    // Check if this is a rate limit error message that wasn't properly caught
-    const rateLimitSeconds = extractRateLimitSeconds(error.message);
+    // Use smart error message translation
+    const description = getTranslatedErrorMessage(error, $t);
 
-    if (rateLimitSeconds && error.message.includes('security purposes')) {
-      // This is a rate limit error, use proper i18n
-      const description = formatRateLimitMessage(
-        $t('authentication.errors.over_email_send_rate_limit'),
-        rateLimitSeconds,
-      );
-
-      notification.error({
-        message: $t('authentication.operationFailed'),
-        description,
-        duration: 10,
-      });
-    } else {
-      // Generic error fallback
-      notification.error({
-        message: $t('authentication.unexpectedError'),
-        description:
-          error.message || $t('authentication.unexpectedErrorDescription'),
-        duration: 5,
-      });
-    }
+    notification.error({
+      message: $t('authentication.unexpectedError'),
+      description,
+      duration: 5,
+    });
   } else {
     notification.error({
       message: $t('authentication.unexpectedError'),
@@ -353,10 +340,19 @@ async function handleSubmit(values: Record<string, any>) {
     }
 
     if (!result.success) {
-      console.error('Operation failed:', result.error);
+      if (import.meta.env.DEV) {
+        console.error('Operation failed:', result.error);
+      }
+
+      // Translate the error message
+      const translatedError = getTranslatedErrorMessage(
+        { message: result.error },
+        $t,
+      );
+
       notification.error({
         message: $t('authentication.operationFailed'),
-        description: result.error || $t('authentication.errorOccurred'),
+        description: translatedError,
         duration: 5,
       });
     }

@@ -231,7 +231,9 @@ export const useSupabaseAuthStore = defineStore('supabase-auth', {
 
         return userInfo;
       } catch (error: any) {
-        console.error('Supabase fetchUserInfo error:', error);
+        if (import.meta.env.DEV) {
+          console.error('Supabase fetchUserInfo error:', error);
+        }
         // Return fallback user info from token if possible
         return this.getUserInfoFromToken();
       }
@@ -324,7 +326,9 @@ export const useSupabaseAuthStore = defineStore('supabase-auth', {
           }
         }
       } catch (error) {
-        console.error('Smart fetchUserInfo error:', error);
+        if (import.meta.env.DEV) {
+          console.error('Smart fetchUserInfo error:', error);
+        }
         // If everything fails, try to get from stored userInfo
         const { useUserStore } = await import('@vben/stores');
         const userStore = useUserStore();

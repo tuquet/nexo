@@ -69,8 +69,30 @@ export function getSupabaseErrorKey(errorCode: string): string {
  * Extract rate limit seconds from error message
  */
 export function extractRateLimitSeconds(message: string): null | number {
-  const match = message.match(/after (\d+) seconds?/);
-  return match?.[1] ? Number.parseInt(match[1], 10) : null;
+  // Debug log to see actual message pattern
+  if (import.meta.env.DEV && message.includes('security purposes')) {
+    console.warn('Rate limit message:', message);
+  }
+
+  // Try multiple patterns for Supabase rate limit messages
+  const patterns = [
+    /this after (\d+) seconds?/i, // "you can only request this after X seconds"
+    /after (\d+) seconds?/i, // "after X seconds"
+    /(\d+) seconds?/i, // "X seconds" (more general)
+  ];
+
+  for (const pattern of patterns) {
+    const match = message.match(pattern);
+    if (match?.[1]) {
+      const seconds = Number.parseInt(match[1], 10);
+      if (import.meta.env.DEV) {
+        console.warn(`Extracted ${seconds} seconds from pattern:`, pattern);
+      }
+      return seconds;
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -80,5 +102,69 @@ export function formatRateLimitMessage(
   baseMessage: string,
   seconds: number,
 ): string {
+  // If no seconds provided or invalid, remove the placeholder
+  if (!seconds || seconds <= 0) {
+    return baseMessage
+      .replace(' {seconds} giây nữa', '')
+      .replace('{seconds}', '');
+  }
+
   return baseMessage.replace('{seconds}', seconds.toString());
+}
+
+/**
+ * Smart error message translation for common Supabase errors
+ * This helps handle cases where errors aren't properly wrapped in SupabaseAuthError
+ */
+export function getTranslatedErrorMessage(
+  error: any,
+  $t: (key: string) => string,
+): string {
+  // If it's already a SupabaseAuthError, use its i18n key and rate limit info
+  if (error?.i18nKey) {
+    let description = $t(error.i18nKey);
+
+    // Handle rate limit with seconds from SupabaseAuthError
+    if (error.rateLimitSeconds) {
+      description = formatRateLimitMessage(description, error.rateLimitSeconds);
+    }
+
+    return description;
+  }
+
+  // Check raw error message patterns
+  const message = error?.message || '';
+
+  if (
+    message === 'Invalid login credentials' ||
+    message === 'Invalid credentials'
+  ) {
+    return $t('authentication.errors.invalid_credentials');
+  }
+
+  if (message.includes('Email not confirmed')) {
+    return $t('authentication.errors.email_not_confirmed');
+  }
+
+  if (message.includes('User already registered')) {
+    return $t('authentication.errors.user_already_registered');
+  }
+
+  if (message.includes('User not found')) {
+    return $t('authentication.errors.user_not_found');
+  }
+
+  if (message.includes('Weak password')) {
+    return $t('authentication.errors.weak_password');
+  }
+
+  // Rate limit pattern
+  if (message.includes('security purposes') && message.includes('seconds')) {
+    const seconds = extractRateLimitSeconds(message);
+    const baseMessage = $t('authentication.errors.over_email_send_rate_limit');
+    return seconds ? formatRateLimitMessage(baseMessage, seconds) : baseMessage;
+  }
+
+  // Fallback to original message or generic error
+  return message || $t('authentication.errors.unknown_error');
 }
