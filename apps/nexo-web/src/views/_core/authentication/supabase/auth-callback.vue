@@ -30,9 +30,22 @@ onMounted(async () => {
   try {
     loading.value = true;
 
+    // Clean URL hash immediately to prevent Vue Router warnings
+    const originalHash = window.location.hash;
+    const originalSearch = window.location.search;
+
+    // Clear the URL hash to prevent router warnings about invalid selectors
+    if (originalHash && originalHash.includes('access_token')) {
+      window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname + window.location.search,
+      );
+    }
+
     // Handle both URL hash and search params for Supabase callback
-    const urlHash = window.location.hash;
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlHash = originalHash;
+    const urlParams = new URLSearchParams(originalSearch);
 
     // Check for errors first (expired tokens, etc.)
     if (urlHash.includes('error=')) {
