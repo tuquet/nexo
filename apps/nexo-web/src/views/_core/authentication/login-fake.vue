@@ -36,8 +36,8 @@ async function fakeLogin() {
     :show-forget-password="false"
     :show-remember-me="false"
     :show-third-party-login="false"
-    :title="$t('page.auth.launch.title')"
-    :sub-title="$t('page.auth.launch.subTitle')"
-    :submit-button-text="$t('page.auth.launch.getStarted')"
+    :title="$t('page.auth.title')"
+    :sub-title="$t('page.auth.subTitle')"
+    :submit-button-text="$t('page.auth.getStarted')"
   />
 </template>

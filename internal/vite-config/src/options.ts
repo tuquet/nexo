@@ -33,7 +33,7 @@ function getPWAIcons(): any[] {
   ]);
 
   // Generate icons based on the JSON structure
-  const baseUrl = 'https://unpkg.com/@tfsoft/static-source@1.0.2/static/pwa/';
+  const baseUrl = 'https://unpkg.com/@tfsoft/static-source@1.0.4/static/pwa/';
 
   const icons = [
     // Android icons (primary PWA icons)

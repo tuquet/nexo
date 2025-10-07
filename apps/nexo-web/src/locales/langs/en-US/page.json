@@ -5,11 +5,10 @@
     "codeLogin": "Code Login",
     "qrcodeLogin": "Qr Code Login",
     "forgetPassword": "Forget Password",
-    "launch": {
-      "getStarted": "Get Started",
-      "subTitle": "Are you ready for something new?",
-      "title": "Have a great day!"
-    }
+    "resetPassword": "Reset Password",
+    "subTitle": "Are you ready for something new?",
+    "title": "Have a great day!",
+    "getStarted": "Get Started"
   },
   "dashboard": {
     "title": "Dashboard",

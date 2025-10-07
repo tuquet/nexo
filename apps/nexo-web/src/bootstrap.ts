@@ -46,6 +46,11 @@ async function bootstrap(namespace: string) {
   // 配置 pinia-tore
   await initStores(app, { namespace });
 
+  // Initialize Supabase Auth
+  const { useSupabaseAuthStore } = await import('#/store/auth-supabase');
+  const supabaseAuthStore = useSupabaseAuthStore();
+  supabaseAuthStore.initializeAuth();
+
   // 安装权限指令
   registerAccessDirective(app);
 

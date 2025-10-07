@@ -51,7 +51,24 @@ const coreRoutes: RouteRecordRaw[] = [
       {
         name: 'Login',
         path: 'login',
-        component: () => import('#/views/_core/authentication/launch.vue'),
+        component: () =>
+          import('#/views/_core/authentication/supabase/supabase-login.vue'),
+        meta: {
+          title: $t('page.auth.login'),
+        },
+      },
+      {
+        name: 'LoginTemplate',
+        path: 'login-template',
+        component: () => import('#/views/_core/authentication/login.vue'),
+        meta: {
+          title: $t('page.auth.login'),
+        },
+      },
+      {
+        name: 'LoginWithoutAuth',
+        path: 'login-fake',
+        component: () => import('#/views/_core/authentication/login-fake.vue'),
         meta: {
           title: $t('page.auth.login'),
         },
@@ -88,6 +105,24 @@ const coreRoutes: RouteRecordRaw[] = [
         component: () => import('#/views/_core/authentication/register.vue'),
         meta: {
           title: $t('page.auth.register'),
+        },
+      },
+      {
+        name: 'ResetPassword',
+        path: 'reset-password',
+        component: () =>
+          import('#/views/_core/authentication/supabase/reset-password.vue'),
+        meta: {
+          title: $t('page.auth.resetPassword') || 'Reset Password',
+        },
+      },
+      {
+        name: 'AuthCallback',
+        path: 'callback',
+        component: () =>
+          import('#/views/_core/authentication/supabase/auth-callback.vue'),
+        meta: {
+          title: 'Authentication Callback',
         },
       },
     ],
