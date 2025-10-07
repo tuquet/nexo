@@ -94,7 +94,20 @@ const coreRoutes: RouteRecordRaw[] = [
         name: 'ForgetPassword',
         path: 'forget-password',
         component: () =>
-          import('#/views/_core/authentication/forget-password.vue'),
+          import(
+            '#/views/_core/authentication/supabase/supabase-forget-password.vue'
+          ),
+        meta: {
+          title: $t('page.auth.forgetPassword'),
+        },
+      },
+      {
+        name: 'ForgotPassword',
+        path: 'forgot-password',
+        component: () =>
+          import(
+            '#/views/_core/authentication/supabase/supabase-forget-password.vue'
+          ),
         meta: {
           title: $t('page.auth.forgetPassword'),
         },
