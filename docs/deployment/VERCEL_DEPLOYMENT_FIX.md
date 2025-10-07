@@ -222,7 +222,7 @@ apps/nexo-web/.env.production   # Production defaults
 - [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables)
 - [Vite Environment Variables](https://vitejs.dev/guide/env-and-mode.html)
 - [Supabase Client Configuration](https://supabase.com/docs/reference/javascript/initializing)
-- [Project Quality Guide](./PROJECT_QUALITY_GUIDE.md)
+- [Project Quality Guide](../project-quality/PROJECT_QUALITY_GUIDE.md)
 
 ---
 

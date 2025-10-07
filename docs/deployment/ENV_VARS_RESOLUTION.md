@@ -168,5 +168,5 @@ VITE_SUPABASE_URL=xxx VITE_SUPABASE_ANON_KEY=yyy pnpm build
 ## 📚 Related Documentation
 
 - [Vite Environment Variables](https://vitejs.dev/guide/env-and-mode.html)
-- [Project Quality Guide](./PROJECT_QUALITY_GUIDE.md)
-- [Supabase Setup Guide](./apps/nexo-web/README.md)
+- [Project Quality Guide](../project-quality/PROJECT_QUALITY_GUIDE.md)
+- [Supabase Setup Guide](../../apps/nexo-web/README.md)
