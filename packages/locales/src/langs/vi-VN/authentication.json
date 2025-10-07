@@ -130,6 +130,7 @@
   "passwordResetInfo": "Đặt lại mật khẩu",
   "passwordResetDescription": "Nhập địa chỉ email của bạn và chúng tôi sẽ gửi cho bạn liên kết để đặt lại mật khẩu.",
   "errors": {
+    "invalid_credentials": "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra thông tin đăng nhập và thử lại.",
     "invalid_login_credentials": "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra thông tin đăng nhập và thử lại.",
     "email_not_confirmed": "Vui lòng kiểm tra email và nhấp vào liên kết xác nhận để kích hoạt tài khoản.",
     "too_many_enrollment_requests": "Quá nhiều yêu cầu. Vui lòng đợi một chút trước khi thử lại.",

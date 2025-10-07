@@ -99,8 +99,11 @@ export function getTranslatedErrorMessage(
   // Check raw error message patterns
   const message = error?.message || '';
 
-  if (message === 'Invalid login credentials') {
-    return $t('authentication.errors.invalid_login_credentials');
+  if (
+    message === 'Invalid login credentials' ||
+    message === 'Invalid credentials'
+  ) {
+    return $t('authentication.errors.invalid_credentials');
   }
 
   if (message.includes('Email not confirmed')) {

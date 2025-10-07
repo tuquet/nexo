@@ -340,10 +340,19 @@ async function handleSubmit(values: Record<string, any>) {
     }
 
     if (!result.success) {
-      console.error('Operation failed:', result.error);
+      if (import.meta.env.DEV) {
+        console.error('Operation failed:', result.error);
+      }
+
+      // Translate the error message
+      const translatedError = getTranslatedErrorMessage(
+        { message: result.error },
+        $t,
+      );
+
       notification.error({
         message: $t('authentication.operationFailed'),
-        description: result.error || $t('authentication.errorOccurred'),
+        description: translatedError,
         duration: 5,
       });
     }
