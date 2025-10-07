@@ -76,9 +76,9 @@ export function extractRateLimitSeconds(message: string): null | number {
 
   // Try multiple patterns for Supabase rate limit messages
   const patterns = [
-    /after (\d+) seconds?/,
-    /(\d+) seconds/,
-    /this after (\d+) seconds/,
+    /this after (\d+) seconds?/i, // "you can only request this after X seconds"
+    /after (\d+) seconds?/i, // "after X seconds"
+    /(\d+) seconds?/i, // "X seconds" (more general)
   ];
 
   for (const pattern of patterns) {
@@ -102,6 +102,13 @@ export function formatRateLimitMessage(
   baseMessage: string,
   seconds: number,
 ): string {
+  // If no seconds provided or invalid, remove the placeholder
+  if (!seconds || seconds <= 0) {
+    return baseMessage
+      .replace(' {seconds} giây nữa', '')
+      .replace('{seconds}', '');
+  }
+
   return baseMessage.replace('{seconds}', seconds.toString());
 }
 
