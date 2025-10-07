@@ -13,8 +13,8 @@ import { Alert, Button, notification } from 'ant-design-vue';
 import { SupabaseAuthError } from '#/lib/supabase/auth';
 import { useSupabaseAuthStore } from '#/store/auth-supabase';
 import {
-  extractRateLimitSeconds,
   formatRateLimitMessage,
+  getTranslatedErrorMessage,
 } from '#/utils/supabase-errors';
 
 import MagicLinkLogin from './magic-link-login.vue';
@@ -52,43 +52,14 @@ function handleSupabaseError(error: unknown) {
       duration: error.rateLimitSeconds ? 10 : 5, // Longer duration for rate limits
     });
   } else if (error instanceof Error) {
-    // Check if this is a rate limit error message that wasn't properly caught
-    const rateLimitSeconds = extractRateLimitSeconds(error.message);
+    // Use smart error message translation
+    const description = getTranslatedErrorMessage(error, $t);
 
-    if (rateLimitSeconds && error.message.includes('security purposes')) {
-      // This is a rate limit error, use proper i18n
-      const description = formatRateLimitMessage(
-        $t('authentication.errors.over_email_send_rate_limit'),
-        rateLimitSeconds,
-      );
-
-      notification.error({
-        message: $t('authentication.operationFailed'),
-        description,
-        duration: 10,
-      });
-    } else {
-      // Try to get translation for common error messages
-      let description = error.message;
-
-      // Check for common Supabase error messages that might not be wrapped in SupabaseAuthError
-      if (error.message === 'Invalid login credentials') {
-        description = $t('authentication.errors.invalid_login_credentials');
-      } else if (error.message?.includes('Email not confirmed')) {
-        description = $t('authentication.errors.email_not_confirmed');
-      } else if (error.message?.includes('User already registered')) {
-        description = $t('authentication.errors.user_already_registered');
-      } else {
-        // Use fallback description for unknown errors
-        description = $t('authentication.unexpectedErrorDescription');
-      }
-
-      notification.error({
-        message: $t('authentication.unexpectedError'),
-        description,
-        duration: 5,
-      });
-    }
+    notification.error({
+      message: $t('authentication.unexpectedError'),
+      description,
+      duration: 5,
+    });
   } else {
     notification.error({
       message: $t('authentication.unexpectedError'),

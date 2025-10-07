@@ -82,3 +82,50 @@ export function formatRateLimitMessage(
 ): string {
   return baseMessage.replace('{seconds}', seconds.toString());
 }
+
+/**
+ * Smart error message translation for common Supabase errors
+ * This helps handle cases where errors aren't properly wrapped in SupabaseAuthError
+ */
+export function getTranslatedErrorMessage(
+  error: any,
+  $t: (key: string) => string,
+): string {
+  // If it's already a SupabaseAuthError, use its i18n key
+  if (error?.i18nKey) {
+    return $t(error.i18nKey);
+  }
+
+  // Check raw error message patterns
+  const message = error?.message || '';
+
+  if (message === 'Invalid login credentials') {
+    return $t('authentication.errors.invalid_login_credentials');
+  }
+
+  if (message.includes('Email not confirmed')) {
+    return $t('authentication.errors.email_not_confirmed');
+  }
+
+  if (message.includes('User already registered')) {
+    return $t('authentication.errors.user_already_registered');
+  }
+
+  if (message.includes('User not found')) {
+    return $t('authentication.errors.user_not_found');
+  }
+
+  if (message.includes('Weak password')) {
+    return $t('authentication.errors.weak_password');
+  }
+
+  // Rate limit pattern
+  if (message.includes('security purposes') && message.includes('seconds')) {
+    const seconds = extractRateLimitSeconds(message);
+    const baseMessage = $t('authentication.errors.over_email_send_rate_limit');
+    return seconds ? formatRateLimitMessage(baseMessage, seconds) : baseMessage;
+  }
+
+  // Fallback to original message or generic error
+  return message || $t('authentication.errors.unknown_error');
+}
