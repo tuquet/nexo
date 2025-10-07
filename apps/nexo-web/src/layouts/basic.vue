@@ -15,7 +15,7 @@ import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
 import { useAuthStore } from '#/store';
-import LoginForm from '#/views/_core/authentication/launch.vue';
+import LoginForm from '#/views/_core/authentication/supabase/supabase-login.vue';
 
 const notifications = ref<NotificationItem[]>([]);
 
@@ -58,7 +58,21 @@ const menus = computed(() => [
 ]);
 
 const avatar = computed(() => {
-  return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
+  // Debug: Log user info to see what we have
+  console.warn('User info for avatar:', {
+    avatar: userStore.userInfo?.avatar,
+    email: userStore.userInfo?.email,
+    username: userStore.userInfo?.username,
+    realName: userStore.userInfo?.realName,
+  });
+
+  // Priority: 1. User avatar,
+  if (userStore.userInfo?.avatar) {
+    return userStore.userInfo.avatar;
+  }
+
+  // Final fallback to default
+  return preferences.app.defaultAvatar;
 });
 
 async function handleLogout() {
