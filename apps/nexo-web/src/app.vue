@@ -36,9 +36,7 @@ const isForceReset = true;
 
 onMounted(async () => {
   if (isForceReset) {
-    console.warn(
-      'In Development, seeding indexDB initial data with forceReset=true',
-    );
+    // Seed database with initial data (only in development)
     await seedInitialData(db, { forceReset: isForceReset });
   }
 });

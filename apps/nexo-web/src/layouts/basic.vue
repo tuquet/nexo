@@ -58,14 +58,6 @@ const menus = computed(() => [
 ]);
 
 const avatar = computed(() => {
-  // Debug: Log user info to see what we have
-  console.warn('User info for avatar:', {
-    avatar: userStore.userInfo?.avatar,
-    email: userStore.userInfo?.email,
-    username: userStore.userInfo?.username,
-    realName: userStore.userInfo?.realName,
-  });
-
   // Priority: 1. User avatar,
   if (userStore.userInfo?.avatar) {
     return userStore.userInfo.avatar;
