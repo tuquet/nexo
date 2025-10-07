@@ -69,8 +69,30 @@ export function getSupabaseErrorKey(errorCode: string): string {
  * Extract rate limit seconds from error message
  */
 export function extractRateLimitSeconds(message: string): null | number {
-  const match = message.match(/after (\d+) seconds?/);
-  return match?.[1] ? Number.parseInt(match[1], 10) : null;
+  // Debug log to see actual message pattern
+  if (import.meta.env.DEV && message.includes('security purposes')) {
+    console.warn('Rate limit message:', message);
+  }
+
+  // Try multiple patterns for Supabase rate limit messages
+  const patterns = [
+    /after (\d+) seconds?/,
+    /(\d+) seconds/,
+    /this after (\d+) seconds/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = message.match(pattern);
+    if (match?.[1]) {
+      const seconds = Number.parseInt(match[1], 10);
+      if (import.meta.env.DEV) {
+        console.warn(`Extracted ${seconds} seconds from pattern:`, pattern);
+      }
+      return seconds;
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -91,9 +113,16 @@ export function getTranslatedErrorMessage(
   error: any,
   $t: (key: string) => string,
 ): string {
-  // If it's already a SupabaseAuthError, use its i18n key
+  // If it's already a SupabaseAuthError, use its i18n key and rate limit info
   if (error?.i18nKey) {
-    return $t(error.i18nKey);
+    let description = $t(error.i18nKey);
+
+    // Handle rate limit with seconds from SupabaseAuthError
+    if (error.rateLimitSeconds) {
+      description = formatRateLimitMessage(description, error.rateLimitSeconds);
+    }
+
+    return description;
   }
 
   // Check raw error message patterns
