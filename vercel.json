@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm turbo build --filter=@nexo/web --filter=@vben/*",
   "installCommand": "pnpm install --frozen-lockfile",
   "outputDirectory": "apps/nexo-web/dist",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD .",
