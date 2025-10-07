@@ -33,7 +33,10 @@ const hasShownLoginSuccess = ref(false); // Prevent duplicate login notification
  * Handle Supabase authentication errors with i18n support
  */
 function handleSupabaseError(error: unknown) {
-  console.error('Full error details:', error);
+  // Only log in development
+  if (import.meta.env.DEV) {
+    console.error('Full error details:', error);
+  }
 
   if (error instanceof SupabaseAuthError) {
     let description = $t(error.i18nKey);

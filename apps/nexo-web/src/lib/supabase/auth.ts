@@ -18,14 +18,16 @@ export class SupabaseAuthError extends Error {
   constructor(error: any) {
     super(error.message);
 
-    // Log error details for debugging
-    console.error('Supabase error details:', {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint,
-      status: error.status,
-    });
+    // Only log error details in development
+    if (import.meta.env.DEV) {
+      console.error('Supabase error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        status: error.status,
+      });
+    }
 
     this.code = error.code || 'unknown_error';
     this.i18nKey = getSupabaseErrorKey(this.code);
