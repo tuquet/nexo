@@ -293,27 +293,15 @@ function requestNewResetLink() {
 
     <!-- Password Reset Form -->
     <Card v-else-if="hasValidToken" class="shadow-sm">
-      <div class="mb-6 text-center">
-        <div class="mb-4">
-          <CarbonSecurity class="text-primary mx-auto h-12 w-12" />
-        </div>
-        <h2 class="text-2xl font-bold text-gray-900">
-          {{ $t('authentication.setNewPassword') || 'Set New Password' }}
-        </h2>
-        <p class="mt-2 text-sm text-gray-600">
-          {{
-            $t('authentication.chooseSecurePassword') ||
-            'Choose a strong password for your account'
-          }}
-        </p>
-      </div>
-
       <AuthenticationForgetPassword
         :form-schema="formSchema"
         :loading="loading"
         :submit-button-text="$t('authentication.updatePassword')"
-        title=""
-        sub-title=""
+        :title="$t('authentication.setNewPassword') || 'Set New Password'"
+        :sub-title="
+          $t('authentication.chooseSecurePassword') ||
+          'Choose a strong password for your account'
+        "
         @submit="handleSubmit"
       />
 
@@ -338,7 +326,7 @@ function requestNewResetLink() {
     <!-- Loading State -->
     <div v-else class="text-center">
       <Spin size="large" />
-      <p class="mt-4 text-gray-600">
+      <p class="text-muted-foreground mt-4">
         {{ $t('authentication.validatingResetLink') }}
       </p>
     </div>
