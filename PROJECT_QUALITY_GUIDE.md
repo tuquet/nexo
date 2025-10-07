@@ -3,13 +3,15 @@
 ## 📊 Tình Trạng Hiện Tại
 
 ### ✅ Đã Giải Quyết
+
 - **CSpell**: ✅ 0 lỗi (từ 893 lỗi)
-- **TypeScript**: ✅ Compilation thành công  
+- **TypeScript**: ✅ Compilation thành công
 - **Unused Dependencies**: ✅ Đã xóa axios, fs-extra khỏi nexo-native
-- **Environment Variables**: ✅ Đã giải quyết warnings về VITE_SUPABASE_* 
+- **Environment Variables**: ✅ Đã giải quyết warnings về VITE*SUPABASE*\*
 - **Lockfile Sync**: ✅ Đã sync pnpm-lock.yaml với package.json changes
 
 ### ⚠️ Cần Theo Dõi (Warnings - Không Fail Build)
+
 - **Circular Dependencies**: ~2300 warnings (chủ yếu từ build output)
 - **Dependencies**: Warnings nhỏ về package dependencies
 - **Build Compatibility**: Warnings về node modules externalization
@@ -19,14 +21,18 @@
 ## 🔧 Environment Variables (Mới Giải Quyết)
 
 ### Vấn Đề Trước Đây
+
 Trong quá trình build, có warnings:
+
 ```
-[warn] - VITE_SUPABASE_URL 
+[warn] - VITE_SUPABASE_URL
 [warn] - VITE_SUPABASE_ANON_KEY
 ```
 
 ### ✅ Giải Pháp Đã Áp Dụng
+
 1. **Tạo root `.env` file** với default values:
+
 ```bash
 # .env (root level)
 VITE_SUPABASE_URL=
@@ -45,6 +51,7 @@ VITE_SUPABASE_ANON_KEY=
 ## 🔄 Circular Dependencies
 
 ### Hiểu về Circular Dependencies
+
 Circular dependencies trong project này **KHÔNG phải lỗi nghiêm trọng** vì:
 
 1. **Chủ yếu từ build output**: `apps/nexo-native/out/renderer/js/**`
@@ -53,6 +60,7 @@ Circular dependencies trong project này **KHÔNG phải lỗi nghiêm trọng**
 4. **Không block CI/CD**: Build và deployment vẫn thành công
 
 ### Monitoring Commands
+
 ```bash
 # Xem circular dependencies chi tiết
 pnpm run check:circular
@@ -62,12 +70,15 @@ pnpm run check:circular | grep "Circular dependency" | wc -l
 ```
 
 ### Khi Nào Cần Quan Tâm?
+
 - **Circular trong source code** (không phải build output)
 - **Runtime errors** liên quan đến module loading
 - **Performance issues** do circular dependencies
 
 ### Cách Giải Quyết (Khi Cần)
+
 1. **Identify source-level circulars**:
+
 ```bash
 # Check source files chỉ
 pnpm run check:circular | grep -v "/out/" | grep -v "/dist/"
@@ -83,6 +94,7 @@ pnpm run check:circular | grep -v "/out/" | grep -v "/dist/"
 ## 📦 Dependency Management
 
 ### Kiểm Tra Dependencies
+
 ```bash
 # Xem dependencies không sử dụng
 pnpm run check:dep
@@ -92,6 +104,7 @@ pnpm list --depth=0
 ```
 
 ### Best Practices
+
 1. **Regular cleanup**: Monthly review dependencies
 2. **Use catalog versions**: Ưu tiên sử dụng catalog trong pnpm-workspace
 3. **Avoid dev in prod**: Đảm bảo dev dependencies không leak vào production
@@ -101,10 +114,12 @@ pnpm list --depth=0
 ## 🔤 CSpell Dictionary Management
 
 ### Thêm Từ Tiếng Việt Mới
+
 Khi gặp lỗi cspell với từ tiếng Việt hợp lệ:
 
 1. **Mở file cspell.json**
 2. **Thêm từ vào mảng `words`**:
+
 ```json
 {
   "words": [
@@ -115,23 +130,25 @@ Khi gặp lỗi cspell với từ tiếng Việt hợp lệ:
 ```
 
 3. **Chạy kiểm tra**:
+
 ```bash
 pnpm run check:cspell
 ```
 
 ### Phân Loại Từ (Tham Khảo)
+
 - **Technical**: Định, nghĩa, liệu, dụng, thiết, kế
 - **UI/UX**: thoại, người, dùng, chọn, hiển, thị
 - **Actions**: Khởi, động, Chạy, kích, hoạt, kiểm, tra
 - **Status**: hoàn, thành, được, Không, thành, công
 
 ### Khi Có Nhiều Từ Tiếng Việt
+
 Thay vì thêm nhiều từ, xem xét thêm file vào `ignorePaths`:
+
 ```json
 {
-  "ignorePaths": [
-    "path/to/vietnamese-heavy-file/**"
-  ]
+  "ignorePaths": ["path/to/vietnamese-heavy-file/**"]
 }
 ```
 
@@ -140,6 +157,7 @@ Thay vì thêm nhiều từ, xem xét thêm file vào `ignorePaths`:
 ## 🚀 Daily Workflow
 
 ### Trước Khi Commit
+
 ```bash
 # Quick check (nhanh)
 pnpm run check:type && pnpm run check:cspell
@@ -151,6 +169,7 @@ pnpm check
 ### Giải Quyết Lỗi Thường Gặp
 
 #### Environment Variables
+
 ```bash
 # Nếu thiếu env vars trong packages
 # 1. Thêm vào root .env với default value
@@ -161,6 +180,7 @@ node -e "console.log(require('dotenv').config())"
 ```
 
 #### CSpell Errors
+
 ```bash
 # Nếu có từ tiếng Việt hợp lệ
 # 1. Thêm vào cspell.json words array
@@ -172,6 +192,7 @@ node -e "console.log(require('dotenv').config())"
 ```
 
 #### TypeScript Errors
+
 ```bash
 # Compile errors
 pnpm run check:type
@@ -185,11 +206,12 @@ pnpm run lint:fix
 ## 📈 Metrics & Monitoring
 
 ### Quality Metrics Dashboard
+
 ```bash
 # Spell check status
 echo "CSpell: $(pnpm run check:cspell 2>&1 | grep -o 'Issues found: [0-9]*' || echo '✅ PASS')"
 
-# TypeScript status  
+# TypeScript status
 echo "TypeScript: $(pnpm run check:type > /dev/null 2>&1 && echo '✅ PASS' || echo '❌ FAIL')"
 
 # Circular dependencies count
@@ -200,6 +222,7 @@ echo "Env Vars: $(pnpm turbo build --filter='@vben-core/form-ui' 2>&1 | grep -c 
 ```
 
 ### Available Scripts
+
 ```bash
 # Quality checks
 pnpm check                    # Full quality check
@@ -221,22 +244,26 @@ pnpm format                  # Format code
 ## 🎯 Goals & Targets
 
 ### ✅ Completed (October 2025)
+
 - **CSpell**: 0 errors (từ 893 lỗi)
 - **TypeScript**: No compilation errors
 - **Unused deps**: Cleaned nexo-native
-- **Environment Variables**: No more VITE_SUPABASE_* warnings
+- **Environment Variables**: No more VITE*SUPABASE*\* warnings
 
 ### 🎯 Short Term (1-2 tuần)
+
 - Build compatibility warnings (jiti, node modules)
 - Performance optimization
 - Documentation updates
 
 ### 🎯 Medium Term (1-2 tháng)
+
 - Circular deps: Giảm xuống dưới 1000 (từ 2300+)
 - Performance: Monitor build time và bundle size
 - Dependencies: Standardize versions across packages
 
 ### 🎯 Long Term (3-6 tháng)
+
 - Zero source-level circular dependencies
 - Automated quality gates in CI/CD
 - Performance budgets và monitoring
@@ -246,17 +273,20 @@ pnpm format                  # Format code
 ## 🛠️ Recent Improvements
 
 ### Environment Variables Resolution
-- **Problem**: Build warnings về missing VITE_SUPABASE_* variables
+
+- **Problem**: Build warnings về missing VITE*SUPABASE*\* variables
 - **Solution**: Root `.env` file với default values
 - **Result**: Clean build logs, no more env warnings
 - **Documentation**: [ENV_VARS_RESOLUTION.md](./ENV_VARS_RESOLUTION.md)
 
 ### Dictionary Management
+
 - **Vietnamese Support**: Complete bilingual spell checking
 - **Custom Dictionary**: 100+ Vietnamese technical terms
 - **Documentation**: [VIETNAMESE_DICTIONARY.md](./VIETNAMESE_DICTIONARY.md)
 
 ### Dependency Cleanup
+
 - **Removed**: axios, fs-extra, @types/fs-extra từ nexo-native
 - **Result**: Cleaner dependency tree, no unused warnings
 - **Method**: Manual audit và validation
@@ -266,16 +296,19 @@ pnpm format                  # Format code
 ## 🧰 Tools & Utilities
 
 ### Useful Aliases (Optional)
+
 Thêm vào shell profile (.bashrc, .zshrc):
+
 ```bash
 alias pcheck="pnpm check"
-alias ptype="pnpm run check:type" 
+alias ptype="pnpm run check:type"
 alias pspell="pnpm run check:cspell"
 alias pcircular="pnpm run check:circular"
 alias pquick="pnpm run check:quick"
 ```
 
 ### Debugging Scripts
+
 ```bash
 # Environment debugging
 function check-env() {
@@ -299,17 +332,20 @@ function quality-summary() {
 ## � Lockfile Management
 
 ### Vấn Đề Lockfile Sync
+
 Khi xóa dependencies từ package.json, cần update lockfile:
 
 #### Lỗi CI/CD
+
 ```bash
-ERR_PNPM_OUTDATED_LOCKFILE Cannot install with "frozen-lockfile" 
+ERR_PNPM_OUTDATED_LOCKFILE Cannot install with "frozen-lockfile"
 because pnpm-lock.yaml is not up to date with package.json
 
 * 3 dependencies were removed: axios@^1.11.0, fs-extra@^11.3.1, @types/fs-extra@^11.0.4
 ```
 
 #### ✅ Giải Pháp
+
 ```bash
 # Update lockfile sau khi thay đổi dependencies
 pnpm install
@@ -319,6 +355,7 @@ pnpm install --frozen-lockfile
 ```
 
 #### Best Practices
+
 1. **Sau khi remove dependencies**: Luôn chạy `pnpm install`
 2. **Trước khi commit**: Test với `pnpm install --frozen-lockfile`
 3. **CI/CD ready**: Đảm bảo lockfile sync với package.json
@@ -328,6 +365,7 @@ pnpm install --frozen-lockfile
 ## �📚 Resources & Documentation
 
 ### Project Files
+
 - `cspell.json` - Spell checking configuration với Vietnamese support
 - `VIETNAMESE_DICTIONARY.md` - Vietnamese dictionary management guide
 - `ENV_VARS_RESOLUTION.md` - Environment variables setup và troubleshooting
@@ -336,6 +374,7 @@ pnpm install --frozen-lockfile
 - `pnpm-lock.yaml` - Dependency lockfile (auto-generated, commit required)
 
 ### External Links
+
 - [CSpell Configuration](https://cspell.org/configuration/)
 - [TypeScript Configuration](https://www.typescriptlang.org/tsconfig)
 - [PNPM Workspace](https://pnpm.io/workspaces)
@@ -347,10 +386,11 @@ pnpm install --frozen-lockfile
 ## 📝 Change Log
 
 ### 2025-10-07
+
 - ✅ Resolved environment variables warnings
 - ✅ Created root `.env` file with defaults
 - ✅ Updated documentation với environment setup guide
-- ✅ Tested package builds - no more VITE_SUPABASE_* warnings
+- ✅ Tested package builds - no more VITE*SUPABASE*\* warnings
 - ✅ Fixed pnpm lockfile sync issue (removed dependencies)
 - ✅ CI/CD ready - frozen lockfile passes
 - 📋 Next: Address build compatibility warnings (jiti, node modules)

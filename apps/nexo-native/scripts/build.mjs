@@ -38,7 +38,7 @@ function executeCommand(command) {
 
 /**
  * Gets the appropriate file explorer command for the current platform.
- * @returns {string}
+ * @returns {string} The command to open files in the system file explorer
  */
 function getOpenCommand() {
   if (process.platform === 'win32') return 'explorer';
@@ -88,10 +88,10 @@ function validateSourcePath(sourcePath) {
  * Parses a boolean environment variable.
  * @param {string} v - The value to parse.
  * @param {boolean} def - The default value.
- * @returns {boolean}
+ * @returns {boolean} The parsed boolean value or default if invalid
  */
 function parseBoolEnv(v, def = true) {
-  if (v == null) return def;
+  if (v === null || v === undefined) return def;
   const low = String(v).trim().toLowerCase();
   if (['0', 'false', 'no', 'off'].includes(low)) return false;
   if (['1', 'on', 'true', 'yes'].includes(low)) return true;
