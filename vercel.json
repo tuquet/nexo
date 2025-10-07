@@ -4,5 +4,13 @@
   "outputDirectory": "apps/nexo-web/dist",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD .",
   "framework": null,
-  "rewrites": [{ "source": "/:path*", "destination": "/index.html" }]
+  "rewrites": [
+    {
+      "source": "/manifest.webmanifest",
+      "destination": "/manifest.webmanifest"
+    },
+    { "source": "/sw.js", "destination": "/sw.js" },
+    { "source": "/workbox-:hash.js", "destination": "/workbox-:hash.js" },
+    { "source": "/:path*", "destination": "/index.html" }
+  ]
 }
