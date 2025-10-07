@@ -8,7 +8,7 @@ import { defineOverridesPreferences } from '@vben/preferences';
 export const overridesPreferences = defineOverridesPreferences({
   // overrides
   app: {
-    layout: 'sidebar-nav',
+    layout: 'header-sidebar-nav',
     locale: 'vi-VN',
     name: import.meta.env.VITE_APP_TITLE,
     authPageLayout: 'panel-center',
@@ -22,15 +22,14 @@ export const overridesPreferences = defineOverridesPreferences({
     showHome: true,
   },
   sidebar: {
-    collapsed: false,
+    collapsed: true,
     collapsedButton: true,
     fixedButton: true,
     expandOnHover: true,
   },
   logo: {
-    enable: true,
-    source:
-      'https://unpkg.com/@tfsoft/static-source@1.0.0/static/logo-square.png',
+    enable: false,
+    source: 'https://unpkg.com/@tfsoft/static-source@1.0.4/static/logo.png',
     fit: 'cover',
   },
   copyright: {
@@ -57,11 +56,8 @@ export const overridesPreferences = defineOverridesPreferences({
     radius: '0.5',
     semiDarkHeader: true,
     mode: 'auto',
-    builtinType: 'custom',
-    colorDestructive: 'hsl(348 100% 61%)',
-    colorPrimary: 'hsl(153 71% 40%)',
-    colorSuccess: 'hsla(166, 100%, 38%, 1.00)',
-    colorWarning: 'hsl(42 84% 61%)',
+    builtinType: 'default',
+    colorPrimary: 'hsl(212 100% 45%)',
   },
   tabbar: {
     enable: true,

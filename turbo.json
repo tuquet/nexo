@@ -12,7 +12,23 @@
     "scripts/*/src/**/*.ts",
     "scripts/*/src/**/*.json"
   ],
-  "globalEnv": ["NODE_ENV"],
+  "globalEnv": [
+    "NODE_ENV",
+    "VITE_SUPABASE_URL",
+    "VITE_SUPABASE_ANON_KEY",
+    "VITE_APP_TITLE",
+    "VITE_BASE",
+    "VITE_PORT",
+    "VITE_PWA",
+    "VITE_DEVTOOLS",
+    "VITE_NITRO_MOCK",
+    "VITE_INJECT_APP_LOADING",
+    "VITE_VISUALIZER",
+    "VITE_COMPRESS",
+    "VITE_ARCHIVER",
+    "VITE_ROUTER_HISTORY",
+    "VITE_GLOB_API_URL"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

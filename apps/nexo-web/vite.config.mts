@@ -4,6 +4,21 @@ export default defineConfig(async () => {
   return {
     application: {},
     vite: {
+      build: {
+        rollupOptions: {
+          onwarn(warning, warn) {
+            // Suppress mixed import warnings for intentional code-splitting in adapter components
+            if (
+              warning.message?.includes('is dynamically imported by') &&
+              warning.message?.includes('ant-design-vue') &&
+              warning.message?.includes('adapter/component')
+            ) {
+              return;
+            }
+            warn(warning);
+          },
+        },
+      },
       server: {
         proxy: {
           '/api': {
