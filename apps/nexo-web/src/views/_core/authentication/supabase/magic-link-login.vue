@@ -42,7 +42,10 @@ const isLoading = computed(() => props.loading || internalLoading.value);
  * Handle Supabase authentication errors with i18n support
  */
 function handleSupabaseError(error: unknown) {
-  console.error('Magic link error details:', error);
+  // Only log in development
+  if (import.meta.env.DEV) {
+    console.error('Magic link error details:', error);
+  }
 
   if (error instanceof SupabaseAuthError) {
     let description = $t(error.i18nKey);
@@ -74,11 +77,24 @@ function handleSupabaseError(error: unknown) {
         duration: 10,
       });
     } else {
+      // Try to get translation for common error messages
+      let description = error.message;
+
+      // Check for common Supabase error messages
+      if (error.message === 'Invalid login credentials') {
+        description = $t('authentication.errors.invalid_login_credentials');
+      } else if (error.message?.includes('Email not confirmed')) {
+        description = $t('authentication.errors.email_not_confirmed');
+      } else if (error.message?.includes('User not found')) {
+        description = $t('authentication.errors.user_not_found');
+      } else {
+        description = $t('authentication.unexpectedErrorOccurred');
+      }
+
       // Generic error fallback
       notification.error({
         message: $t('authentication.error'),
-        description:
-          error.message || $t('authentication.unexpectedErrorOccurred'),
+        description,
         duration: 5,
       });
     }

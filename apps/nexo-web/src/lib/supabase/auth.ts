@@ -18,14 +18,16 @@ export class SupabaseAuthError extends Error {
   constructor(error: any) {
     super(error.message);
 
-    // Log error details for debugging
-    console.error('Supabase error details:', {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint,
-      status: error.status,
-    });
+    // Only log error details in development
+    if (import.meta.env.DEV) {
+      console.error('Supabase error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        status: error.status,
+      });
+    }
 
     this.code = error.code || 'unknown_error';
     this.i18nKey = getSupabaseErrorKey(this.code);
@@ -325,8 +327,12 @@ export class SupabaseAuthService {
 
         // Don't retry on authentication errors or client-side errors
         if (
+          error.code === 'invalid_credentials' ||
           error.code === 'invalid_login_credentials' ||
           error.code === 'email_not_confirmed' ||
+          error.code === 'user_not_found' ||
+          error.code === 'weak_password' ||
+          error.code === 'user_already_registered' ||
           error.status === 400 ||
           error.status === 401 ||
           error.status === 403
@@ -344,10 +350,12 @@ export class SupabaseAuthService {
           setTimeout(resolve, delayMs * 2 ** (attempt - 1)),
         );
 
-        console.warn(
-          `Retry attempt ${attempt}/${maxRetries} for operation failed:`,
-          error.message,
-        );
+        if (import.meta.env.DEV) {
+          console.warn(
+            `Retry attempt ${attempt}/${maxRetries} for operation failed:`,
+            error.message,
+          );
+        }
       }
     }
 
