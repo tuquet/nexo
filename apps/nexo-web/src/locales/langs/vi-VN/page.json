@@ -2,11 +2,10 @@
   "auth": {
     "codeLogin": "Đăng nhập bằng mã",
     "forgetPassword": "Quên mật khẩu",
-    "launch": {
-      "getStarted": "Bắt đầu",
-      "subTitle": "Bạn đã sẵn sàng cho điều gì đó mới mẻ chưa?",
-      "title": "Chúc một ngày tốt lành!"
-    },
+    "resetPassword": "Đặt lại mật khẩu",
+    "getStarted": "Bắt đầu",
+    "subTitle": "Bạn đã sẵn sàng cho điều gì đó mới mẻ chưa?",
+    "title": "Chúc một ngày tốt lành!",
     "login": "Đăng nhập",
     "qrcodeLogin": "Đăng nhập bằng mã QR",
     "register": "Đăng ký"

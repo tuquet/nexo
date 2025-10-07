@@ -35,7 +35,6 @@ function getGroupId(name: string): string {
 }
 
 const projectItemsData: Omit<Project, 'id'>[] = [
-  // Changed type to Omit<Project, 'id'>[]
   {
     color: '#FF0000',
     content:

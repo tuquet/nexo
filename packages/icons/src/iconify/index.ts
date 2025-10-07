@@ -10,6 +10,8 @@ export const MdiGithub = createIconifyIcon('mdi:github');
 
 export const MdiGoogle = createIconifyIcon('mdi:google');
 
+export const MdiFacebook = createIconifyIcon('mdi:facebook');
+
 export const MdiQqchat = createIconifyIcon('mdi:qqchat');
 
 export const RiDingding = createIconifyIcon('ri:dingding-fill');
@@ -29,3 +31,7 @@ export const CarbonSearch = createIconifyIcon('carbon:search');
 export const CarbonReset = createIconifyIcon('carbon:reset');
 export const CarbonClose = createIconifyIcon('carbon:close');
 export const CarbonList = createIconifyIcon('carbon:list');
+export const CarbonMagicWand = createIconifyIcon('carbon:magic-wand');
+export const CarbonEmail = createIconifyIcon('carbon:email');
+export const CarbonSecurity = createIconifyIcon('carbon:security');
+export const CarbonLogin = createIconifyIcon('carbon:login');
