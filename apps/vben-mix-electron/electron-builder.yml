@@ -1,0 +1,46 @@
+appId: vn.tfsoftware.nexo
+productName: NexoStudio
+directories:
+  buildResources: build
+files:
+  - 'out/**/*'
+asarUnpack:
+  - '**/*.{node,dll}'
+extraResources:
+  - from: resources/
+    to: .
+win:
+  executableName: NexoStudio
+nsis:
+  artifactName: ${productName}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to the device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+dmg:
+  artifactName: ${productName}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${productName}-${version}.${ext}
+npmRebuild: false
+publish:
+  provider: github
+  owner: tuquet
+  repo: nexo
+  releaseType: prerelease
+  vPrefixedTagName: true
+electronDownload:
+  mirror: https://npmmirror.com/mirrors/electron/

@@ -60,6 +60,9 @@ catalogs:
     '@stylistic/stylelint-plugin':
       specifier: ^3.1.3
       version: 3.1.3
+    '@supabase/supabase-js':
+      specifier: ^2.48.1
+      version: 2.74.0
     '@tailwindcss/nesting':
       specifier: 0.0.0-insiders.565cd3e
       version: 0.0.0-insiders.565cd3e
@@ -141,6 +144,9 @@ catalogs:
     '@vueuse/motion':
       specifier: ^3.0.3
       version: 3.0.3
+    '@vueuse/rxjs':
+      specifier: ^13.4.0
+      version: 13.9.0
     ant-design-vue:
       specifier: ^4.2.6
       version: 4.2.6
@@ -201,6 +207,9 @@ catalogs:
     depcheck:
       specifier: ^1.4.7
       version: 1.4.7
+    dexie:
+      specifier: ^4.0.8
+      version: 4.2.1
     dotenv:
       specifier: ^16.6.1
       version: 16.6.1
@@ -306,6 +315,9 @@ catalogs:
     lucide-vue-next:
       specifier: ^0.507.0
       version: 0.507.0
+    nanoid:
+      specifier: ^5.0.8
+      version: 5.1.6
     nitropack:
       specifier: ^2.11.13
       version: 2.12.6
@@ -372,6 +384,9 @@ catalogs:
     rollup-plugin-visualizer:
       specifier: ^5.14.0
       version: 5.14.0
+    rxjs:
+      specifier: ^7.8.1
+      version: 7.8.2
     sass:
       specifier: ^1.89.2
       version: 1.93.2
@@ -756,6 +771,151 @@ importers:
       vue-router:
         specifier: 'catalog:'
         version: 4.5.1(vue@3.5.22(typescript@5.9.3))
+
+  apps/vben-mix-electron:
+    dependencies:
+      '@electron-toolkit/preload':
+        specifier: ^3.0.2
+        version: 3.0.2(electron@37.6.0)
+      '@electron-toolkit/utils':
+        specifier: ^4.0.0
+        version: 4.0.0(electron@37.6.0)
+      '@supabase/supabase-js':
+        specifier: 'catalog:'
+        version: 2.74.0
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 13.9.0(vue@3.5.22(typescript@5.9.3))
+      '@vueuse/rxjs':
+        specifier: 'catalog:'
+        version: 13.9.0(rxjs@7.8.2)(vue@3.5.22(typescript@5.9.3))
+      dayjs:
+        specifier: 'catalog:'
+        version: 1.11.18
+      dexie:
+        specifier: 'catalog:'
+        version: 4.2.1
+      electron-log:
+        specifier: ^5.4.3
+        version: 5.4.3
+      electron-store:
+        specifier: ^10.1.0
+        version: 10.1.0
+      electron-updater:
+        specifier: ^6.3.9
+        version: 6.6.2
+      nanoid:
+        specifier: 'catalog:'
+        version: 5.1.6
+      pinia:
+        specifier: ^3.0.3
+        version: 3.0.3(typescript@5.9.3)(vue@3.5.22(typescript@5.9.3))
+      rxjs:
+        specifier: 'catalog:'
+        version: 7.8.2
+      vue-router:
+        specifier: 'catalog:'
+        version: 4.5.1(vue@3.5.22(typescript@5.9.3))
+    devDependencies:
+      '@electron-toolkit/tsconfig':
+        specifier: ^1.0.1
+        version: 1.0.1(@types/node@22.18.8)
+      '@types/node':
+        specifier: ^22.16.5
+        version: 22.18.8
+      '@vben/access':
+        specifier: workspace:*
+        version: link:../../packages/effects/access
+      '@vben/common-ui':
+        specifier: workspace:*
+        version: link:../../packages/effects/common-ui
+      '@vben/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
+      '@vben/hooks':
+        specifier: workspace:*
+        version: link:../../packages/effects/hooks
+      '@vben/icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
+      '@vben/layouts':
+        specifier: workspace:*
+        version: link:../../packages/effects/layouts
+      '@vben/locales':
+        specifier: workspace:*
+        version: link:../../packages/locales
+      '@vben/plugins':
+        specifier: workspace:*
+        version: link:../../packages/effects/plugins
+      '@vben/preferences':
+        specifier: workspace:*
+        version: link:../../packages/preferences
+      '@vben/request':
+        specifier: workspace:*
+        version: link:../../packages/effects/request
+      '@vben/stores':
+        specifier: workspace:*
+        version: link:../../packages/stores
+      '@vben/styles':
+        specifier: workspace:*
+        version: link:../../packages/styles
+      '@vben/tailwind-config':
+        specifier: workspace:*
+        version: link:../../internal/tailwind-config
+      '@vben/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@vben/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
+      '@vitejs/plugin-vue':
+        specifier: ^6.0.1
+        version: 6.0.1(vite@7.1.9(@types/node@22.18.8)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))(vue@3.5.22(typescript@5.9.3))
+      ant-design-vue:
+        specifier: 'catalog:'
+        version: 4.2.6(vue@3.5.22(typescript@5.9.3))
+      autoprefixer:
+        specifier: 'catalog:'
+        version: 10.4.21(postcss@8.5.6)
+      dotenv:
+        specifier: 'catalog:'
+        version: 16.6.1
+      electron:
+        specifier: ^37.2.3
+        version: 37.6.0
+      electron-builder:
+        specifier: ^25.1.8
+        version: 25.1.8(electron-builder-squirrel-windows@25.1.8)
+      electron-vite:
+        specifier: ^4.0.0
+        version: 4.0.1(vite@7.1.9(@types/node@22.18.8)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))
+      eslint:
+        specifier: ^9.31.0
+        version: 9.37.0(jiti@2.6.1)
+      postcss:
+        specifier: 'catalog:'
+        version: 8.5.6
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      sass:
+        specifier: 'catalog:'
+        version: 1.93.2
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 3.4.18(yaml@2.8.1)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.0.5
+        version: 7.1.9(@types/node@22.18.8)(jiti@2.6.1)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
+      vue:
+        specifier: ^3.5.17
+        version: 3.5.22(typescript@5.9.3)
+      vue-tsc:
+        specifier: ^3.0.3
+        version: 3.1.1(typescript@5.9.3)
 
   internal/lint-configs/commitlint-config:
     dependencies:

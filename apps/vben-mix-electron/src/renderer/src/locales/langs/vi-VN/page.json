@@ -1,0 +1,41 @@
+{
+  "auth": {
+    "codeLogin": "Đăng nhập bằng mã",
+    "forgetPassword": "Quên mật khẩu",
+    "resetPassword": "Đặt lại mật khẩu",
+    "getStarted": "Bắt đầu",
+    "subTitle": "Bạn đã sẵn sàng cho điều gì đó mới mẻ chưa?",
+    "title": "Chúc một ngày tốt lành!",
+    "login": "Đăng nhập",
+    "qrcodeLogin": "Đăng nhập bằng mã QR",
+    "register": "Đăng ký"
+  },
+  "dashboard": {
+    "analytics": "Phân tích",
+    "title": "Bảng điều khiển",
+    "workspace": {
+      "header": {
+        "greeting": "Chào buổi sáng, {name}, hãy bắt đầu ngày làm việc của bạn!",
+        "weather": "Hôm nay trời nắng, 20℃ - 32℃!"
+      },
+      "quickNav": "Điều hướng nhanh",
+      "title": "Không gian làm việc",
+      "todo": "Việc cần làm",
+      "trends": "Hoạt động mới nhất",
+      "visitsSource": "Nguồn truy cập"
+    }
+  },
+  "project": {
+    "create": "Tạo dự án",
+    "edit": "Chỉnh sửa dự án",
+    "group": {
+      "create": "Tạo nhóm dự án",
+      "list": "Danh sách nhóm dự án",
+      "title": "Nhóm dự án",
+      "view": "Xem nhóm dự án"
+    },
+    "list": "Danh sách dự án",
+    "title": "Dự án",
+    "view": "Xem dự án"
+  }
+}

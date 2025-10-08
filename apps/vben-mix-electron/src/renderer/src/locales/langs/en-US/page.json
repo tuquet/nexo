@@ -1,0 +1,32 @@
+{
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "codeLogin": "Code Login",
+    "qrcodeLogin": "Qr Code Login",
+    "forgetPassword": "Forget Password",
+    "resetPassword": "Reset Password",
+    "subTitle": "Are you ready for something new?",
+    "title": "Have a great day!",
+    "getStarted": "Get Started"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "analytics": "Analytics",
+    "workspace": {
+      "title": "Workspace",
+      "header": {
+        "greeting": "Good morning, {name}, start your day's work!",
+        "weather": "Sunny today, 20℃ - 32℃!"
+      },
+      "project": "Project",
+      "trends": "Latest Trends",
+      "quickNav": "Quick Navigation",
+      "todo": "To-Do List",
+      "visitsSource": "Visits Source"
+    },
+    "project": {
+      "title": "Project"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+# Environment variables
+.env.local
+
+# Logs
+logs
+*.log
+
+# Dependencies
+node_modules
+
+# Build output
+dist
+out
+release

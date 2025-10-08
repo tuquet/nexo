@@ -1,0 +1,4 @@
+provider: github
+owner: tuquet
+repo: nexo
+updaterCacheDirName: nexo-updater

@@ -13,6 +13,10 @@
       "path": "apps/nexo-web",
     },
     {
+      "name": "@nexo/native",
+      "path": "apps/vben-mix-electron",
+    },
+    {
       "name": "@vben/commitlint-config",
       "path": "internal/lint-configs/commitlint-config",
     },
